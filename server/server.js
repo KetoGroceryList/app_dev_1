@@ -2,12 +2,33 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./db/db');
+const errorHandler = require('./middleware/error');
 
+//.env setup
 dotenv.config({ path: '.env' });
 
+//db setup
 connectDB();
-const app = express();
 
+//express setup
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+
+//Routes
+const authRoute = require('./routes/auth');
+
+//Routes setup
+app.get('/', (req, res) => {
+  console.log('Route connected');
+  res.send('Route connected');
+});
+
+app.use('/api/auth', authRoute);
+
+app.use(errorHandler);
+
+//PORT
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(
