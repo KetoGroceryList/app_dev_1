@@ -10,18 +10,37 @@ const App = (props) => {
 
   const registerHandler = async () => {
     console.log('post');
+
+    const body = JSON.stringify({ name, email, password });
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
       },
     };
 
-    const body = JSON.stringify({ name, email, password });
     await axios.post('http://localhost:5000/api/auth/register', body, config);
   };
 
   const getUserHandler = async () => {
     const response = await axios.get('http://localhost:5000/api/users/');
+    console.log(response.data);
+  };
+
+  const loginHandler = async () => {
+    const body = JSON.stringify({ email, password });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const response = await axios.post(
+      'http://localhost:5000/api/auth/login',
+      body,
+      config
+    );
     console.log(response.data);
   };
 
@@ -32,21 +51,25 @@ const App = (props) => {
         style={styles.textInput}
         value={name}
         placeholder="name"
+        autoCapitalize="none"
         onChangeText={(text) => setName(text)}
       />
       <TextInput
         style={styles.textInput}
         value={email}
         placeholder="email"
+        autoCapitalize="none"
         onChangeText={(text) => setEmail(text)}
       />
       <TextInput
         style={styles.textInput}
         value={password}
         placeholder="password"
+        autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
       />
       <Button title="register" onPress={registerHandler} />
+      <Button title="login" onPress={loginHandler} />
       <Button title="get user" onPress={getUserHandler} />
     </View>
   );

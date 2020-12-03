@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 //Routes
-const authRoute = require('./routes/auth');
+const auth = require('./routes/auth');
 const users = require('./routes/users');
 
 //Routes setup
@@ -25,9 +25,14 @@ app.get('/', (req, res) => {
   res.send('Route connected');
 });
 
-app.use('/api/auth', authRoute);
+app.get('/error', (req, res) => {
+  throw new Error('broken');
+});
+
+app.use('/api/auth', auth);
 app.use('/api/users', users);
 
+//custom error handling middleware
 app.use(errorHandler);
 
 //PORT
