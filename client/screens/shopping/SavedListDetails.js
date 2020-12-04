@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
-const FavList = (props) => {
+const SavedListDetails = (props) => {
   return (
     <View style={styles.container}>
-      <Text>Favourite Lists</Text>
+      <Text>Saved List Details</Text>
     </View>
   );
 };
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FavList;
+export default SavedListDetails;

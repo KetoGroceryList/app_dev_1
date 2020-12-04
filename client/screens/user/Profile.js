@@ -1,10 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
 const Profile = (props) => {
   return (
     <View style={styles.container}>
       <Text>Profile</Text>
+      <Button
+        title="Reset Password"
+        onPress={() => {
+          props.navigation.navigate('ResetPassword');
+        }}
+      />
     </View>
   );
 };

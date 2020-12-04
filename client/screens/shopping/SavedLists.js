@@ -1,17 +1,13 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-const Auth = (props) => {
+const SavedLists = (props) => {
   return (
     <View style={styles.container}>
-      <Text>Auth Screen</Text>
+      <Text>Saved Lists</Text>
       <Button
-        title="Forgot Password"
-        onPress={() => props.navigation.navigate('ForgotPassword')}
-      />
-      <Button
-        title="Profile"
-        onPress={() => props.navigation.navigate('Profile')}
+        title="List Details"
+        onPress={() => props.navigation.navigate('SavedListDetails')}
       />
     </View>
   );
@@ -26,4 +22,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Auth;
+export default SavedLists;
