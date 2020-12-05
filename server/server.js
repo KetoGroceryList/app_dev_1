@@ -18,6 +18,9 @@ app.use(cookieParser());
 //Routes
 const auth = require('./routes/auth');
 const users = require('./routes/users');
+const foods = require('./routes/foods');
+const favFoods = require('./routes/favFoods');
+const groceryList = require('./routes/groceryList');
 
 //Routes setup
 app.get('/', (req, res) => {
@@ -31,6 +34,9 @@ app.get('/error', (req, res) => {
 
 app.use('/api/auth', auth);
 app.use('/api/users', users);
+app.use('/api/foods', foods);
+app.use('/api/favFoods', favFoods);
+app.use('/api/groceryList', groceryList);
 
 //custom error handling middleware
 app.use(errorHandler);

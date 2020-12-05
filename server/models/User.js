@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const FoodSchema = require('./Food').schema;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -28,10 +27,6 @@ const UserSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
-  favFoods: {
-    type: [FoodSchema],
-  },
-  favShoppingLists: [[FoodSchema]],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {

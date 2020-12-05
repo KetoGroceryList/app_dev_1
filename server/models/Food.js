@@ -7,11 +7,22 @@ const FoodSchema = new mongoose.Schema({
   },
   foodType: {
     type: String,
+    enum: [
+      'Branded',
+      'Meat',
+      'Vegetables',
+      'Fruits',
+      'Nuts',
+      'Seeds',
+      'Fish',
+      'Drinks',
+      'Oil',
+      'Dairy',
+    ],
     required: true,
   },
   imageUrl: {
     type: String,
-    required: true,
   },
   protein: {
     type: Number,
@@ -28,6 +39,24 @@ const FoodSchema = new mongoose.Schema({
   netCarbs: {
     type: Number,
     required: true,
+  },
+  macrosSplit: {
+    protein: {
+      type: Number,
+      required: true,
+    },
+    fats: {
+      type: Number,
+      required: true,
+    },
+    fiber: {
+      type: Number,
+      required: true,
+    },
+    netCarbs: {
+      type: Number,
+      required: true,
+    },
   },
   createdAt: {
     type: Date,

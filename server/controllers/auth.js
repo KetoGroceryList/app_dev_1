@@ -1,7 +1,9 @@
 const User = require('../models/User');
+const FavFoods = require('../models/FavFoods');
 const ErrorResponse = require('../utils/errorResponse');
 const crypto = require('crypto');
 const asyncHandler = require('../middleware/async');
+const GroceryList = require('../models/GroceryList');
 
 //desc    REGISTER user
 //route   POST /api/auth/register
@@ -27,6 +29,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     password,
     role,
   });
+
   sendTokenResponse(user, 200, res);
 });
 
@@ -104,6 +107,21 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
   });
 });
 
+//desc    DELETE user
+//route   DELETE /api/auth/
+//access  private
+exports.deleteUser = asyncHandler(async (req, res, next) => {
+  await User.findByIdAndDelete(req.user.id);
+  await FavFoods.findOneAndRemove({ user: req.user.id });
+  await GroceryList.deleteMany({ user: req.user.id });
+
+  res.status(200).json({
+    success: true,
+    data: {},
+  });
+});
+
+/*** HELPER ***/
 const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
   const options = {
