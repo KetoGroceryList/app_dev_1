@@ -5,17 +5,17 @@ const asyncHandler = require('../middleware/async');
 
 exports.addFavFood = asyncHandler(async (req, res, next) => {
   const user = req.user.id;
-  const food = await Food.findOne({ name: 'Walnuts' });
+  const food = await Food.findOne({ name: 'Pork' });
 
   let favFoods = await FavFoods.findOne({ user: req.user.id });
 
   if (!favFoods) {
     favFoods = await FavFoods.create({
       user,
-      favFoodsArray: [food],
+      favFoodsArray: [food.name],
     });
   } else {
-    favFoods.favFoodsArray.push(food);
+    favFoods.favFoodsArray.push(food.name);
     favFoods.save();
   }
 

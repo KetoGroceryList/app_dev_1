@@ -12,7 +12,7 @@ exports.saveCurrentList = asyncHandler(async (req, res, next) => {
   const avocado = await Food.findOne({ name: 'Avocado' });
   const pork = await Food.findOne({ name: 'Pork' });
 
-  const currentList = [walnuts, avocado, pork];
+  const currentList = [walnuts.name, avocado.name, pork.name];
 
   const groceryList = await GroceryList.create({
     user,
@@ -49,7 +49,7 @@ exports.addToList = asyncHandler(async (req, res, next) => {
     }
   }
 
-  groceryListArray.push(foodToAdd);
+  groceryListArray.push(foodToAddName);
   groceryList.save();
 
   res.status(201).json({
