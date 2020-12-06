@@ -1,10 +1,16 @@
 const express = require('express');
-const { addFavFood } = require('../controllers/favFoods');
+const {
+  getFavFoods,
+  addFavFood,
+  deleteFavFood,
+} = require('../controllers/favFoods');
 
 const router = express.Router();
 
 const { protect } = require('../middleware/auth');
 
-router.put('/add', protect, addFavFood);
+router.get('/', protect, getFavFoods);
+router.put('/', protect, addFavFood);
+router.delete('/', protect, deleteFavFood);
 
 module.exports = router;

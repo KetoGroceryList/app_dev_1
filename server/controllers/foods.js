@@ -18,12 +18,23 @@ exports.createFood = asyncHandler(async (req, res, next) => {
 
   const totalMacros = protein + fats + fiber + netCarbs;
 
-  const macrosSplit = {
-    protein: protein / totalMacros,
-    fats: fats / totalMacros,
-    fiber: fiber / totalMacros,
-    netCarbs: netCarbs / totalMacros,
-  };
+  let macrosSplit;
+
+  if (totalMacros > 0) {
+    macrosSplit = {
+      protein: protein / totalMacros,
+      fats: fats / totalMacros,
+      fiber: fiber / totalMacros,
+      netCarbs: netCarbs / totalMacros,
+    };
+  } else {
+    macrosSplit = {
+      protein: 0,
+      fats: 0,
+      fiber: 0,
+      netCarbs: 0,
+    };
+  }
 
   food = await Food.create({
     name,

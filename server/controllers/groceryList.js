@@ -3,22 +3,34 @@ const GroceryList = require('../models/GroceryList');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 
+//desc    GET saved lists
+//route   GET /api/groceryList/
+//access  private
+exports.getSavedLists = asyncHandler(async (req, res, next) => {
+  const groceryLists = await GroceryList.find({ user: req.user.id });
+
+  if (!groceryLists) {
+    return next(ErrorResponse('You do not have any saved grocery list', 400));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: groceryLists,
+  });
+});
+
 //desc    SAVE current list
 //route   POST /api/groceryList/
 //access  private
 exports.saveCurrentList = asyncHandler(async (req, res, next) => {
   const user = req.user.id;
-  const walnuts = await Food.findOne({ name: 'Walnuts' });
-  const avocado = await Food.findOne({ name: 'Avocado' });
-  const pork = await Food.findOne({ name: 'Pork' });
-
-  const currentList = [walnuts.name, avocado.name, pork.name];
+  const foods = req.body; //needs array of string to be passed from FE
 
   const groceryList = await GroceryList.create({
     user,
-    groceryListArray: currentList,
+    groceryListArray: foods,
   });
-  res.status(201).json({
+  res.status(200).json({
     success: true,
     data: groceryList,
   });
