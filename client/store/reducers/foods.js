@@ -5,7 +5,7 @@ const foods = result.data;
 
 const initialState = {
   foods: foods,
-  categoryFoods: foods,
+  //categoryFoods: foods.filter((food) => food.type === 'meat'),
   favouriteFoods: [],
 };
 

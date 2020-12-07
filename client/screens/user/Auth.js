@@ -1,20 +1,119 @@
-import React from 'react';
+import React, { useState, useEffect, useReducer, useCallback } from 'react';
+//import axios from 'axios';
 import {
   View,
   Text,
   TextInput,
   Button,
+  Alert,
   ScrollView,
   Platform,
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useDispatch } from 'react-redux';
 
 import Card from '../../components/UI/Card';
+import Input from '../../components/UI/Input';
 import Colors from '../../constants/Colors';
+import * as authActions from '../../store/actions/auth';
+
+import { FORM_INPUT_UPDATE } from '../../store/types';
+
+const formReducer = (state, action) => {
+  if (action.type === FORM_INPUT_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      [action.input]: action.value,
+    };
+    const updatedValidities = {
+      ...state.inputValidities,
+      [action.input]: action.isValid,
+    };
+    let updatedFormIsValid = true;
+    for (const key in updatedValidities) {
+      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+    }
+    return {
+      formIsValid: updatedFormIsValid,
+      inputValues: updatedValues,
+      inputValidities: updatedValidities,
+    };
+  }
+  return state;
+};
 
 const Auth = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(undefined);
+  const [isSignup, setIsSignup] = useState(true);
+
+  const dispatch = useDispatch();
+
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
+    inputValidities: {
+      name: false,
+      email: false,
+      password: false,
+    },
+    formIsValid: false,
+  });
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An error occurred', error, [{ text: 'Okay' }]);
+    }
+  }, [error]);
+
+  const authHandler = async () => {
+    console.log(formState);
+    let action = authActions.register(
+      formState.inputValues.name,
+      formState.inputValues.email,
+      formState.inputValues.password
+    );
+    // let action;
+    // if (isSignup) {
+    //   action = authActions.register(
+    //     formState.inputValues.name,
+    //     formState.inputValues.email,
+    //     formState.inputValues.password
+    //   );
+    // } else {
+    //   action = authActions.login(
+    //     formState.inputValues.email,
+    //     formState.inputValues.password
+    //   );
+    // }
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(action);
+      //props.navigation.navigate('Shop');
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
+  };
+
+  const inputChangeHandler = useCallback(
+    (inputIdentifier, inputValue, inputValidity) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputIdentifier,
+      });
+    },
+    [dispatchFormState]
+  );
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -24,37 +123,51 @@ const Auth = (props) => {
       <LinearGradient colors={['#7d9d18', '#7d8d18']} style={styles.gradient}>
         <Card style={styles.authContainer}>
           <ScrollView style={styles.scrollView}>
-            <Text style={styles.label}>e-mail</Text>
-            <TextInput
-              id="email"
-              keyboardType="email-address"
+            <Input
+              id="name"
+              label="name"
+              keyboardType="default"
               autoCapitalize="none"
-              errorMessage="Please enter a valid email address"
-              onValue={() => {}}
+              errorText="Please enter your name"
+              onInputChange={inputChangeHandler}
               initialValue=""
               required
               style={styles.textInput}
             />
-            <Text style={styles.label}>password</Text>
-            <TextInput
+            <Input
+              id="email"
+              label="e-mail"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              errorText="Please enter a valid email"
+              onInputChange={inputChangeHandler}
+              initialValue=""
+              required
+              style={styles.textInput}
+            />
+            <Input
               id="password"
               label="password"
               keyboardType="default"
               secureTextEntry
               autoCapitalize="none"
-              minLength={5}
-              errorMessage="Please enter a password"
-              onValue={() => {}}
+              minLength={6}
+              errorText="Please enter a valid password"
+              onInputChange={inputChangeHandler}
               initialValue=""
               required
               style={styles.textInput}
             />
             <View style={styles.buttonContainer}>
-              <Button title="Login" onPress={() => {}} color={Colors.primary} />
+              <Button
+                title="Register"
+                onPress={authHandler}
+                color={Colors.primary}
+              />
             </View>
             <View style={styles.buttonContainer}>
               <Button
-                title="Switch to Sign Up"
+                title="Switch to Login"
                 onPress={() => {}}
                 color={Colors.primary}
               />
@@ -102,13 +215,8 @@ const styles = StyleSheet.create({
   scrollView: {
     width: '80%',
   },
-  label: {
-    fontFamily: 'open-sans-bold',
-    marginVertical: 1,
-    fontSize: 16,
-  },
   textInput: {
-    height: 25,
+    height: 20,
     marginVertical: 10,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
@@ -120,3 +228,41 @@ const styles = StyleSheet.create({
 });
 
 export default Auth;
+
+//const dispatch = useDispatch();
+
+// const [formState, dispatchFormState] = useReducer(formReducer, {
+//   inputValues: {
+//     name: '',
+//     email: '',
+//     password: '',
+//   },
+//   inputValidities: {
+//     name: false,
+//     email: false,
+//     password: false,
+//   },
+//   formIsValid: false,
+// });
+
+// const registerHandler = () => {
+//   dispatch(
+//     authActions.register(
+//       formState.inputValues.name,
+//       formState.inputValues.email,
+//       formState.inputValues.password
+//     )
+//   );
+// };
+
+// const inputChangeHandler = useCallback(
+//   (inputIdentifier, inputValue, inputValidity) => {
+//     dispatchFormState({
+//       type: FORM_INPUT_UPDATE,
+//       value: inputValue,
+//       isValid: inputValidity,
+//       input: inputIdentifier,
+//     });
+//   },
+//   [dispatchFormState]
+// );
