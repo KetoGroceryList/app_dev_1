@@ -1,0 +1,10 @@
+export const GET_FOODS = 'GET_FOODS';
+export const GET_FOODS_ERROR = 'GET_FOODS_ERROR';
+
+export const AUTHENTICATE = 'AUTHENTICATE';
+export const LOGOUT = 'LOGOUT';
+export const SET_DID_TRY_AL = 'SET_DID_TRY_AL';
+export const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
+
+export const INPUT_CHANGE = 'INPUT_CHANGE';
+export const INPUT_BLUR = 'INPUT_BLUR';

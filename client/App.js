@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import ReduxThunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 
 import AppNavigator from './navigation/AppNavigator';
 import foodsReducer from './store/reducers/foods';
+import authReducer from './store/reducers/auth';
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -17,9 +18,10 @@ const fetchFonts = () => {
 
 const rootReducer = combineReducers({
   foods: foodsReducer,
+  auth: authReducer,
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const App = (props) => {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -41,46 +43,6 @@ const App = (props) => {
 };
 
 export default App;
-
-//const [name, setName] = useState('');
-// const [email, setEmail] = useState('');
-// const [password, setPassword] = useState('');
-
-// const registerHandler = async () => {
-//   console.log('post');
-
-//   const body = JSON.stringify({ name, email, password });
-
-//   const config = {
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   };
-
-//   await axios.post('http://localhost:5000/api/auth/register', body, config);
-// };
-
-// const getUserHandler = async () => {
-//   const response = await axios.get('http://localhost:5000/api/users/');
-//   console.log(response.data);
-// };
-
-// const loginHandler = async () => {
-//   const body = JSON.stringify({ email, password });
-
-//   const config = {
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   };
-
-//   const response = await axios.post(
-//     'http://localhost:5000/api/auth/login',
-//     body,
-//     config
-//   );
-//   console.log(response.data);
-// };
 
 // <View style={styles.container}>
 //   <Text>This screen is used to test FE BE connections</Text>
