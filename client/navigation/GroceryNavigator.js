@@ -1,25 +1,41 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Auth from '../screens/user/Auth';
 import ForgotPassword from '../screens/user/ForgotPassword';
 import Profile from '../screens/user/Profile';
 import ResetPassword from '../screens/user/ResetPassword';
-import SavedLists from '../screens/shopping/SavedLists';
-import SavedListDetails from '../screens/shopping/SavedListDetails';
-import CurrentList from '../screens/shopping/CurrentList';
+import SavedLists from '../screens/grocery/SavedLists';
+import SavedListDetails from '../screens/grocery/SavedListDetails';
+import CurrentList from '../screens/grocery/CurrentList';
 import ContactUs from '../screens/info/ContactUs';
 import FoodGroups from '../screens/info/FoodGroups';
 import FoodGroupItems from '../screens/info/FoodGroupItems';
-import FavFoods from '../screens/shopping/FavFoods';
+import FavFoods from '../screens/grocery/FavFoods';
 import FoodDetails from '../screens/info/FoodDetails';
+
+import Colors from '../constants/Colors';
+
+const defaultNavOptions = {
+  headerStyle: {
+    backgroundColor: Platform.OS === 'android' ? Colors.primary : '',
+  },
+  headerTitleStyle: { fontFamily: 'open-sans-bold' },
+  headerBackTitleStyle: { fontFamily: 'open-sans' },
+  headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
+};
 
 const AuthStackNavigator = createStackNavigator();
 
 export const AuthNavigator = () => {
   return (
-    <AuthStackNavigator.Navigator>
-      <AuthStackNavigator.Screen name="Auth" component={Auth} />
+    <AuthStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <AuthStackNavigator.Screen
+        name="Auth"
+        component={Auth}
+        options={{ headerTitle: 'Please Authenticate' }}
+      />
       <AuthStackNavigator.Screen
         name="ForgotPassword"
         component={ForgotPassword}
@@ -116,31 +132,31 @@ export const FoodDetailsNavigator = () => {
   );
 };
 
-const ShoppingBottomTabNavigator = createBottomTabNavigator();
+const GroceryBottomTabNavigator = createBottomTabNavigator();
 
 export const BottomTabNavigator = () => {
   return (
-    <ShoppingBottomTabNavigator.Navigator>
-      <ShoppingBottomTabNavigator.Screen
-        name="Saved Lists"
-        component={SavedListsNavigator}
-      />
-      <ShoppingBottomTabNavigator.Screen
-        name="Contact Us"
-        component={ContactUsNavigator}
-      />
-      <ShoppingBottomTabNavigator.Screen
+    <GroceryBottomTabNavigator.Navigator>
+      <GroceryBottomTabNavigator.Screen
         name="Today's List"
         component={CurrentListNavigator}
       />
-      <ShoppingBottomTabNavigator.Screen
+      <GroceryBottomTabNavigator.Screen
+        name="Saved Lists"
+        component={SavedListsNavigator}
+      />
+      <GroceryBottomTabNavigator.Screen
+        name="Contact Us"
+        component={ContactUsNavigator}
+      />
+      <GroceryBottomTabNavigator.Screen
         name="Favourites"
         component={FavFoodsNavigator}
       />
-      <ShoppingBottomTabNavigator.Screen
+      <GroceryBottomTabNavigator.Screen
         name="Profile"
         component={AuthNavigator}
       />
-    </ShoppingBottomTabNavigator.Navigator>
+    </GroceryBottomTabNavigator.Navigator>
   );
 };
