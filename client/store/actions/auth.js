@@ -3,11 +3,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AUTHENTICATE, SET_DID_TRY_AL, LOGOUT } from '../types';
 
 let timer;
+const oneMonth = 30 * 24 * 60 * 60 * 1000;
 
 export const authenticate = (token, userId, expiryTime) => {
   return (dispatch) => {
     dispatch(setLogoutTimer(expiryTime));
-    dispatch({ type: AUTHENTICATE, userId, token });
+    dispatch({ type: AUTHENTICATE, token, userId });
   };
 };
 
@@ -35,19 +36,9 @@ export const register = (name, email, password) => {
     }
 
     const resData = response.data;
-
-    dispatch(
-      authenticate(
-        resData.localId,
-        resData.idToken,
-        parseInt(resData.expiresIn) * 1000
-      )
-    );
-
-    const expirationDate = new Date(
-      new Date().getTime() + parseInt(resData.expiresIn) * 1000
-    );
-    saveDataToStorage(resData.idToken, resData.localId, expirationDate);
+    dispatch(authenticate(resData.token, resData.user._id, oneMonth));
+    const expirationDate = resData.options.expires;
+    saveDataToStorage(resData.token, resData.user._id, expirationDate);
   };
 };
 
@@ -68,20 +59,10 @@ export const login = (email, password) => {
     if (!response) {
       throw new Error('Something went wrong');
     }
-
     const resData = response.data;
-
-    dispatch(
-      authenticate(
-        resData.localId,
-        resData.idToken,
-        parseInt(resData.expiresIn) * 1000
-      )
-    );
-    const expirationDate = new Date(
-      new Date().getTime() + parseInt(resData.expiresIn) * 1000
-    );
-    saveDataToStorage(resData.idToken, resData.localId, expirationDate);
+    dispatch(authenticate(resData.token, resData.user._id, oneMonth));
+    const expirationDate = resData.options.expires;
+    saveDataToStorage(resData.token, resData.user._id, expirationDate);
   };
 };
 
@@ -112,7 +93,7 @@ const saveDataToStorage = (token, userId, expirationDate) => {
     JSON.stringify({
       token: token,
       userId: userId,
-      expiryDate: expirationDate.toISOString(),
+      expiryDate: expirationDate,
     })
   );
 };
