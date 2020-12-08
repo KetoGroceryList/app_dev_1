@@ -1,15 +1,19 @@
 import React from 'react';
-import axios from 'axios';
-import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import { AuthNavigator } from './GroceryNavigator';
 import { BottomTabNavigator } from '../navigation/GroceryNavigator';
+import Startup from '../screens/Startup';
 
-const AppNavigator = () => {
+const AppNavigator = (props) => {
+  const isAuth = useSelector((state) => !!state.auth.token);
+  const didTryAutoLogin = useSelector((state) => state.auth.didTryAutoLogin);
+
   return (
     <NavigationContainer>
-      {/* <BottomTabNavigator /> */}
-      <AuthNavigator />
+      {isAuth && <BottomTabNavigator />}
+      {!isAuth && didTryAutoLogin && <AuthNavigator />}
+      {!isAuth && !didTryAutoLogin && <Startup />}
     </NavigationContainer>
   );
 };

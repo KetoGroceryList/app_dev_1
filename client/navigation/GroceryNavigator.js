@@ -132,6 +132,16 @@ export const FoodDetailsNavigator = () => {
   );
 };
 
+const ProfileStackNavigator = createStackNavigator();
+
+export const ProfileNavigator = () => {
+  return (
+    <ProfileStackNavigator.Navigator>
+      <ProfileStackNavigator.Screen name="Profile" component={Profile} />
+    </ProfileStackNavigator.Navigator>
+  );
+};
+
 const GroceryBottomTabNavigator = createBottomTabNavigator();
 
 export const BottomTabNavigator = () => {
@@ -155,7 +165,7 @@ export const BottomTabNavigator = () => {
       />
       <GroceryBottomTabNavigator.Screen
         name="Profile"
-        component={AuthNavigator}
+        component={ProfileNavigator}
       />
     </GroceryBottomTabNavigator.Navigator>
   );

@@ -2,12 +2,11 @@ import React, { useState, useEffect, useReducer, useCallback } from 'react';
 //import axios from 'axios';
 import {
   View,
-  Text,
-  TextInput,
   Button,
   Alert,
   ScrollView,
   Platform,
+  ActivityIndicator,
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
@@ -47,7 +46,7 @@ const formReducer = (state, action) => {
 const Auth = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(undefined);
-  const [isSignup, setIsSignup] = useState(true);
+  const [isSignup, setIsSignup] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -72,30 +71,24 @@ const Auth = (props) => {
   }, [error]);
 
   const authHandler = async () => {
-    console.log(formState);
-    let action = authActions.register(
-      formState.inputValues.name,
-      formState.inputValues.email,
-      formState.inputValues.password
-    );
-    // let action;
-    // if (isSignup) {
-    //   action = authActions.register(
-    //     formState.inputValues.name,
-    //     formState.inputValues.email,
-    //     formState.inputValues.password
-    //   );
-    // } else {
-    //   action = authActions.login(
-    //     formState.inputValues.email,
-    //     formState.inputValues.password
-    //   );
-    // }
+    let action;
+    if (isSignup) {
+      action = authActions.register(
+        formState.inputValues.name,
+        formState.inputValues.email,
+        formState.inputValues.password
+      );
+    } else {
+      action = authActions.login(
+        formState.inputValues.email,
+        formState.inputValues.password
+      );
+    }
+
     setError(null);
     setIsLoading(true);
     try {
-      await dispatch(action);
-      //props.navigation.navigate('Shop');
+      dispatch(action);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -123,17 +116,20 @@ const Auth = (props) => {
       <LinearGradient colors={['#7d9d18', '#7d8d18']} style={styles.gradient}>
         <Card style={styles.authContainer}>
           <ScrollView style={styles.scrollView}>
-            <Input
-              id="name"
-              label="name"
-              keyboardType="default"
-              autoCapitalize="none"
-              errorText="Please enter your name"
-              onInputChange={inputChangeHandler}
-              initialValue=""
-              required
-              style={styles.textInput}
-            />
+            {isSignup ? (
+              <Input
+                id="name"
+                label="name"
+                keyboardType="default"
+                autoCapitalize="none"
+                errorText="Please enter your name"
+                onInputChange={inputChangeHandler}
+                initialValue=""
+                required
+                style={styles.textInput}
+              />
+            ) : null}
+
             <Input
               id="email"
               label="e-mail"
@@ -160,17 +156,21 @@ const Auth = (props) => {
             />
             <View style={styles.buttonContainer}>
               <Button
-                title="Register"
+                title={isSignup ? 'Register' : 'Login'}
                 onPress={authHandler}
                 color={Colors.primary}
               />
             </View>
             <View style={styles.buttonContainer}>
-              <Button
-                title="Switch to Login"
-                onPress={() => {}}
-                color={Colors.primary}
-              />
+              {isLoading ? (
+                <ActivityIndicator size="small" color={Colors.primaryColor} />
+              ) : (
+                <Button
+                  title={`Switch to ${isSignup ? 'Login' : 'Sign up'}`}
+                  onPress={() => setIsSignup((prevState) => !prevState)}
+                  color={Colors.primary}
+                />
+              )}
             </View>
             <View style={styles.buttonContainer}>
               <Button
@@ -216,8 +216,9 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   textInput: {
-    height: 20,
-    marginVertical: 10,
+    height: 24,
+    marginVertical: 5,
+    marginBottom: 10,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     fontSize: 16,
@@ -228,41 +229,3 @@ const styles = StyleSheet.create({
 });
 
 export default Auth;
-
-//const dispatch = useDispatch();
-
-// const [formState, dispatchFormState] = useReducer(formReducer, {
-//   inputValues: {
-//     name: '',
-//     email: '',
-//     password: '',
-//   },
-//   inputValidities: {
-//     name: false,
-//     email: false,
-//     password: false,
-//   },
-//   formIsValid: false,
-// });
-
-// const registerHandler = () => {
-//   dispatch(
-//     authActions.register(
-//       formState.inputValues.name,
-//       formState.inputValues.email,
-//       formState.inputValues.password
-//     )
-//   );
-// };
-
-// const inputChangeHandler = useCallback(
-//   (inputIdentifier, inputValue, inputValidity) => {
-//     dispatchFormState({
-//       type: FORM_INPUT_UPDATE,
-//       value: inputValue,
-//       isValid: inputValidity,
-//       input: inputIdentifier,
-//     });
-//   },
-//   [dispatchFormState]
-// );
