@@ -26,7 +26,7 @@ export const register = (name, email, password) => {
     const body = JSON.stringify({ name, email, password });
 
     const response = await axios.post(
-      'http://localhost:5000/api/auth/register',
+      'http://192.168.0.197:5000/api/auth/register',
       body,
       config
     );
@@ -51,7 +51,7 @@ export const login = (email, password) => {
     };
     const body = JSON.stringify({ email, password });
     const response = await axios.post(
-      'http://localhost:5000/api/auth/login',
+      'http://192.168.0.197:5000/api/auth/login',
       body,
       config
     );

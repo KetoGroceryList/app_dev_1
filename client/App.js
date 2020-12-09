@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { LogBox } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
@@ -6,24 +7,26 @@ import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 
 import AppNavigator from './navigation/AppNavigator';
-import foodsReducer from './store/reducers/foods';
 import authReducer from './store/reducers/auth';
 
 const fetchFonts = () => {
   return Font.loadAsync({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
     'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+    'abside-regular': require('./assets/fonts/Abside-Regular.ttf'),
+    'nordin-regular': require('./assets/fonts/Nordin-Rounded-Regular.ttf'),
   });
 };
 
 const rootReducer = combineReducers({
-  foods: foodsReducer,
   auth: authReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
-export default function App() {
+const App = () => {
+  LogBox.ignoreLogs(['Setting a timer']);
+
   const [fontLoaded, setFontLoaded] = useState(false);
 
   if (!fontLoaded) {
@@ -41,5 +44,8 @@ export default function App() {
     <Provider store={store}>
       <AppNavigator />
     </Provider>
+    // <CurrentList />
   );
-}
+};
+
+export default App;

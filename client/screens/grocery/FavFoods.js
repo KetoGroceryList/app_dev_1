@@ -1,10 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
 const FavFoods = (props) => {
   return (
     <View style={styles.container}>
       <Text>Favourite Foods</Text>
+      <Button
+        title="Food Details"
+        onPress={() => props.navigation.navigate('Food Details')}
+      />
     </View>
   );
 };
