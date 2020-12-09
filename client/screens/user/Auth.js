@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useReducer, useCallback } from 'react';
-//import axios from 'axios';
 import {
   View,
   Button,
@@ -88,7 +87,7 @@ const Auth = (props) => {
     setError(null);
     setIsLoading(true);
     try {
-      dispatch(action);
+      await dispatch(action);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -113,7 +112,9 @@ const Auth = (props) => {
       keyboardVerticalOffset={15}
       style={styles.screen}
     >
-      <LinearGradient colors={['#7d9d18', '#7d8d18']} style={styles.gradient}>
+      {isLoading ? (
+        <ActivityIndicator size="small" color={Colors.primaryColor} />
+      ) : (
         <Card style={styles.authContainer}>
           <ScrollView style={styles.scrollView}>
             {isSignup ? (
@@ -154,41 +155,32 @@ const Auth = (props) => {
               required
               style={styles.textInput}
             />
-            <View style={styles.buttonContainer}>
-              <Button
-                title={isSignup ? 'Register' : 'Login'}
-                onPress={authHandler}
-                color={Colors.primary}
-              />
-            </View>
-            <View style={styles.buttonContainer}>
-              {isLoading ? (
-                <ActivityIndicator size="small" color={Colors.primaryColor} />
-              ) : (
+            <View style={styles.buttonGroupContainer}>
+              <View style={styles.buttonContainer}>
                 <Button
-                  title={`Switch to ${isSignup ? 'Login' : 'Sign up'}`}
-                  onPress={() => setIsSignup((prevState) => !prevState)}
-                  color={Colors.primary}
+                  title={isSignup ? 'Register' : 'Login'}
+                  onPress={authHandler}
+                  color={Colors.greenText}
                 />
-              )}
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Forgot Password"
-                onPress={() => props.navigation.navigate('ForgotPassword')}
-                color={Colors.primary}
-              />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Profile"
-                onPress={() => props.navigation.navigate('Profile')}
-                color={Colors.primary}
-              />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title={`Switch to ${isSignup ? 'Login' : 'Register'}`}
+                  onPress={() => setIsSignup((prevState) => !prevState)}
+                  color={Colors.greenText}
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="Forgot Password"
+                  onPress={() => props.navigation.navigate('ForgotPassword')}
+                  color={Colors.greenText}
+                />
+              </View>
             </View>
           </ScrollView>
         </Card>
-      </LinearGradient>
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -196,11 +188,9 @@ const Auth = (props) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-  },
-  gradient: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#fff',
   },
   authContainer: {
     width: '80%',
@@ -217,11 +207,13 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: 24,
-    marginVertical: 5,
-    marginBottom: 10,
+    marginVertical: 10,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     fontSize: 16,
+  },
+  buttonGroupContainer: {
+    marginTop: 15,
   },
   buttonContainer: {
     marginVertical: 3,

@@ -7,7 +7,7 @@ const SavedLists = (props) => {
       <Text>Saved Lists</Text>
       <Button
         title="List Details"
-        onPress={() => props.navigation.navigate('SavedListDetails')}
+        onPress={() => props.navigation.navigate('Saved List Details')}
       />
     </View>
   );

@@ -5,6 +5,10 @@ const SavedListDetails = (props) => {
   return (
     <View style={styles.container}>
       <Text>Saved List Details</Text>
+      <Button
+        title="Food Details"
+        onPress={() => props.navigation.navigate('Food Details')}
+      />
     </View>
   );
 };
