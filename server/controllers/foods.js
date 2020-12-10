@@ -54,7 +54,7 @@ exports.createFood = asyncHandler(async (req, res, next) => {
 });
 
 //desc    DELETE food by id
-//route   DELETE /api/foods/
+//route   DELETE /api/foods/:id
 //access  admin
 //note:   food in GroceryList and FavFoods will also get removed
 exports.deleteFood = asyncHandler(async (req, res, next) => {

@@ -1,5 +1,5 @@
-export const GET_FOODS = 'GET_FOODS';
-export const GET_FOODS_ERROR = 'GET_FOODS_ERROR';
+export const SET_FOODS = 'SET_FOODS';
+export const SET_FOODS_ERROR = 'SET_FOODS_ERROR';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';

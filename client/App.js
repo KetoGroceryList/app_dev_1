@@ -8,6 +8,7 @@ import ReduxThunk from 'redux-thunk';
 
 import AppNavigator from './navigation/AppNavigator';
 import authReducer from './store/reducers/auth';
+import foodsReducer from './store/reducers/foods';
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -20,6 +21,7 @@ const fetchFonts = () => {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  foods: foodsReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
@@ -44,7 +46,6 @@ const App = () => {
     <Provider store={store}>
       <AppNavigator />
     </Provider>
-    // <CurrentList />
   );
 };
 
