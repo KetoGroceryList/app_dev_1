@@ -113,7 +113,7 @@ const Auth = (props) => {
       style={styles.screen}
     >
       {isLoading ? (
-        <ActivityIndicator size="small" color={Colors.primaryColor} />
+        <ActivityIndicator size="small" color={Colors.greenText} />
       ) : (
         <Card style={styles.authContainer}>
           <ScrollView style={styles.scrollView}>
