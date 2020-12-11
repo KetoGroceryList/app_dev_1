@@ -11,7 +11,7 @@ import {
 
 import Card from './Card';
 
-const FoodGroup = (props) => {
+const FoodCard = (props) => {
   let TouchableCmp = TouchableOpacity;
 
   Platform.OS === 'android' && Platform.Version >= 21
@@ -41,7 +41,8 @@ const FoodGroup = (props) => {
 const styles = StyleSheet.create({
   foodGroup: {
     height: 300,
-    width: 300,
+    width: 320,
+    maxWidth: 320,
     margin: 20,
   },
   touchable: {
@@ -62,11 +63,11 @@ const styles = StyleSheet.create({
   details: {
     alignItems: 'center',
     height: 50,
-    padding: 10,
+    padding: 5,
   },
   title: {
-    fontFamily: 'open-sans',
-    fontSize: 18,
+    fontFamily: 'nordin-regular',
+    fontSize: 35,
     marginVertical: 1,
   },
   actions: {
@@ -78,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FoodGroup;
+export default FoodCard;

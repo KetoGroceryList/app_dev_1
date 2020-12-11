@@ -9,24 +9,18 @@ import CustomHeaderButton from '../../components/UI/HeaderButton';
 import Colors from '../../constants/Colors';
 
 const CurrentList = (props) => {
-  //const foods = useSelector((state) => state.foods.foods);
-  const [food, setFood] = useState([]);
+  const foods = useSelector((state) => state.foods.foods);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios('http://192.168.0.197:5000/api/foods');
-
-      setFood(result.data);
-    };
-
-    fetchData();
-  }, []);
+    dispatch(foodsActions.getFoods());
+  }, [dispatch]);
 
   return (
     <View style={styles.container}>
       <Text>Current List</Text>
       <FlatList
-        data={food.data}
+        data={foods.data}
         keyExtractor={(item) => item._id}
         renderItem={(itemData) => <Text>{itemData.item.name}</Text>}
       />
@@ -138,3 +132,13 @@ export default CurrentList;
 //     </View>
 //   );
 // }
+
+// const [foods, setFoods] = useState([]);
+
+// useEffect(() => {
+//   const getFoodsData = async () => {
+//     const result = await axios('http://192.168.0.197:5000/api/foods');
+//     setFoods(result.data.data);
+//   };
+//   getFoodsData();
+// }, []);

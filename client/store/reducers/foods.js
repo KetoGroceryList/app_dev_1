@@ -1,11 +1,9 @@
-import SET_FOODS from '../types';
-import FOODS from '../../data/dummy-data';
+import { SET_FOODS, ADD_FAV } from '../types';
 
 const initialState = {
-  foods: FOODS,
-  // favFoods: [],
+  foods: [],
+  favFoods: [],
   // savedList: [],
-  // categoryFoods: [],
 };
 
 export default (state = initialState, action) => {
@@ -14,6 +12,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         foods: action.foods,
+      };
+    case ADD_FAV:
+      return {
+        ...state,
+        favFoods: favFoods.concat(action.food),
       };
   }
   return state;

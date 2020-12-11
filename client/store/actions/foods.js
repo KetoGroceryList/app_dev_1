@@ -1,6 +1,5 @@
 import axios from 'axios';
-//import Food from '../../models/foods';
-import { SET_FOODS } from '../types';
+import { SET_FOODS, ADD_FAV } from '../types';
 
 export const getFoods = () => {
   return async (dispatch) => {
@@ -13,10 +12,33 @@ export const getFoods = () => {
 
       const resData = await response.data;
       const loadedFoods = resData;
-      console.log(loadedFoods);
+
       dispatch({
         type: SET_FOODS,
         foods: loadedFoods,
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+export const addFav = (id) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.put(
+        `http://192.168.0.197:5000/api/foods/${id}`
+      );
+
+      if (!response) {
+        throw new Error('Something went wrong');
+      }
+
+      console.log(response.data);
+
+      dispatch({
+        type: ADD_FAV,
+        food: response.data,
       });
     } catch (err) {
       throw err;

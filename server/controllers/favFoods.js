@@ -3,11 +3,11 @@ const FavFoods = require('../models/FavFoods');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 
-//desc    ADD Food to FavFoods
-//route   PUT /api/favFoods/
+//desc    ADD Food to FavFoods by ID
+//route   PUT /api/favFoods/:id
 //access  private
 exports.addFavFood = asyncHandler(async (req, res, next) => {
-  const food = await Food.findOne({ name: 'Pork' });
+  const food = await Food.findOne({ _id: req.params.id });
 
   let favFoods = await FavFoods.findOne({ user: req.user.id });
 

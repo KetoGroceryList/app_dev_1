@@ -10,7 +10,7 @@ const router = express.Router();
 const { protect } = require('../middleware/auth');
 
 router.get('/', protect, getFavFoods);
-router.put('/', protect, addFavFood);
+router.put('/:id', protect, addFavFood);
 router.delete('/', protect, deleteFavFood);
 
 module.exports = router;

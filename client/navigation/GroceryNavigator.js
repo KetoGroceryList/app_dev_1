@@ -28,11 +28,11 @@ const defaultNavOptions = {
   },
   headerTitleStyle: {
     fontFamily: 'nordin-regular',
-    fontSize: 30,
+    fontSize: 35,
   },
   headerBackTitleStyle: {
     fontFamily: 'nordin-regular',
-    fontSize: 30,
+    fontSize: 35,
   },
   headerTintColor: 'white',
 };
