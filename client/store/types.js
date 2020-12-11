@@ -1,5 +1,5 @@
 export const SET_FOODS = 'SET_FOODS';
-export const SET_FOODS_ERROR = 'SET_FOODS_ERROR';
+export const ADD_FAV = 'ADD_FAV';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
