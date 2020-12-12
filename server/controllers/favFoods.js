@@ -7,19 +7,25 @@ const asyncHandler = require('../middleware/async');
 //route   PUT /api/favFoods/:id
 //access  private
 exports.addFavFood = asyncHandler(async (req, res, next) => {
+  const user = req.user.id;
   const food = await Food.findOne({ _id: req.params.id });
-
-  let favFoods = await FavFoods.findOne({ user: req.user.id });
+  let favFoods = await FavFoods.findOne({ user: user });
 
   if (!favFoods) {
     favFoods = await FavFoods.create({
       user,
       favFoodsArray: [food.name],
     });
-  } else {
-    favFoods.favFoodsArray.push(food.name);
-    favFoods.save();
   }
+
+  if (favFoods.favFoodsArray.includes(food.name)) {
+    return next(
+      new ErrorResponse('This item is already on your favourite list', 400)
+    );
+  }
+
+  favFoods.favFoodsArray.push(food.name);
+  favFoods.save();
 
   res.status(200).json({
     success: true,
@@ -32,7 +38,7 @@ exports.addFavFood = asyncHandler(async (req, res, next) => {
 //access  private
 //notes   !food and !favFoods should not be possible from UI
 exports.deleteFavFood = asyncHandler(async (req, res, next) => {
-  const food = await Food.findOne({ name: 'Pork' });
+  const food = await Food.findOne({ _id: req.params.id });
   let favFoods = await FavFoods.findOne({ user: req.user.id });
 
   favFoods.favFoodsArray = favFoods.favFoodsArray.filter(

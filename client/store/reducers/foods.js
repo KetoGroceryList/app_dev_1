@@ -1,4 +1,4 @@
-import { SET_FOODS, ADD_FAV } from '../types';
+import { SET_FOODS, ADD_FAV, GET_FAVS, DEL_FAV } from '../types';
 
 const initialState = {
   foods: [],
@@ -16,7 +16,17 @@ export default (state = initialState, action) => {
     case ADD_FAV:
       return {
         ...state,
-        favFoods: favFoods.concat(action.food),
+        favFoods: action.foods,
+      };
+    case GET_FAVS:
+      return {
+        ...state,
+        favFoods: action.foods,
+      };
+    case DEL_FAV:
+      return {
+        ...state,
+        favFoods: action.foods,
       };
   }
   return state;
