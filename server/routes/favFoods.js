@@ -11,6 +11,6 @@ const { protect } = require('../middleware/auth');
 
 router.get('/', protect, getFavFoods);
 router.put('/:id', protect, addFavFood);
-router.delete('/', protect, deleteFavFood);
+router.delete('/:id', protect, deleteFavFood);
 
 module.exports = router;

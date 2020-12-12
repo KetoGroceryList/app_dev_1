@@ -18,10 +18,25 @@ const FoodDetails = (props) => {
     state.foods.foods.data.find((food) => food.name === foodName)
   );
 
+  // const favOrNot = useSelector((state) => {
+  //   if (!state.foods.favFoods.favFoodsArray.includes(foodName)) {
+  //     return false;
+  //   }
+  //   return true;
+  // });
+
+  const favOrNot = useSelector((state) => {
+    return state.foods.favFoods.includes(foodName);
+  });
+
   const dispatch = useDispatch();
 
-  const addFavHandler = (id) => {
-    dispatch(foodActions.addFav(id));
+  const favHandler = (id) => {
+    if (!favOrNot) {
+      dispatch(foodActions.addFav(id));
+    } else {
+      dispatch(foodActions.deleteFav(id));
+    }
   };
 
   return (
@@ -31,8 +46,8 @@ const FoodDetails = (props) => {
         <Text style={styles.title}>{foodName}</Text>
         <Button
           color={Colors.greenText}
-          title="Add to favourites"
-          onPress={() => addFavHandler(selectedFood._id)}
+          title={favOrNot ? 'Remove from favourites' : 'Add to favourites'}
+          onPress={() => favHandler(selectedFood._id)}
         />
       </View>
       {/* <Text style={styles.description}>{selectedProduct.description}</Text> */}

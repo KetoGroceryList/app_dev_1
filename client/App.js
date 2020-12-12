@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { LogBox } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
@@ -23,6 +24,14 @@ const rootReducer = combineReducers({
   auth: authReducer,
   foods: foodsReducer,
 });
+
+// let favFoods = [];
+
+// const getSavedFavList = async () => {
+//   const response = await axios.get('http://192.168.0.197:5000/api/favFoods/');
+//   favFoods = await response.data.data.favFoodsArray;
+//   return favFoods;
+// };
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 

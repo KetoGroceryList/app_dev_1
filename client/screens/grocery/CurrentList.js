@@ -14,6 +14,7 @@ const CurrentList = (props) => {
 
   useEffect(() => {
     dispatch(foodsActions.getFoods());
+    dispatch(foodsActions.getFavs());
   }, [dispatch]);
 
   return (
