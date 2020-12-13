@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
-//const FoodSchema = require('./Food').schema;
 
 const GroceryListSchema = new mongoose.Schema({
   groceryListArray: {
-    type: [String],
+    type: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Food',
+      },
+    ],
   },
   user: {
     type: mongoose.Schema.ObjectId,

@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { View, FlatList, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import * as foodActions from '../../store/actions/foods';
 import FoodCard from '../../components/UI/FoodCard';
 
 const FoodGroupItems = (props) => {
@@ -30,12 +29,14 @@ const FoodGroupItems = (props) => {
           />
         )}
       />
-      <Button
-        title="Food Details"
-        onPress={() => props.navigation.navigate('Food Details')}
-      />
     </View>
   );
+};
+
+export const foodGroupItemsScreenOptions = (navData) => {
+  return {
+    headerTitle: navData.route.params,
+  };
 };
 
 const styles = StyleSheet.create({

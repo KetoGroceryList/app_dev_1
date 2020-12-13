@@ -14,17 +14,19 @@ exports.addFavFood = asyncHandler(async (req, res, next) => {
   if (!favFoods) {
     favFoods = await FavFoods.create({
       user,
-      favFoodsArray: [food.name],
+      favFoodsArray: [],
     });
   }
 
-  if (favFoods.favFoodsArray.includes(food.name)) {
-    return next(
-      new ErrorResponse('This item is already on your favourite list', 400)
-    );
+  for (const fav of favFoods.favFoodsArray) {
+    if (food.name === fav.name) {
+      return next(
+        new ErrorResponse('This item is already on your favourite list', 400)
+      );
+    }
   }
 
-  favFoods.favFoodsArray.push(food.name);
+  favFoods.favFoodsArray.push(food);
   favFoods.save();
 
   res.status(200).json({
@@ -34,18 +36,16 @@ exports.addFavFood = asyncHandler(async (req, res, next) => {
 });
 
 //desc    DELETE Food from FavFoods
-//route   DELETE /api/favFoods/
+//route   DELETE /api/favFoods/:id
 //access  private
 //notes   !food and !favFoods should not be possible from UI
 exports.deleteFavFood = asyncHandler(async (req, res, next) => {
-  const food = await Food.findOne({ _id: req.params.id });
-  let favFoods = await FavFoods.findOne({ user: req.user.id });
-
-  favFoods.favFoodsArray = favFoods.favFoodsArray.filter(
-    (favFood) => favFood !== food.name
+  await FavFoods.updateOne(
+    { user: req.user.id },
+    { $pull: { favFoodsArray: req.params.id } }
   );
 
-  favFoods.save();
+  let favFoods = await FavFoods.findOne({ user: req.user.id });
 
   res.status(200).json({
     success: true,

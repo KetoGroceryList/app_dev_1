@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -17,17 +17,17 @@ const FoodDetails = (props) => {
   const selectedFood = useSelector((state) =>
     state.foods.foods.data.find((food) => food.name === foodName)
   );
+  const favFoods = useSelector((state) => state.foods.favFoods);
 
-  // const favOrNot = useSelector((state) => {
-  //   if (!state.foods.favFoods.favFoodsArray.includes(foodName)) {
-  //     return false;
-  //   }
-  //   return true;
-  // });
+  console.log(foodName);
+  console.log(selectedFood);
+  console.log(favFoods);
 
-  const favOrNot = useSelector((state) => {
-    return state.foods.favFoods.includes(foodName);
-  });
+  let favOrNot = false;
+
+  if (favFoods.includes(selectedFood._id)) {
+    favOrNot = true;
+  }
 
   const dispatch = useDispatch();
 

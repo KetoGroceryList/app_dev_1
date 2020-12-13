@@ -1,9 +1,11 @@
+//Foods
 export const SET_FOODS = 'SET_FOODS';
-
-//User
 export const ADD_FAV = 'ADD_FAV';
 export const GET_FAVS = 'ADD_FAVS';
 export const DEL_FAV = 'DEL_FAV';
+
+//User
+export const GET_USER = 'GET_USER';
 
 //Authentication
 export const AUTHENTICATE = 'AUTHENTICATE';

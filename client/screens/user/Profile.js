@@ -1,45 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import * as authActions from '../../store/actions/auth';
+import * as userActions from '../../store/actions/user';
 import Colors from '../../constants/Colors';
 
 const Profile = (props) => {
-  const [profile, setProfile] = useState(null);
-  const [favFoods, setFavFoods] = useState(null);
+  const user = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
-
   useEffect(() => {
-    const getProfile = async () => {
-      const result = await axios.get('http://192.168.0.197:5000/api/auth/me');
-      const getFavFoods = await axios.get(
-        'http://192.168.0.197:5000/api/favFoods/'
-      );
-
-      setProfile(result.data.data);
-
-      if (getFavFoods.data.data.favFoodsArray === null) {
-        return;
-      }
-      const foods = getFavFoods.data.data.favFoodsArray;
-      setFavFoods(foods);
-    };
-    getProfile();
-  }, []);
+    dispatch(userActions.getUser());
+  }, [dispatch]);
 
   return (
     <View style={styles.container}>
-      <Text>name: {profile ? profile.name : null}</Text>
-      {favFoods
-        ? favFoods.map((food) => (
-            <View key={food}>
-              <Text>{food}</Text>
-            </View>
-          ))
-        : null}
+      <Text>name: {user ? user.name : null}</Text>
       <View>
         <View style={styles.buttonContainer}>
           <Button
