@@ -10,6 +10,7 @@ import ReduxThunk from 'redux-thunk';
 import AppNavigator from './navigation/AppNavigator';
 import authReducer from './store/reducers/auth';
 import foodsReducer from './store/reducers/foods';
+import userReducer from './store/reducers/user';
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -23,15 +24,8 @@ const fetchFonts = () => {
 const rootReducer = combineReducers({
   auth: authReducer,
   foods: foodsReducer,
+  user: userReducer,
 });
-
-// let favFoods = [];
-
-// const getSavedFavList = async () => {
-//   const response = await axios.get('http://192.168.0.197:5000/api/favFoods/');
-//   favFoods = await response.data.data.favFoodsArray;
-//   return favFoods;
-// };
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 

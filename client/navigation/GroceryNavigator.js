@@ -11,12 +11,12 @@ import Profile from '../screens/user/Profile';
 import ResetPassword from '../screens/user/ResetPassword';
 import SavedLists from '../screens/grocery/SavedLists';
 import SavedListDetails from '../screens/grocery/SavedListDetails';
-import CurrentList, {
-  currentListScreenOptions,
-} from '../screens/grocery/CurrentList';
+import CurrentList from '../screens/grocery/CurrentList';
 import ContactUs from '../screens/info/ContactUs';
 import FoodGroups from '../screens/info/FoodGroups';
-import FoodGroupItems from '../screens/info/FoodGroupItems';
+import FoodGroupItems, {
+  foodGroupItemsScreenOptions,
+} from '../screens/info/FoodGroupItems';
 import FavFoods from '../screens/grocery/FavFoods';
 import FoodDetails from '../screens/info/FoodDetails';
 
@@ -34,6 +34,7 @@ const defaultNavOptions = {
     fontFamily: 'nordin-regular',
     fontSize: 35,
   },
+  headerBackTitle: '',
   headerTintColor: 'white',
 };
 
@@ -97,6 +98,7 @@ export const FoodGroupsNavigator = () => {
       <FoodGroupsStackNavigator.Screen
         name="Food Group Items"
         component={FoodGroupItems}
+        options={foodGroupItemsScreenOptions}
       />
       <FoodGroupsStackNavigator.Screen
         name="Food Details"
@@ -161,6 +163,7 @@ export const BottomTabNavigator = () => {
       tabBarOptions={{
         activeTintColor: Colors.greenText,
         inactiveTintColor: 'gray',
+        labelPosition: 'below-icon',
       }}
     >
       <GroceryBottomTabNavigator.Screen
