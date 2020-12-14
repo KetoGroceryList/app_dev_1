@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { LogBox } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
