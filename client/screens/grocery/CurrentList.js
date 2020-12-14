@@ -1,15 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Button,
+  TextInput,
+  KeyboardAvoidingView,
+  StyleSheet,
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
+import Input from '../../components/UI/Input';
 import * as foodsActions from '../../store/actions/foods';
-import CustomHeaderButton from '../../components/UI/HeaderButton';
 import Colors from '../../constants/Colors';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const CurrentList = (props) => {
-  const foods = useSelector((state) => state.foods.foods);
+  const foods = useSelector((state) => state.foods.foods.data);
+  const [search, setSearch] = useState(null);
+  const [foodSelection, setFoodSelection] = useState(null);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -17,38 +27,70 @@ const CurrentList = (props) => {
     dispatch(foodsActions.getFavs());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (search && search.length > 1) {
+      console.log(search);
+      const options = foods.filter((food) => food.name.includes(search));
+      setFoodSelection(options);
+    }
+  }, [search]);
+
   return (
-    <View style={styles.container}>
-      <Text>Current List</Text>
-      <FlatList
-        data={foods.data}
-        keyExtractor={(item) => item._id}
-        renderItem={(itemData) => <Text>{itemData.item.name}</Text>}
-      />
-      <Button
-        title="Saved Lists"
-        onPress={() => {
-          props.navigation.navigate('Saved Lists');
-        }}
-      />
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      keyboardVerticalOffset={15}
+      style={styles.screen}
+    >
+      <View style={styles.searchContainer}>
+        <Text style={styles.searchLabel}>Search Food</Text>
+        <TextInput
+          id="search"
+          keyboardType="default"
+          autoCapitalize="none"
+          value={search}
+          onChangeText={(value) => setSearch(value)}
+          style={styles.searchTextInput}
+        />
+        <FlatList
+          data={foodSelection}
+          keyExtractor={(item) => item._id}
+          renderItem={(itemData) => <Text>{itemData.item.name}</Text>}
+        />
+        <Button
+          title="Saved Lists"
+          onPress={() => {
+            props.navigation.navigate('Saved Lists');
+          }}
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  centered: {
+  screen: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-  },
-  container: {
-    flex: 1,
+    justifyContent: 'center',
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   listText: {
     color: Colors.greenText,
+  },
+  searchContainer: {
+    width: 300,
+  },
+  searchLabel: {
+    fontFamily: 'open-sans-bold',
+    marginVertical: 5,
+  },
+  searchTextInput: {
+    fontSize: 26,
+    paddingHorizontal: 2,
+    paddingVertical: 5,
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+    marginBottom: 15,
   },
 });
 

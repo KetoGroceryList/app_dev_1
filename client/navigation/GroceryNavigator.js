@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Auth from '../screens/user/Auth';
 import ForgotPassword from '../screens/user/ForgotPassword';
@@ -18,7 +18,9 @@ import FoodGroupItems, {
   foodGroupItemsScreenOptions,
 } from '../screens/info/FoodGroupItems';
 import FavFoods from '../screens/grocery/FavFoods';
-import FoodDetails from '../screens/info/FoodDetails';
+import FoodDetails, {
+  foodDetailsScreenOptions,
+} from '../screens/info/FoodDetails';
 
 import Colors from '../constants/Colors';
 
@@ -103,6 +105,7 @@ export const FoodGroupsNavigator = () => {
       <FoodGroupsStackNavigator.Screen
         name="Food Details"
         component={FoodDetails}
+        options={foodDetailsScreenOptions}
       />
     </FoodGroupsStackNavigator.Navigator>
   );
@@ -120,6 +123,7 @@ export const FavFoodsNavigator = () => {
       <FavFoodsStackNavigator.Screen
         name="Food Details"
         component={FoodDetails}
+        options={foodDetailsScreenOptions}
       />
     </FavFoodsStackNavigator.Navigator>
   );
@@ -185,9 +189,3 @@ export const BottomTabNavigator = () => {
     </GroceryBottomTabNavigator.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  icons: {
-    paddingVertical: 10,
-  },
-});

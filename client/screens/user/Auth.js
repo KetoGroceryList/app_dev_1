@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch } from 'react-redux';
 
 import Card from '../../components/UI/Card';
