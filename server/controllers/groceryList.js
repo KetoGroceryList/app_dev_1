@@ -24,7 +24,7 @@ exports.getSavedLists = asyncHandler(async (req, res, next) => {
 //access  private
 exports.saveCurrentList = asyncHandler(async (req, res, next) => {
   const user = req.user.id;
-  const foods = req.body; //needs array of string to be passed from FE
+  const foods = req.body; //needs array of food object Id's to be passed from FE
 
   const groceryList = await GroceryList.create({
     user,
@@ -37,35 +37,30 @@ exports.saveCurrentList = asyncHandler(async (req, res, next) => {
 });
 
 //desc    ADD food to an existing list by id
-//route   PUT /api/shoppingList/:id
+//route   PUT /api/groceryList/add/:id
 //access  private
 exports.addToList = asyncHandler(async (req, res, next) => {
-  const foodToAdd = await Food.findOne({ name: 'Avocado' });
-  const foodToAddName = foodToAdd.name;
-  const groceryList = await GroceryList.findById(req.params.id);
-
-  if (!groceryList) {
-    return next(ErrorResponse('This grocery list ID does not exist', 400));
-  }
-
-  const groceryListArray = groceryList.groceryListArray;
-
-  for (const food of groceryListArray) {
-    if (food.name === foodToAddName) {
-      return next(
-        new ErrorResponse(
-          `${foodToAddName} is already on this grocery list`,
-          400
-        )
-      );
-    }
-  }
-
-  groceryListArray.push(foodToAddName);
-  groceryList.save();
-
-  res.status(201).json({
-    success: true,
-    data: groceryList,
-  });
+  // To be fixed later
+  // const foodToAdd = await Food.findOne({ _id: req.params.id });
+  // const foodToAddName = foodToAdd.name;
+  // const groceryLists = await GroceryList.find(req.user.id);
+  // if (!groceryLists) {
+  //   return next(ErrorResponse('This user does not have any grocery list', 400));
+  // }
+  // for (const food of groceryListArray) {
+  //   if (food.name === foodToAddName) {
+  //     return next(
+  //       new ErrorResponse(
+  //         `${foodToAddName} is already on this grocery list`,
+  //         400
+  //       )
+  //     );
+  //   }
+  // }
+  // groceryListArray.push(foodToAddName);
+  // groceryList.save();
+  // res.status(201).json({
+  //   success: true,
+  //   data: groceryList,
+  // });
 });

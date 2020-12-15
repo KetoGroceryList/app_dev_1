@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { SET_FOODS, ADD_FAV, GET_FAVS, DEL_FAV } from '../types';
+import {
+  SET_FOODS,
+  ADD_FAV,
+  GET_FAVS,
+  DEL_FAV,
+  SAVE_LIST,
+  GET_LISTS,
+} from '../types';
 
 export const getFoods = () => {
   return async (dispatch) => {
@@ -92,18 +99,61 @@ export const deleteFav = (id) => {
   };
 };
 
-// for (const key in resData) {
-//   loadedFoods.push(
-//     new Food(
-//       key,
-//       resData[key].name,
-//       resData[key].foodType,
-//       resData[key].imageUrl,
-//       resData[key].protein,
-//       resData[key].fats,
-//       resData[key].fiber,
-//       resData[key].netCarbs,
-//       resData[key].macrosSplit
-//     )
-//   );
-// }
+export const saveCurrentList = (foodIdsArray) => {
+  return async (dispatch) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const body = JSON.stringify({ foodIdsArray });
+
+      const response = await axios.post(
+        'http://192.168.0.197:5000/api/groceryList',
+        body,
+        config
+      );
+      if (!response) {
+        throw new Error('Something went wrong');
+      }
+      const groceryList = response.data.data.groceryList;
+
+      console.log(groceryList);
+      dispatch({
+        type: SAVE_LIST,
+        foods: groceryList,
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+export const getSavedLists = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        'http://192.168.0.197:5000/api/groceryList'
+      );
+
+      if (!response) {
+        throw new Error('Something went wrong');
+      }
+
+      //returning an array of objects,
+      //each object is an array of food Id's, representing a grocery list
+      const groceryLists = await response.data.data;
+      //console.log(groceryLists);
+
+      dispatch({
+        type: GET_LISTS,
+        foods: groceryLists,
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+//export const addToList = () => {};
