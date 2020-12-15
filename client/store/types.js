@@ -3,6 +3,10 @@ export const SET_FOODS = 'SET_FOODS';
 export const ADD_FAV = 'ADD_FAV';
 export const GET_FAVS = 'ADD_FAVS';
 export const DEL_FAV = 'DEL_FAV';
+export const SAVE_LIST = 'SAVE_LIST';
+export const GET_LISTS = 'GET_LISTS';
+
+export const ADD_TO_LIST = 'ADD_TO_LIST';
 
 //User
 export const GET_USER = 'GET_USER';

@@ -3,6 +3,7 @@ import {
   View,
   Text,
   FlatList,
+  ScrollView,
   Button,
   TextInput,
   KeyboardAvoidingView,
@@ -13,11 +14,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import Input from '../../components/UI/Input';
 import * as foodsActions from '../../store/actions/foods';
 import Colors from '../../constants/Colors';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const CurrentList = (props) => {
   const foods = useSelector((state) => state.foods.foods.data);
-  const [search, setSearch] = useState(null);
+  const [search, setSearch] = useState('');
   const [foodSelection, setFoodSelection] = useState(null);
 
   const dispatch = useDispatch();
@@ -28,9 +28,13 @@ const CurrentList = (props) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (search && search.length > 1) {
-      console.log(search);
-      const options = foods.filter((food) => food.name.includes(search));
+    let options;
+    if (search.length === 0) {
+      options = '';
+      setFoodSelection(options);
+    }
+    if (search.length > 1) {
+      options = foods.filter((food) => food.name.includes(search));
       setFoodSelection(options);
     }
   }, [search]);
@@ -51,11 +55,20 @@ const CurrentList = (props) => {
           onChangeText={(value) => setSearch(value)}
           style={styles.searchTextInput}
         />
-        <FlatList
-          data={foodSelection}
-          keyExtractor={(item) => item._id}
-          renderItem={(itemData) => <Text>{itemData.item.name}</Text>}
-        />
+        <ScrollView>
+          {foodSelection
+            ? foodSelection.map((food) => (
+                <View key={food._id} style={styles.searchOptions}>
+                  <Text
+                    style={styles.searchOptionsText}
+                    onPress={() => console.log(food.name)}
+                  >
+                    {food.name}
+                  </Text>
+                </View>
+              ))
+            : null}
+        </ScrollView>
         <Button
           title="Saved Lists"
           onPress={() => {
@@ -71,7 +84,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#fff',
   },
   listText: {
@@ -91,6 +103,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     marginBottom: 15,
+  },
+  searchOptions: {
+    fontFamily: 'open-sans-bold',
+    marginVertical: 3,
+  },
+  searchOptionsText: {
+    fontSize: 20,
   },
 });
 

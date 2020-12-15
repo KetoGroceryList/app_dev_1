@@ -10,6 +10,7 @@ const router = express.Router();
 const { protect } = require('../middleware/auth');
 
 router.get('/', protect, getSavedLists);
+//router.get('/:id', protect, getSavedListById);
 router.post('/', protect, saveCurrentList);
 router.put('/add/:id', protect, addToList);
 

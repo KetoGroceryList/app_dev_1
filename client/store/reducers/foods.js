@@ -1,9 +1,16 @@
-import { SET_FOODS, ADD_FAV, GET_FAVS, DEL_FAV } from '../types';
+import {
+  SET_FOODS,
+  ADD_FAV,
+  GET_FAVS,
+  DEL_FAV,
+  SAVE_LIST,
+  GET_LISTS,
+} from '../types';
 
 const initialState = {
   foods: [],
   favFoods: [],
-  // savedList: [],
+  groceryList: [],
 };
 
 export default (state = initialState, action) => {
@@ -27,6 +34,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         favFoods: action.foods,
+      };
+    case SAVE_LIST:
+      return {
+        ...state,
+        groceryList: action.foods,
+      };
+    case GET_LISTS:
+      return {
+        ...state,
+        groceryList: action.foods,
       };
   }
   return state;
