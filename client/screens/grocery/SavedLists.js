@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
+import Colors from '../../constants/Colors';
 import * as foodsActions from '../../store/actions/foods';
 
 const SavedLists = (props) => {
-  //array of lists - remember!
   const groceryLists = useSelector((state) => state.foods.groceryList);
 
   const dispatch = useDispatch();
@@ -21,47 +21,56 @@ const SavedLists = (props) => {
     dispatch(foodsActions.getSavedLists());
   }, [dispatch]);
 
-  console.log(groceryLists);
+  const selectListHandler = (id, name) => {
+    props.navigation.navigate('Saved List Details', [id, name]);
+  };
 
   return (
-    <View style={styles.container}>
-      <Text>Saved Lists</Text>
-      {/* <FlatList
-        data={groceryLists}
-        keyExtractor={(item) => item._id}
-        renderItem={(itemData) => <Text>{itemData.item.groceryListArray}</Text>}
-      /> */}
+    <View style={styles.screen}>
+      <View style={styles.container}></View>
       <ScrollView>
         {groceryLists
           ? groceryLists.map((list) => (
-              <Text key={list.user}>
-                {list.groceryListArray.map((food) => (
-                  <View key={food}>
-                    <Text>{food}</Text>
-                  </View>
-                ))}
-              </Text>
+              <View key={list._id} style={styles.listLabel}>
+                <Text
+                  style={styles.listText}
+                  onPress={() => selectListHandler(list._id, list.name)}
+                >
+                  {list.name}
+                </Text>
+              </View>
             ))
           : null}
       </ScrollView>
-      <Button
-        title="List Details"
-        onPress={() => props.navigation.navigate('Saved List Details')}
-      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  container: {
+    marginTop: 20,
+  },
   searchOptions: {
     fontFamily: 'open-sans-bold',
     marginVertical: 3,
+  },
+  listLabel: {
+    width: 300,
+    backgroundColor: Colors.greenText,
+    marginVertical: 8,
+    alignItems: 'center',
+    borderRadius: 15,
+  },
+  listText: {
+    fontSize: 20,
+    paddingVertical: 10,
+    color: 'white',
   },
 });
 

@@ -10,7 +10,9 @@ import ForgotPassword from '../screens/user/ForgotPassword';
 import Profile from '../screens/user/Profile';
 import ResetPassword from '../screens/user/ResetPassword';
 import SavedLists from '../screens/grocery/SavedLists';
-import SavedListDetails from '../screens/grocery/SavedListDetails';
+import SavedListDetails, {
+  savedListDetailsScreenOptions,
+} from '../screens/grocery/SavedListDetails';
 import CurrentList from '../screens/grocery/CurrentList';
 import ContactUs from '../screens/info/ContactUs';
 import FoodGroups from '../screens/info/FoodGroups';
@@ -79,6 +81,7 @@ export const CurrentListNavigator = () => {
       <CurrentListStackNavigator.Screen
         name="Saved List Details"
         component={SavedListDetails}
+        options={savedListDetailsScreenOptions}
       />
       <CurrentListStackNavigator.Screen
         name="Food Details"

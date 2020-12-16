@@ -13,6 +13,8 @@ exports.getSavedLists = asyncHandler(async (req, res, next) => {
     return next(ErrorResponse('You do not have any saved grocery list', 400));
   }
 
+  console.log(groceryLists);
+
   res.status(200).json({
     success: true,
     data: groceryLists,
@@ -24,15 +26,41 @@ exports.getSavedLists = asyncHandler(async (req, res, next) => {
 //access  private
 exports.saveCurrentList = asyncHandler(async (req, res, next) => {
   const user = req.user.id;
-  const foods = req.body; //needs array of food object Id's to be passed from FE
+  const { foods, name } = req.body; //needs array of food object Id's to be passed from FE
 
   const groceryList = await GroceryList.create({
     user,
+    name,
     groceryListArray: foods,
   });
+  console.log(foods);
   res.status(200).json({
     success: true,
     data: groceryList,
+  });
+});
+
+//desc    DELETE logged in user's all grocery lists
+//route   DELETE /api/groceryList/
+//access  private
+exports.deleteAllGroceryLists = asyncHandler(async (req, res, next) => {
+  await GroceryList.deleteMany({ user: req.user.id });
+
+  res.status(200).json({
+    success: true,
+    data: {},
+  });
+});
+
+//desc    DELETE logged in user's grocery list by Id
+//route   DELETE /api/groceryList/
+//access  private
+exports.deleteGroceryListById = asyncHandler(async (req, res, next) => {
+  await GroceryList.findOneAndRemove({ _id: req.params.id });
+
+  res.status(200).json({
+    success: true,
+    data: {},
   });
 });
 
