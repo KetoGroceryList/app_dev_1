@@ -5,13 +5,10 @@ import { useSelector } from 'react-redux';
 import FoodCard from '../../components/UI/FoodCard';
 
 const FavFoods = (props) => {
-  const foods = useSelector((state) => state.foods.foods.data);
+  const foods = useSelector((state) => state.foods.foods);
   const favFoods = useSelector((state) => state.foods.favFoods);
 
   const favFoodsFullData = [];
-
-  //console.log(foods);
-  //console.log(favFoods);
 
   const search = (foods, favFoods) => {
     for (let i = 0; i < foods.length; i++) {

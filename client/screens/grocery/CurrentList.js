@@ -6,25 +6,65 @@ import {
   ScrollView,
   Button,
   TextInput,
+  ActivityIndicator,
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 
-import Input from '../../components/UI/Input';
+import Card from '../../components/UI/Card';
 import * as foodsActions from '../../store/actions/foods';
 import Colors from '../../constants/Colors';
 
 const CurrentList = (props) => {
-  const foods = useSelector((state) => state.foods.foods.data);
+  const foods = useSelector((state) => state.foods.foods);
+  const groceryList = useSelector((state) => state.foods.groceryList);
+
   const [search, setSearch] = useState('');
   const [foodSelection, setFoodSelection] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(undefined);
 
   const dispatch = useDispatch();
 
+  let lastGroceryList = {};
+  let lastGroceryListFoods = [];
+
+  if (!isLoading) {
+    lastGroceryList = groceryList[groceryList.length - 1];
+    lastGroceryListFoods = lastGroceryList.groceryListArray;
+  }
+
+  const foodItemsData = [];
+  const foodItemsDataFn = (lastGroceryListFoods, foods) => {
+    for (let i = 0; i < lastGroceryListFoods.length; i++) {
+      for (let j = 0; j < foods.length; j++) {
+        if (lastGroceryListFoods[i] === foods[j]._id) {
+          foodItemsData.push(foods[j]);
+        }
+      }
+      if (foodItemsData.length === lastGroceryListFoods.length) return;
+    }
+  };
+
+  foodItemsDataFn(lastGroceryListFoods, foods);
+
+  const loadData = async () => {
+    setError(null);
+    try {
+      await dispatch(foodsActions.getFoods());
+      await dispatch(foodsActions.getFavs());
+      await dispatch(foodsActions.getSavedLists());
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   useEffect(() => {
-    dispatch(foodsActions.getFoods());
-    dispatch(foodsActions.getFavs());
+    loadData().then(() => {
+      setIsLoading(false);
+    });
   }, [dispatch]);
 
   useEffect(() => {
@@ -39,6 +79,35 @@ const CurrentList = (props) => {
     }
   }, [search]);
 
+  const selectFoodDetailsHandler = (name) => {
+    props.navigation.navigate('Food Details', {
+      name,
+    });
+  };
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text>An error occurred.</Text>
+        <View style={{ margin: 5 }}>
+          <Button
+            title="Try again"
+            onPress={loadData}
+            color={Colors.greenText}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -46,29 +115,55 @@ const CurrentList = (props) => {
       style={styles.screen}
     >
       <View style={styles.searchContainer}>
-        <Text style={styles.searchLabel}>Search Food</Text>
-        <TextInput
-          id="search"
-          keyboardType="default"
-          autoCapitalize="none"
-          value={search}
-          onChangeText={(value) => setSearch(value)}
-          style={styles.searchTextInput}
-        />
-        <ScrollView>
-          {foodSelection
-            ? foodSelection.map((food) => (
-                <View key={food._id} style={styles.searchOptions}>
-                  <Text
-                    style={styles.searchOptionsText}
-                    onPress={() => console.log(food.name)}
-                  >
-                    {food.name}
-                  </Text>
+        <View style={styles.searchInputContainer}>
+          <Text style={styles.searchLabel}>Search Food</Text>
+          <TextInput
+            id="search"
+            keyboardType="default"
+            autoCapitalize="none"
+            value={search}
+            onChangeText={(value) => setSearch(value)}
+            style={styles.searchTextInput}
+          />
+          <View style={{ marginBottom: 20 }}>
+            <ScrollView>
+              {foodSelection
+                ? foodSelection.map((food) => (
+                    <View key={food._id} style={styles.searchOptions}>
+                      <Text
+                        style={styles.searchOptionsText}
+                        onPress={() => console.log(food.name)}
+                      >
+                        {food.name}
+                      </Text>
+                    </View>
+                  ))
+                : null}
+            </ScrollView>
+          </View>
+        </View>
+
+        <View style={styles.groceryList}>
+          <Text style={styles.listHeader}>Your grocery list</Text>
+          <FlatList
+            data={foodItemsData}
+            keyExtractor={(item) => item._id}
+            renderItem={(itemData) => (
+              <View style={styles.listItemContainer}>
+                <Text
+                  style={styles.listText}
+                  onPress={() => selectFoodDetailsHandler(itemData.item.name)}
+                >
+                  {itemData.item.name}
+                </Text>
+                <View style={styles.listItemContainerChecks}>
+                  <Ionicons name="checkmark-circle-outline" size={42} />
+                  <Ionicons name="close-circle-outline" size={42} />
                 </View>
-              ))
-            : null}
-        </ScrollView>
+              </View>
+            )}
+          />
+        </View>
         <Button
           title="Saved Lists"
           onPress={() => {
@@ -91,10 +186,25 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     width: 300,
+    marginVertical: 30,
+    zIndex: 100,
+    position: 'absolute',
+  },
+  searchInputContainer: {
+    paddingHorizontal: 20,
+    shadowColor: 'black',
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 4,
+    borderRadius: 10,
+    backgroundColor: 'white',
   },
   searchLabel: {
     fontFamily: 'open-sans-bold',
     marginVertical: 5,
+    paddingTop: 10,
+    fontSize: 20,
   },
   searchTextInput: {
     fontSize: 26,
@@ -102,14 +212,43 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
-    marginBottom: 15,
+    marginBottom: 5,
   },
   searchOptions: {
-    fontFamily: 'open-sans-bold',
+    fontFamily: 'open-sans',
     marginVertical: 3,
   },
   searchOptionsText: {
     fontSize: 20,
+  },
+  card: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  groceryList: {},
+  listHeader: {
+    marginVertical: 20,
+    fontSize: 24,
+    fontFamily: 'open-sans-bold',
+  },
+  listItemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 3,
+  },
+  listItemContainerChecks: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    top: -5,
+  },
+  listText: {
+    fontSize: 24,
+    fontFamily: 'open-sans',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

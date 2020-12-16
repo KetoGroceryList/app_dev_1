@@ -7,7 +7,7 @@ import FoodCard from '../../components/UI/FoodCard';
 const FoodGroupItems = (props) => {
   const foodType = props.route.params;
   const groupFoods = useSelector((state) =>
-    state.foods.foods.data.filter((group) => group.foodType === foodType)
+    state.foods.foods.filter((group) => group.foodType === foodType)
   );
 
   const selectFoodDetailsHandler = (name) => {

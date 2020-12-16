@@ -18,7 +18,7 @@ import Colors from '../../constants/Colors';
 const FoodDetails = (props) => {
   const foodName = props.route.params.name;
   const selectedFood = useSelector((state) =>
-    state.foods.foods.data.find((food) => food.name === foodName)
+    state.foods.foods.find((food) => food.name === foodName)
   );
   const favFoods = useSelector((state) => state.foods.favFoods);
 
