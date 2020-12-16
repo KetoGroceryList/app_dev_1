@@ -4,7 +4,9 @@ import {
   Text,
   Button,
   FlatList,
-  ScrollView,
+  Platform,
+  TouchableOpacity,
+  TouchableNativeFeedback,
   StyleSheet,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,35 +15,39 @@ import Colors from '../../constants/Colors';
 import * as foodsActions from '../../store/actions/foods';
 
 const SavedLists = (props) => {
+  let TouchableCmp = TouchableOpacity;
+
+  Platform.OS === 'android' && Platform.Version >= 21
+    ? (TouchableCmp = TouchableNativeFeedback)
+    : TouchableOpacity;
   const groceryLists = useSelector((state) => state.foods.groceryList);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(foodsActions.getSavedLists());
-  }, [dispatch]);
-
   const selectListHandler = (id, name) => {
-    props.navigation.navigate('Saved List Details', [id, name]);
+    props.navigation.navigate('Saved List Details', { id, name });
   };
 
   return (
     <View style={styles.screen}>
       <View style={styles.container}></View>
-      <ScrollView>
-        {groceryLists
-          ? groceryLists.map((list) => (
-              <View key={list._id} style={styles.listLabel}>
-                <Text
-                  style={styles.listText}
-                  onPress={() => selectListHandler(list._id, list.name)}
-                >
-                  {list.name}
-                </Text>
-              </View>
-            ))
-          : null}
-      </ScrollView>
+      <FlatList
+        data={groceryLists}
+        keyExtractor={(item) => item._id}
+        renderItem={(itemData) => (
+          <TouchableCmp
+            onPress={() =>
+              selectListHandler(itemData.item._id, itemData.item.name)
+            }
+            useForeground
+          >
+            <View style={styles.listLabel}>
+              <Text style={styles.listText}>
+                List:{'  '}
+                {itemData.item.name}
+              </Text>
+            </View>
+          </TouchableCmp>
+        )}
+      />
     </View>
   );
 };
@@ -57,19 +63,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   searchOptions: {
-    fontFamily: 'open-sans-bold',
+    fontFamily: 'open-sans',
     marginVertical: 3,
   },
   listLabel: {
     width: 300,
     backgroundColor: Colors.greenText,
     marginVertical: 8,
-    alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 10,
   },
   listText: {
     fontSize: 20,
     paddingVertical: 10,
+    paddingLeft: 50,
+    fontFamily: 'open-sans',
     color: 'white',
   },
 });

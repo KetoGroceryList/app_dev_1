@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import { foodGroupsData } from '../../data/foodGroups';
 import FoodCard from '../../components/UI/FoodCard';
 

@@ -17,12 +17,11 @@ export const getFoods = () => {
         throw new Error('Something went wrong');
       }
 
-      const resData = await response.data;
-      const loadedFoods = resData;
+      const allFoods = await response.data.data;
 
       dispatch({
         type: SET_FOODS,
-        foods: loadedFoods,
+        foods: allFoods,
       });
     } catch (err) {
       throw err;
@@ -127,7 +126,6 @@ export const saveCurrentList = (foodIdsArray) => {
       }
       const groceryList = response.data.data.groceryList;
 
-      console.log(groceryList);
       dispatch({
         type: SAVE_LIST,
         foods: groceryList,
@@ -152,7 +150,6 @@ export const getSavedLists = () => {
       //returning an array of objects,
       //each object is an array of food Id's, representing a grocery list
       const groceryLists = await response.data.data;
-      //console.log(groceryLists);
 
       dispatch({
         type: GET_LISTS,

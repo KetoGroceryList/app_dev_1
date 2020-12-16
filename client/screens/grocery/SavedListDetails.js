@@ -1,17 +1,15 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 
 import { useSelector } from 'react-redux';
 
 const SavedListDetails = (props) => {
-  const listId = props.route.params[0];
+  const listId = props.route.params.id;
   const list = useSelector((state) =>
     state.foods.groceryList.find((list) => list._id === listId)
   );
   const foodItemsIds = list.groceryListArray;
-  const foods = useSelector((state) => state.foods.foods.data);
-
-  //console.log(foodItemsIds);
+  const foods = useSelector((state) => state.foods.foods);
 
   const foodItemsData = [];
   const foodItemsDataFn = (foodItemsIds, foods) => {
@@ -26,14 +24,35 @@ const SavedListDetails = (props) => {
   };
 
   foodItemsDataFn(foodItemsIds, foods);
-  console.log(foodItemsData);
+
+  const selectFoodDetailsHandler = (name) => {
+    props.navigation.navigate('Food Details', {
+      name,
+    });
+  };
 
   return (
     <View style={styles.container}>
-      <Text>Saved List Details</Text>
-      <Button
-        title="Food Details"
-        onPress={() => props.navigation.navigate('Food Details')}
+      <View style={{ marginVertical: 10 }}>
+        <Button
+          style={styles.button}
+          title="Use this list for today"
+          onPress={() => console.log('pressed')}
+        />
+      </View>
+      <FlatList
+        data={foodItemsData}
+        keyExtractor={(item) => item._id}
+        renderItem={(itemData) => (
+          <View style={styles.listFoodContainer}>
+            <Text
+              style={styles.listFoodText}
+              onPress={() => selectFoodDetailsHandler(itemData.item.name)}
+            >
+              {itemData.item.name}
+            </Text>
+          </View>
+        )}
       />
     </View>
   );
@@ -41,7 +60,7 @@ const SavedListDetails = (props) => {
 
 export const savedListDetailsScreenOptions = (navData) => {
   return {
-    headerTitle: navData.route.params[1],
+    headerTitle: navData.route.params.name,
   };
 };
 
@@ -51,6 +70,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 20,
+  },
+  button: {
+    fontFamily: 'open-sans',
+  },
+  listFoodContainer: {
+    marginVertical: 5,
+  },
+  listFoodText: {
+    fontSize: 20,
+    fontFamily: 'open-sans',
   },
 });
 
