@@ -14,6 +14,10 @@ const FavFoodsSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = FavFoods = mongoose.model('FavFoods', FavFoodsSchema);

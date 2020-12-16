@@ -53,7 +53,7 @@ exports.deleteFavFood = asyncHandler(async (req, res, next) => {
   });
 });
 
-//desc    GET FavFoods
+//desc    GET FavFoods by logged in user
 //route   GET /api/favFoods/
 //access  private
 exports.getFavFoods = asyncHandler(async (req, res, next) => {
@@ -62,5 +62,17 @@ exports.getFavFoods = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: favFoods,
+  });
+});
+
+//desc    DELETE logged in user's FavFoods sub doc
+//route   DELETE /api/favFoods/
+//access  private
+exports.deleteFavFoods = asyncHandler(async (req, res, next) => {
+  await FavFoods.findOneAndRemove({ user: req.user.id });
+
+  res.status(200).json({
+    success: true,
+    data: {},
   });
 });

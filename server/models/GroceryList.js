@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const date = Date.now;
+
 const GroceryListSchema = new mongoose.Schema({
   groceryListArray: {
     type: [
@@ -13,6 +15,15 @@ const GroceryListSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+    default: new Date().toLocaleDateString(),
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

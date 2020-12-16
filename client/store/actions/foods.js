@@ -64,7 +64,15 @@ export const getFavs = () => {
         throw new Error('Something went wrong');
       }
 
-      const favFoods = response.data.data.favFoodsArray;
+      let resData = response.data.data;
+      let favFoods;
+
+      if (!resData) {
+        favFoods = [];
+        return;
+      }
+
+      favFoods = resData.favFoodsArray;
 
       dispatch({
         type: GET_FAVS,
