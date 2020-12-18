@@ -73,6 +73,7 @@ export const CurrentListNavigator = () => {
       <CurrentListStackNavigator.Screen
         name="Current List"
         component={CurrentList}
+        options={{ headerTitle: 'Grocery List' }}
       />
       <CurrentListStackNavigator.Screen
         name="Saved Lists"

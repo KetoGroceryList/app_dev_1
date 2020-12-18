@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,14 +6,15 @@ import {
   ScrollView,
   Button,
   TextInput,
+  Alert,
   ActivityIndicator,
+  Modal,
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 
-import Card from '../../components/UI/Card';
 import * as foodsActions from '../../store/actions/foods';
 import Colors from '../../constants/Colors';
 
@@ -25,8 +26,40 @@ const CurrentList = (props) => {
   const [foodSelection, setFoodSelection] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(undefined);
+  const [toReload, setToReLoad] = useState(false);
+  const [fadedItems, setFadedItems] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const dispatch = useDispatch();
+
+  const loadData = async () => {
+    setError(null);
+    try {
+      await dispatch(foodsActions.getFoods());
+      await dispatch(foodsActions.getFavs()); //should move this to favourites
+      await dispatch(foodsActions.getSavedLists());
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    loadData().then(() => {
+      setIsLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    let options;
+    if (search.length === 0) {
+      options = '';
+      setFoodSelection(options);
+    }
+    if (search.length > 1) {
+      options = foods.filter((food) => food.name.includes(search));
+      setFoodSelection(options);
+    }
+  }, [search]);
 
   let lastGroceryList = {};
   let lastGroceryListFoods = [];
@@ -50,39 +83,41 @@ const CurrentList = (props) => {
 
   foodItemsDataFn(lastGroceryListFoods, foods);
 
-  const loadData = async () => {
-    setError(null);
-    try {
-      await dispatch(foodsActions.getFoods());
-      await dispatch(foodsActions.getFavs());
-      await dispatch(foodsActions.getSavedLists());
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  useEffect(() => {
-    loadData().then(() => {
-      setIsLoading(false);
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    let options;
-    if (search.length === 0) {
-      options = '';
-      setFoodSelection(options);
-    }
-    if (search.length > 1) {
-      options = foods.filter((food) => food.name.includes(search));
-      setFoodSelection(options);
-    }
-  }, [search]);
-
   const selectFoodDetailsHandler = (name) => {
     props.navigation.navigate('Food Details', {
       name,
     });
+  };
+
+  const addToListHandler = (food) => {
+    if (lastGroceryList.groceryListArray.includes(food._id)) {
+      Alert.alert('Notice', 'You already have this on your list', {
+        text: 'Ok',
+      });
+      return;
+    }
+    lastGroceryList.groceryListArray.push(food._id);
+    setSearch('');
+  };
+
+  const removeFromListHandler = (foodName) => {
+    const foodIdToLocate = foods.find((food) => food.name === foodName);
+    lastGroceryList.groceryListArray = lastGroceryList.groceryListArray.filter(
+      (food) => food !== foodIdToLocate._id
+    );
+    setToReLoad((prevState) => !prevState);
+  };
+
+  const addFoodToFadedHandler = (foodName) => {
+    const foodIdToLocate = foods.find((food) => food.name === foodName);
+    setFadedItems((fadedItems) => [...fadedItems, foodIdToLocate._id]);
+  };
+
+  const removeFoodFromFadedHandler = (foodName) => {
+    const foodIdToLocate = foods.find((food) => food.name === foodName);
+    setFadedItems((fadedItems) =>
+      fadedItems.filter((item) => item !== foodIdToLocate._id)
+    );
   };
 
   if (error) {
@@ -103,7 +138,7 @@ const CurrentList = (props) => {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color="#ccc" />
       </View>
     );
   }
@@ -114,7 +149,7 @@ const CurrentList = (props) => {
       keyboardVerticalOffset={15}
       style={styles.screen}
     >
-      <View style={styles.searchContainer}>
+      <View style={styles.container}>
         <View style={styles.searchInputContainer}>
           <Text style={styles.searchLabel}>Search Food</Text>
           <TextInput
@@ -132,7 +167,7 @@ const CurrentList = (props) => {
                     <View key={food._id} style={styles.searchOptions}>
                       <Text
                         style={styles.searchOptionsText}
-                        onPress={() => console.log(food.name)}
+                        onPress={() => addToListHandler(food)}
                       >
                         {food.name}
                       </Text>
@@ -142,14 +177,20 @@ const CurrentList = (props) => {
             </ScrollView>
           </View>
         </View>
-
         <View style={styles.groceryList}>
           <Text style={styles.listHeader}>Your grocery list</Text>
+          <View style={styles.line}></View>
           <FlatList
             data={foodItemsData}
             keyExtractor={(item) => item._id}
             renderItem={(itemData) => (
-              <View style={styles.listItemContainer}>
+              <View
+                style={
+                  fadedItems.includes(itemData.item._id)
+                    ? styles.listItemContainerGrey
+                    : styles.listItemContainerWhite
+                }
+              >
                 <Text
                   style={styles.listText}
                   onPress={() => selectFoodDetailsHandler(itemData.item.name)}
@@ -157,25 +198,62 @@ const CurrentList = (props) => {
                   {itemData.item.name}
                 </Text>
                 <View style={styles.listItemContainerChecks}>
-                  <Ionicons name="checkmark-circle-outline" size={42} />
-                  <Ionicons name="close-circle-outline" size={42} />
+                  <Ionicons
+                    name="basket-outline"
+                    style={{ marginRight: 7 }}
+                    size={40}
+                    onPress={() => {
+                      fadedItems.includes(itemData.item._id)
+                        ? removeFoodFromFadedHandler(itemData.item.name)
+                        : addFoodToFadedHandler(itemData.item.name);
+                    }}
+                  />
+                  <Ionicons
+                    name="close-circle-outline"
+                    size={40}
+                    onPress={() => removeFromListHandler(itemData.item.name)}
+                  />
                 </View>
               </View>
             )}
           />
         </View>
-        <Button
-          title="Saved Lists"
-          onPress={() => {
-            props.navigation.navigate('Saved Lists');
-          }}
-        />
+      </View>
+      <View style={styles.bottomSection}>
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Save List"
+            color={Colors.greenText}
+            onPress={() => {
+              setModalVisible(true);
+            }}
+          />
+          <Button
+            title="Load Lists"
+            color={Colors.greenText}
+            onPress={() => {
+              props.navigation.navigate('Saved Lists');
+            }}
+          />
+        </View>
+      </View>
+      <View style={styles.centered}>
+        <Modal transparent={true} visible={modalVisible}>
+          <View style={{ height: 500 }}>
+            <Text>Hello</Text>
+          </View>
+        </Modal>
       </View>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   screen: {
     flex: 1,
     alignItems: 'center',
@@ -184,10 +262,10 @@ const styles = StyleSheet.create({
   listText: {
     color: Colors.greenText,
   },
-  searchContainer: {
+  container: {
+    flex: 4,
     width: 300,
-    marginVertical: 30,
-    zIndex: 100,
+    marginVertical: 22,
     position: 'absolute',
   },
   searchInputContainer: {
@@ -199,56 +277,88 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderRadius: 10,
     backgroundColor: 'white',
+    zIndex: 1,
+    opacity: 0.98,
   },
   searchLabel: {
     fontFamily: 'open-sans-bold',
-    marginVertical: 5,
-    paddingTop: 10,
+    marginVertical: 6,
+    paddingTop: 5,
     fontSize: 20,
+    alignSelf: 'center',
   },
   searchTextInput: {
-    fontSize: 26,
+    fontSize: 22,
+    fontFamily: 'open-sans',
     paddingHorizontal: 2,
-    paddingVertical: 5,
+    paddingVertical: 2,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
-    marginBottom: 5,
   },
   searchOptions: {
     fontFamily: 'open-sans',
+    marginTop: 10,
     marginVertical: 3,
   },
   searchOptionsText: {
-    fontSize: 20,
+    fontSize: 22,
   },
   card: {
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  groceryList: {},
+  groceryList: {
+    zIndex: 0,
+    position: 'absolute',
+    top: 90,
+  },
   listHeader: {
-    marginVertical: 20,
-    fontSize: 24,
+    marginTop: 34,
+    marginBottom: 7,
+    fontSize: 22,
+    alignSelf: 'center',
     fontFamily: 'open-sans-bold',
   },
-  listItemContainer: {
+  line: {
+    width: '100%',
+    borderTopColor: '#ccc',
+    borderTopWidth: 1,
+    marginBottom: 16,
+  },
+  listItemContainerGrey: {
+    flexDirection: 'row',
+    opacity: 0.15,
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingTop: 3,
+  },
+  listItemContainerWhite: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 3,
+    width: '100%',
+    paddingTop: 3,
   },
   listItemContainerChecks: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    top: -5,
+    alignSelf: 'flex-end',
+    top: -7,
   },
   listText: {
     fontSize: 24,
     fontFamily: 'open-sans',
   },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  bottomSection: {
+    height: 60,
+    width: 300,
+    position: 'absolute',
+    bottom: 0,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    zIndex: 1,
+    width: '100%',
+    opacity: 0.98,
+    justifyContent: 'space-between',
   },
 });
 
