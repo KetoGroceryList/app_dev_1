@@ -8,7 +8,6 @@ const asyncHandler = require('../middleware/async');
 //access  private
 exports.getSavedLists = asyncHandler(async (req, res, next) => {
   const groceryLists = await GroceryList.find({ user: req.user.id });
-  console.log(groceryLists);
 
   if (!groceryLists) {
     return next(ErrorResponse('You do not have any saved grocery list', 400));
@@ -20,10 +19,10 @@ exports.getSavedLists = asyncHandler(async (req, res, next) => {
   });
 });
 
-//desc    SAVE current list
+//desc    SAVE New Grocery list
 //route   POST /api/groceryList/
 //access  private
-exports.saveCurrentList = asyncHandler(async (req, res, next) => {
+exports.saveNewList = asyncHandler(async (req, res, next) => {
   const user = req.user.id;
   const { foods, name } = req.body; //needs array of food object Id's to be passed from FE
 
@@ -32,10 +31,32 @@ exports.saveCurrentList = asyncHandler(async (req, res, next) => {
     name,
     groceryListArray: foods,
   });
-  console.log(foods);
   res.status(200).json({
     success: true,
     data: groceryList,
+  });
+});
+
+//desc    UPDATE existing list by Id
+//route   PUT /api/groceryList/:id
+//access  private
+exports.updateExistingListById = asyncHandler(async (req, res, next) => {
+  let list = await GroceryList.findOne({ _id: req.params.id });
+
+  if (!list) {
+    return next(
+      new ErrorResponse(`List not found with id of ${req.params.id}`, 404)
+    );
+  }
+
+  list = await GroceryList.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: list,
   });
 });
 

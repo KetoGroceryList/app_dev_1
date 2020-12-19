@@ -22,8 +22,7 @@ import Colors from '../../constants/Colors';
 const CurrentList = (props) => {
   const foods = useSelector((state) => state.foods.foods);
   const groceryLists = useSelector((state) => state.foods.groceryLists);
-  const listId = props.route.params;
-  //const currentList = useSelector((state) => state.foods.currentList);
+  const listLoaded = props.route.params;
 
   const [search, setSearch] = useState('');
   const [foodSelection, setFoodSelection] = useState(null);
@@ -54,7 +53,7 @@ const CurrentList = (props) => {
     loadData().then(() => {
       setIsLoading(false);
     });
-  }, [setIsLoading]);
+  }, []);
 
   useEffect(() => {
     let options;
@@ -70,18 +69,21 @@ const CurrentList = (props) => {
 
   /** Main Logic To Load Grocery List*/
   let loadedListId;
-  let listFoods = [];
-  const foodItemsData = [];
+  let loadedListName;
+  let listFoods = []; //listFoods will depend on whether a saved list (listLoaded) is chosen
+  let foodItemsData = [];
 
-  if (listId) {
-    loadedListId = listId.listId;
+  if (listLoaded && !isLoading) {
+    loadedListId = listLoaded.listId;
+    loadedListName = listLoaded.listName;
     const loadedFoodsList = groceryLists.find(
       (list) => list._id === loadedListId
     );
     listFoods = loadedFoodsList.groceryListArray;
-  } else if (!listId && !isLoading) {
+  } else if (!listLoaded && !isLoading) {
     const lastGroceryList = groceryLists[groceryLists.length - 1];
     listFoods = lastGroceryList.groceryListArray;
+    console.log(listFoods);
   }
 
   const foodItemsDataFn = (list, foods) => {
@@ -94,7 +96,6 @@ const CurrentList = (props) => {
       if (foodItemsData.length === list.length) return;
     }
   };
-
   foodItemsDataFn(listFoods, foods);
 
   /** End of Main Logic */
@@ -106,21 +107,20 @@ const CurrentList = (props) => {
   };
 
   const addToListHandler = (food) => {
-    if (lastGroceryList.groceryListArray.includes(food._id)) {
+    if (listFoods.includes(food._id)) {
       Alert.alert('Notice', 'You already have this on your list', {
         text: 'Ok',
       });
       return;
     }
-    lastGroceryList.groceryListArray.push(food._id);
+    listFoods.push(food._id);
     setSearch('');
   };
 
   const removeFromListHandler = (foodName) => {
     const foodIdToLocate = foods.find((food) => food.name === foodName);
-    lastGroceryList.groceryListArray = lastGroceryList.groceryListArray.filter(
-      (food) => food !== foodIdToLocate._id
-    );
+    const index = foods.indexOf(foodIdToLocate);
+    listFoods.splice(index, 1);
     setToReLoad((prevState) => !prevState);
   };
 
@@ -136,7 +136,11 @@ const CurrentList = (props) => {
     );
   };
 
-  const saveCurrentListHandler = async (foods, name) => {
+  const updateExistingListHandler = async () => {
+    console.log('update');
+  };
+
+  const saveNewListHandler = async (foods, name) => {
     const date = Date.now();
     const dateInterm = new Date(date);
     const dateString = dateInterm.toLocaleDateString();
@@ -145,7 +149,7 @@ const CurrentList = (props) => {
     }
     try {
       setIsLoading(true);
-      await dispatch(foodsActions.saveCurrentList(foods, name));
+      await dispatch(foodsActions.saveNewList(foods, name));
       await dispatch(foodsActions.getSavedLists());
       setIsLoading(false);
     } catch (err) {
@@ -219,7 +223,7 @@ const CurrentList = (props) => {
             },
           ]}
         >
-          <Text style={styles.listHeader}>Grocery List:</Text>
+          <Text style={styles.listHeader}>{loadedListName}</Text>
           <View style={styles.line}></View>
           <FlatList
             data={foodItemsData}
@@ -294,9 +298,17 @@ const CurrentList = (props) => {
               />
               <View style={styles.modalButtonContainer}>
                 <Button
+                  title="Update"
+                  onPress={() => {
+                    updateExistingListHandler();
+                    setModalVisible(!modalVisible);
+                    setListName(null);
+                  }}
+                />
+                <Button
                   title="Save As"
                   onPress={() => {
-                    saveCurrentListHandler(foodItemsData, listName);
+                    saveNewListHandler(foodItemsData, listName);
                     setModalVisible(!modalVisible);
                     setListName(null);
                   }}
