@@ -5,12 +5,14 @@ import {
   DEL_FAV,
   SAVE_LIST,
   GET_LISTS,
+  LOAD_LIST,
 } from '../types';
 
 const initialState = {
   foods: [],
   favFoods: [],
-  groceryList: [],
+  groceryLists: [],
+  currentList: [],
 };
 
 export default (state = initialState, action) => {
@@ -38,12 +40,17 @@ export default (state = initialState, action) => {
     case SAVE_LIST:
       return {
         ...state,
-        groceryList: action.foods,
+        groceryLists: action.foods,
       };
     case GET_LISTS:
       return {
         ...state,
-        groceryList: action.foods,
+        groceryLists: action.foods,
+      };
+    case LOAD_LIST:
+      return {
+        ...state,
+        currentList: action.id,
       };
   }
   return state;

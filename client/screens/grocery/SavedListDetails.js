@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 const SavedListDetails = (props) => {
   const listId = props.route.params.id;
   const list = useSelector((state) =>
-    state.foods.groceryList.find((list) => list._id === listId)
+    state.foods.groceryLists.find((list) => list._id === listId)
   );
   const foodItemsIds = list.groceryListArray;
   const foods = useSelector((state) => state.foods.foods);
@@ -31,13 +31,19 @@ const SavedListDetails = (props) => {
     });
   };
 
+  const bringListIdToFront = (listId) => {
+    props.navigation.navigate('Current List', {
+      listId,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={{ marginVertical: 10 }}>
         <Button
           style={styles.button}
           title="Use this list for today"
-          onPress={() => console.log('pressed')}
+          onPress={() => bringListIdToFront(listId)}
         />
       </View>
       <FlatList

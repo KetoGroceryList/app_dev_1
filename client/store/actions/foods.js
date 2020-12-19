@@ -6,6 +6,7 @@ import {
   DEL_FAV,
   SAVE_LIST,
   GET_LISTS,
+  LOAD_LIST,
 } from '../types';
 
 export const getFoods = () => {
@@ -124,11 +125,11 @@ export const saveCurrentList = (foods, name) => {
       if (!response) {
         throw new Error('Something went wrong');
       }
-      const groceryList = response.data.data.groceryList;
+      const groceryLists = response.data.data.groceryListArray;
 
       dispatch({
         type: SAVE_LIST,
-        foods: groceryList,
+        foods: groceryLists,
       });
     } catch (err) {
       throw err;
@@ -158,6 +159,15 @@ export const getSavedLists = () => {
     } catch (err) {
       throw err;
     }
+  };
+};
+
+export const loadCurrentList = (listId) => {
+  return (dispatch) => {
+    dispatch({
+      type: LOAD_LIST,
+      id: listId,
+    });
   };
 };
 
