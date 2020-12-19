@@ -20,7 +20,7 @@ const SavedLists = (props) => {
   Platform.OS === 'android' && Platform.Version >= 21
     ? (TouchableCmp = TouchableNativeFeedback)
     : TouchableOpacity;
-  const groceryLists = useSelector((state) => state.foods.groceryList);
+  const groceryLists = useSelector((state) => state.foods.groceryLists);
 
   const selectListHandler = (id, name) => {
     props.navigation.navigate('Saved List Details', { id, name });

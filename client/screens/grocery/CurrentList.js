@@ -21,7 +21,9 @@ import Colors from '../../constants/Colors';
 
 const CurrentList = (props) => {
   const foods = useSelector((state) => state.foods.foods);
-  const groceryList = useSelector((state) => state.foods.groceryList);
+  const groceryLists = useSelector((state) => state.foods.groceryLists);
+  const listId = props.route.params;
+  //const currentList = useSelector((state) => state.foods.currentList);
 
   const [search, setSearch] = useState('');
   const [foodSelection, setFoodSelection] = useState(null);
@@ -66,27 +68,36 @@ const CurrentList = (props) => {
     }
   }, [search]);
 
-  let lastGroceryList = {};
-  let lastGroceryListFoods = [];
+  /** Main Logic To Load Grocery List*/
+  let loadedListId;
+  let listFoods = [];
+  const foodItemsData = [];
 
-  if (!isLoading) {
-    lastGroceryList = groceryList[groceryList.length - 1];
-    lastGroceryListFoods = lastGroceryList.groceryListArray;
+  if (listId) {
+    loadedListId = listId.listId;
+    const loadedFoodsList = groceryLists.find(
+      (list) => list._id === loadedListId
+    );
+    listFoods = loadedFoodsList.groceryListArray;
+  } else if (!listId && !isLoading) {
+    const lastGroceryList = groceryLists[groceryLists.length - 1];
+    listFoods = lastGroceryList.groceryListArray;
   }
 
-  const foodItemsData = [];
-  const foodItemsDataFn = (lastGroceryListFoods, foods) => {
-    for (let i = 0; i < lastGroceryListFoods.length; i++) {
+  const foodItemsDataFn = (list, foods) => {
+    for (let i = 0; i < list.length; i++) {
       for (let j = 0; j < foods.length; j++) {
-        if (lastGroceryListFoods[i] === foods[j]._id) {
+        if (list[i] === foods[j]._id) {
           foodItemsData.push(foods[j]);
         }
       }
-      if (foodItemsData.length === lastGroceryListFoods.length) return;
+      if (foodItemsData.length === list.length) return;
     }
   };
 
-  foodItemsDataFn(lastGroceryListFoods, foods);
+  foodItemsDataFn(listFoods, foods);
+
+  /** End of Main Logic */
 
   const selectFoodDetailsHandler = (name) => {
     props.navigation.navigate('Food Details', {
