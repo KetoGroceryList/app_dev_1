@@ -107,7 +107,7 @@ export const deleteFav = (id) => {
   };
 };
 
-export const saveCurrentList = (foods, name) => {
+export const saveNewList = (foods, name) => {
   return async (dispatch) => {
     try {
       const config = {
@@ -136,6 +136,36 @@ export const saveCurrentList = (foods, name) => {
     }
   };
 };
+
+// export const updateExistingList = (foods, name) => {
+//   return async (dispatch) => {
+//     try {
+//       const config = {
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//       };
+//       const body = JSON.stringify({ foods, name });
+
+//       const response = await axios.post(
+//         'http://192.168.0.197:5000/api/groceryList',
+//         body,
+//         config
+//       );
+//       if (!response) {
+//         throw new Error('Something went wrong');
+//       }
+//       const groceryLists = response.data.data.groceryListArray;
+
+//       dispatch({
+//         type: SAVE_LIST,
+//         foods: groceryLists,
+//       });
+//     } catch (err) {
+//       throw err;
+//     }
+//   };
+// };
 
 export const getSavedLists = () => {
   return async (dispatch) => {

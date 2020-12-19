@@ -9,6 +9,8 @@ const SavedListDetails = (props) => {
     state.foods.groceryLists.find((list) => list._id === listId)
   );
   const foodItemsIds = list.groceryListArray;
+  const listName = list.name;
+
   const foods = useSelector((state) => state.foods.foods);
 
   const foodItemsData = [];
@@ -31,9 +33,10 @@ const SavedListDetails = (props) => {
     });
   };
 
-  const bringListIdToFront = (listId) => {
+  const bringListIdToFront = (listId, listName) => {
     props.navigation.navigate('Current List', {
       listId,
+      listName,
     });
   };
 
@@ -43,7 +46,7 @@ const SavedListDetails = (props) => {
         <Button
           style={styles.button}
           title="Use this list for today"
-          onPress={() => bringListIdToFront(listId)}
+          onPress={() => bringListIdToFront(listId, listName)}
         />
       </View>
       <FlatList
