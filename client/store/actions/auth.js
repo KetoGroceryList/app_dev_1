@@ -34,11 +34,11 @@ export const register = (name, email, password) => {
     if (!response) {
       throw new Error('Something went wrong');
     }
-
     const resData = response.data;
-    dispatch(authenticate(resData.token, resData.user._id, oneMonth));
+    await dispatch(authenticate(resData.token, resData.user._id, oneMonth));
     const expirationDate = resData.options.expires;
-    saveDataToStorage(resData.token, resData.user._id, expirationDate);
+    await saveDataToStorage(resData.token, resData.user._id, expirationDate);
+    await initialGroceryList([], 'grocery list');
   };
 };
 
@@ -96,4 +96,14 @@ const saveDataToStorage = (token, userId, expirationDate) => {
       expiryDate: expirationDate,
     })
   );
+};
+
+const initialGroceryList = async (foods, name) => {
+  const body = JSON.stringify({ foods, name });
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  await axios.post('http://192.168.0.197:5000/api/groceryList/', body, config);
 };
