@@ -8,6 +8,7 @@ const asyncHandler = require('../middleware/async');
 //access  private
 exports.getSavedLists = asyncHandler(async (req, res, next) => {
   const groceryLists = await GroceryList.find({ user: req.user.id });
+  console.log(groceryLists);
 
   if (!groceryLists) {
     return next(ErrorResponse('You do not have any saved grocery list', 400));

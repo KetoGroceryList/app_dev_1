@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Modal,
   KeyboardAvoidingView,
+  useWindowDimensions,
   StyleSheet,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -29,6 +30,9 @@ const CurrentList = (props) => {
   const [toReload, setToReLoad] = useState(false);
   const [fadedItems, setFadedItems] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [listName, setListName] = useState(null);
+
+  const windowHeight = useWindowDimensions().height;
 
   const dispatch = useDispatch();
 
@@ -36,7 +40,7 @@ const CurrentList = (props) => {
     setError(null);
     try {
       await dispatch(foodsActions.getFoods());
-      await dispatch(foodsActions.getFavs()); //should move this to favourites
+      await dispatch(foodsActions.getFavs());
       await dispatch(foodsActions.getSavedLists());
     } catch (err) {
       setError(err.message);
@@ -44,10 +48,11 @@ const CurrentList = (props) => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     loadData().then(() => {
       setIsLoading(false);
     });
-  }, []);
+  }, [setIsLoading]);
 
   useEffect(() => {
     let options;
@@ -120,6 +125,23 @@ const CurrentList = (props) => {
     );
   };
 
+  const saveCurrentListHandler = async (foods, name) => {
+    const date = Date.now();
+    const dateInterm = new Date(date);
+    const dateString = dateInterm.toLocaleDateString();
+    if (!name) {
+      name = dateString;
+    }
+    try {
+      setIsLoading(true);
+      await dispatch(foodsActions.saveCurrentList(foods, name));
+      await dispatch(foodsActions.getSavedLists());
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   if (error) {
     return (
       <View style={styles.centered}>
@@ -177,8 +199,16 @@ const CurrentList = (props) => {
             </ScrollView>
           </View>
         </View>
-        <View style={styles.groceryList}>
-          <Text style={styles.listHeader}>Your grocery list</Text>
+        <View
+          style={[
+            styles.groceryList,
+            {
+              maxHeight:
+                windowHeight < 700 ? windowHeight * 0.48 : windowHeight * 0.55,
+            },
+          ]}
+        >
+          <Text style={styles.listHeader}>Grocery List:</Text>
           <View style={styles.line}></View>
           <FlatList
             data={foodItemsData}
@@ -201,7 +231,7 @@ const CurrentList = (props) => {
                   <Ionicons
                     name="basket-outline"
                     style={{ marginRight: 7 }}
-                    size={40}
+                    size={36}
                     onPress={() => {
                       fadedItems.includes(itemData.item._id)
                         ? removeFoodFromFadedHandler(itemData.item.name)
@@ -210,7 +240,7 @@ const CurrentList = (props) => {
                   />
                   <Ionicons
                     name="close-circle-outline"
-                    size={40}
+                    size={36}
                     onPress={() => removeFromListHandler(itemData.item.name)}
                   />
                 </View>
@@ -238,9 +268,37 @@ const CurrentList = (props) => {
         </View>
       </View>
       <View style={styles.centered}>
-        <Modal transparent={true} visible={modalVisible}>
-          <View style={{ height: 500 }}>
-            <Text>Hello</Text>
+        <Modal animationType="fade" transparent={true} visible={modalVisible}>
+          <View style={styles.centered}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalLabel}>Name your list, then save</Text>
+              <TextInput
+                id="listName"
+                keyboardType="default"
+                autoCapitalize="none"
+                value={listName}
+                maxLength={15}
+                onChangeText={(text) => setListName(text)}
+                style={styles.searchTextInput}
+              />
+              <View style={styles.modalButtonContainer}>
+                <Button
+                  title="Save As"
+                  onPress={() => {
+                    saveCurrentListHandler(foodItemsData, listName);
+                    setModalVisible(!modalVisible);
+                    setListName(null);
+                  }}
+                />
+                <Button
+                  title="Cancel"
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    setListName(null);
+                  }}
+                />
+              </View>
+            </View>
           </View>
         </Modal>
       </View>
@@ -265,7 +323,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 4,
     width: 300,
-    marginVertical: 22,
+    marginVertical: 18,
     position: 'absolute',
   },
   searchInputContainer: {
@@ -277,7 +335,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderRadius: 10,
     backgroundColor: 'white',
-    zIndex: 1,
+    zIndex: 2,
     opacity: 0.98,
   },
   searchLabel: {
@@ -288,20 +346,22 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   searchTextInput: {
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: 'open-sans',
     paddingHorizontal: 2,
     paddingVertical: 2,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+    width: '100%',
+    alignSelf: 'center',
   },
   searchOptions: {
     fontFamily: 'open-sans',
-    marginTop: 10,
+    marginTop: 8,
     marginVertical: 3,
   },
   searchOptionsText: {
-    fontSize: 22,
+    fontSize: 20,
   },
   card: {
     alignItems: 'center',
@@ -310,20 +370,19 @@ const styles = StyleSheet.create({
   groceryList: {
     zIndex: 0,
     position: 'absolute',
-    top: 90,
+    top: 110,
   },
   listHeader: {
-    marginTop: 34,
-    marginBottom: 7,
-    fontSize: 22,
+    marginBottom: 4,
+    fontSize: 20,
     alignSelf: 'center',
     fontFamily: 'open-sans-bold',
   },
   line: {
-    width: '100%',
+    width: 300,
     borderTopColor: '#ccc',
     borderTopWidth: 1,
-    marginBottom: 16,
+    paddingBottom: 12,
   },
   listItemContainerGrey: {
     flexDirection: 'row',
@@ -341,23 +400,52 @@ const styles = StyleSheet.create({
   listItemContainerChecks: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
-    top: -7,
+    top: -6,
   },
   listText: {
     fontSize: 24,
     fontFamily: 'open-sans',
   },
   bottomSection: {
-    height: 60,
+    height: 50,
     width: 300,
     position: 'absolute',
-    bottom: 0,
+    bottom: 6,
   },
   buttonContainer: {
     flexDirection: 'row',
     zIndex: 1,
     width: '100%',
     opacity: 0.98,
+    justifyContent: 'space-between',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 25,
+    width: 300,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalLabel: {
+    fontSize: 15,
+    fontFamily: 'open-sans-bold',
+    marginVertical: 5,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    zIndex: 1,
+    width: '100%',
+    opacity: 0.98,
+    marginTop: 7,
     justifyContent: 'space-between',
   },
 });

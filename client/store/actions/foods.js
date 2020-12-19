@@ -106,7 +106,7 @@ export const deleteFav = (id) => {
   };
 };
 
-export const saveCurrentList = (foodIdsArray) => {
+export const saveCurrentList = (foods, name) => {
   return async (dispatch) => {
     try {
       const config = {
@@ -114,7 +114,7 @@ export const saveCurrentList = (foodIdsArray) => {
           'Content-Type': 'application/json',
         },
       };
-      const body = JSON.stringify({ foodIdsArray });
+      const body = JSON.stringify({ foods, name });
 
       const response = await axios.post(
         'http://192.168.0.197:5000/api/groceryList',
