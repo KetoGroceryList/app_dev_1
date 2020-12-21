@@ -22,7 +22,7 @@ import Colors from '../../constants/Colors';
 const CurrentList = (props) => {
   const foods = useSelector((state) => state.foods.foods);
   const groceryLists = useSelector((state) => state.foods.groceryLists);
-  const listLoaded = props.route.params;
+  let listLoaded = props.route.params;
 
   const [search, setSearch] = useState('');
   const [foodSelection, setFoodSelection] = useState(null);
@@ -70,20 +70,27 @@ const CurrentList = (props) => {
   /** Main Logic To Load Grocery List*/
   let loadedListId;
   let loadedListName;
+  let loadedFoodsList;
+  let lastGroceryList;
+  let lastGroceryListName;
   let listFoods = []; //listFoods will depend on whether a saved list (listLoaded) is chosen
+  let listFoodsName;
+  let listFoodsId;
   let foodItemsData = [];
 
   if (listLoaded && !isLoading) {
     loadedListId = listLoaded.listId;
     loadedListName = listLoaded.listName;
-    const loadedFoodsList = groceryLists.find(
-      (list) => list._id === loadedListId
-    );
-    listFoods = loadedFoodsList.groceryListArray;
+    loadedFoodsList = groceryLists.find((list) => list._id === loadedListId);
+    listFoods = loadedFoodsList.groceryListArray; //if user loads a saved list
+    listFoodsName = loadedFoodsList.name;
+    listFoodsId = loadedFoodsList._id;
   } else if (!listLoaded && !isLoading) {
-    const lastGroceryList = groceryLists[groceryLists.length - 1];
-    listFoods = lastGroceryList.groceryListArray;
-    console.log(listFoods);
+    lastGroceryList = groceryLists[groceryLists.length - 1];
+    lastGroceryListName = lastGroceryList.name;
+    listFoods = lastGroceryList.groceryListArray; //default list user's latest list
+    listFoodsName = lastGroceryList.name;
+    listFoodsId = lastGroceryList._id;
   }
 
   const foodItemsDataFn = (list, foods) => {
@@ -119,7 +126,7 @@ const CurrentList = (props) => {
 
   const removeFromListHandler = (foodName) => {
     const foodIdToLocate = foods.find((food) => food.name === foodName);
-    const index = foods.indexOf(foodIdToLocate);
+    const index = listFoods.indexOf(foodIdToLocate._id);
     listFoods.splice(index, 1);
     setToReLoad((prevState) => !prevState);
   };
@@ -136,11 +143,20 @@ const CurrentList = (props) => {
     );
   };
 
-  const updateExistingListHandler = async () => {
-    console.log('update');
+  const updateExistingListHandler = async (foods, name, id) => {
+    try {
+      setIsLoading(true);
+      await dispatch(foodsActions.updateExistingList(foods, name, id));
+      await dispatch(foodsActions.getSavedLists());
+      setToReLoad((prevState) => !prevState);
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const saveNewListHandler = async (foods, name) => {
+    listLoaded = null;
     const date = Date.now();
     const dateInterm = new Date(date);
     const dateString = dateInterm.toLocaleDateString();
@@ -151,11 +167,19 @@ const CurrentList = (props) => {
       setIsLoading(true);
       await dispatch(foodsActions.saveNewList(foods, name));
       await dispatch(foodsActions.getSavedLists());
+      setToReLoad((prevState) => !prevState);
       setIsLoading(false);
     } catch (err) {
       setError(err.message);
     }
   };
+
+  let listNameToBeUpdated;
+  if (!listName) {
+    listNameToBeUpdated = listFoodsName;
+  } else {
+    listNameToBeUpdated = listName;
+  }
 
   if (error) {
     return (
@@ -193,6 +217,7 @@ const CurrentList = (props) => {
             id="search"
             keyboardType="default"
             autoCapitalize="none"
+            maxLength={25}
             value={search}
             onChangeText={(value) => setSearch(value)}
             style={styles.searchTextInput}
@@ -223,7 +248,7 @@ const CurrentList = (props) => {
             },
           ]}
         >
-          <Text style={styles.listHeader}>{loadedListName}</Text>
+          <Text style={styles.listHeader}>{listFoodsName}</Text>
           <View style={styles.line}></View>
           <FlatList
             data={foodItemsData}
@@ -286,11 +311,14 @@ const CurrentList = (props) => {
         <Modal animationType="fade" transparent={true} visible={modalVisible}>
           <View style={styles.centered}>
             <View style={styles.modalView}>
-              <Text style={styles.modalLabel}>Name your list, then save</Text>
+              <Text style={styles.modalLabel}>
+                To save to new list, click 'Save As'
+              </Text>
               <TextInput
                 id="listName"
                 keyboardType="default"
                 autoCapitalize="none"
+                defaultValue={listFoodsName}
                 value={listName}
                 maxLength={15}
                 onChangeText={(text) => setListName(text)}
@@ -300,7 +328,11 @@ const CurrentList = (props) => {
                 <Button
                   title="Update"
                   onPress={() => {
-                    updateExistingListHandler();
+                    updateExistingListHandler(
+                      foodItemsData,
+                      listNameToBeUpdated, //listName
+                      listFoodsId
+                    );
                     setModalVisible(!modalVisible);
                     setListName(null);
                   }}
@@ -360,13 +392,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     zIndex: 2,
     opacity: 0.98,
+    alignContent: 'center',
   },
   searchLabel: {
     fontFamily: 'open-sans-bold',
     marginVertical: 6,
     paddingTop: 5,
     fontSize: 20,
-    alignSelf: 'center',
   },
   searchTextInput: {
     fontSize: 20,
@@ -376,7 +408,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     width: '100%',
-    alignSelf: 'center',
+    paddingLeft: 4,
   },
   searchOptions: {
     fontFamily: 'open-sans',
@@ -462,13 +494,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'open-sans-bold',
     marginVertical: 5,
+    marginBottom: 10,
   },
   modalButtonContainer: {
     flexDirection: 'row',
     zIndex: 1,
     width: '100%',
     opacity: 0.98,
-    marginTop: 7,
+    marginTop: 12,
     justifyContent: 'space-between',
   },
 });
