@@ -1,4 +1,3 @@
-const Food = require('../models/Food');
 const GroceryList = require('../models/GroceryList');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
@@ -30,6 +29,7 @@ exports.saveNewList = asyncHandler(async (req, res, next) => {
     user,
     name,
     groceryListArray: foods,
+    updatedAt: Date.now,
   });
   res.status(200).json({
     success: true,
@@ -49,10 +49,17 @@ exports.updateExistingListById = asyncHandler(async (req, res, next) => {
     );
   }
 
-  list = await GroceryList.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  list = await GroceryList.findByIdAndUpdate(
+    req.params.id,
+    {
+      groceryListArray: req.body.foods,
+      name: req.body.name,
+    },
+    {
+      new: true,
+      //runValidators: true,
+    }
+  );
 
   res.status(200).json({
     success: true,
