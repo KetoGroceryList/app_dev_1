@@ -12,6 +12,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 
 import Colors from '../../constants/Colors';
+import CustomButton from '../../components/UI/CustomButton';
 import * as foodsActions from '../../store/actions/foods';
 
 const SavedLists = (props) => {
@@ -40,10 +41,7 @@ const SavedLists = (props) => {
             useForeground
           >
             <View style={styles.listLabel}>
-              <Text style={styles.listText}>
-                List:{'  '}
-                {itemData.item.name}
-              </Text>
+              <Text style={styles.listText}>{itemData.item.name}</Text>
             </View>
           </TouchableCmp>
         )}
@@ -75,7 +73,7 @@ const styles = StyleSheet.create({
   listText: {
     fontSize: 20,
     paddingVertical: 10,
-    paddingLeft: 50,
+    textAlign: 'center',
     fontFamily: 'open-sans',
     color: 'white',
   },

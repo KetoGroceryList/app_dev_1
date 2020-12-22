@@ -156,6 +156,8 @@ const CurrentList = (props) => {
   };
 
   const saveNewListHandler = async (foods, name) => {
+    //need to empty listLoaded if user is saving a new list,
+    //so the default would go to the latest saved list
     listLoaded = null;
     const date = Date.now();
     const dateInterm = new Date(date);
@@ -174,6 +176,7 @@ const CurrentList = (props) => {
     }
   };
 
+  //listName would be null if user doesn't change list name input field
   let listNameToBeUpdated;
   if (!listName) {
     listNameToBeUpdated = listFoodsName;
@@ -318,6 +321,7 @@ const CurrentList = (props) => {
                 id="listName"
                 keyboardType="default"
                 autoCapitalize="none"
+                fontFamily="open-sans"
                 defaultValue={listFoodsName}
                 value={listName}
                 maxLength={15}
@@ -327,6 +331,7 @@ const CurrentList = (props) => {
               <View style={styles.modalButtonContainer}>
                 <Button
                   title="Update"
+                  color={Colors.greenText}
                   onPress={() => {
                     updateExistingListHandler(
                       foodItemsData,
@@ -339,6 +344,7 @@ const CurrentList = (props) => {
                 />
                 <Button
                   title="Save As"
+                  color={Colors.greenText}
                   onPress={() => {
                     saveNewListHandler(foodItemsData, listName);
                     setModalVisible(!modalVisible);
@@ -347,6 +353,7 @@ const CurrentList = (props) => {
                 />
                 <Button
                   title="Cancel"
+                  color={Colors.greenText}
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     setListName(null);

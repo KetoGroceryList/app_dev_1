@@ -7,6 +7,7 @@ import {
   SAVE_LIST,
   GET_LISTS,
   LOAD_LIST,
+  DEL_LIST,
 } from '../types';
 
 export const getFoods = () => {
@@ -198,6 +199,29 @@ export const loadCurrentList = (listId) => {
       type: LOAD_LIST,
       id: listId,
     });
+  };
+};
+
+export const deleteListById = (id) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.delete(
+        `http://192.168.0.197:5000/api/groceryList/${id}`
+      );
+
+      if (!response) {
+        throw new Error('Something went wrong');
+      }
+
+      const groceryLists = response.data.data;
+
+      dispatch({
+        type: DEL_LIST,
+        foods: groceryLists,
+      });
+    } catch (err) {
+      throw err;
+    }
   };
 };
 
