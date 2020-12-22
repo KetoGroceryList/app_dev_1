@@ -6,6 +6,7 @@ import {
   SAVE_LIST,
   GET_LISTS,
   LOAD_LIST,
+  DEL_LIST,
 } from '../types';
 
 const initialState = {
@@ -51,6 +52,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentList: action.id,
+      };
+    case DEL_LIST:
+      return {
+        ...state,
+        groceryLists: action.foods,
       };
   }
   return state;

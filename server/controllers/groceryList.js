@@ -85,9 +85,11 @@ exports.deleteAllGroceryLists = asyncHandler(async (req, res, next) => {
 exports.deleteGroceryListById = asyncHandler(async (req, res, next) => {
   await GroceryList.findOneAndRemove({ _id: req.params.id });
 
+  const updateLists = await GroceryList.find({ user: req.user.id });
+
   res.status(200).json({
     success: true,
-    data: {},
+    data: updateLists,
   });
 });
 

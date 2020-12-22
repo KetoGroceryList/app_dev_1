@@ -1,17 +1,37 @@
-import React from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Button,
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { useSelector } from 'react-redux';
+import CustomButton from '../../components/UI/CustomButton';
+import * as foodsAction from '../../store/actions/foods';
 
 const SavedListDetails = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(undefined);
+
   const listId = props.route.params.id;
+
+  const foods = useSelector((state) => state.foods.foods);
   const list = useSelector((state) =>
     state.foods.groceryLists.find((list) => list._id === listId)
   );
-  const foodItemsIds = list.groceryListArray;
-  const listName = list.name;
 
-  const foods = useSelector((state) => state.foods.foods);
+  const dispatch = useDispatch();
+
+  let foodItemsIds = [];
+  let listName;
+
+  if (list) {
+    foodItemsIds = list.groceryListArray;
+    listName = list.name;
+  }
 
   const foodItemsData = [];
   const foodItemsDataFn = (foodItemsIds, foods) => {
@@ -33,6 +53,19 @@ const SavedListDetails = (props) => {
     });
   };
 
+  const deleteListByIdHandler = async (listId) => {
+    try {
+      setIsLoading(true);
+      await dispatch(foodsAction.deleteListById(listId));
+      setIsLoading(false);
+      props.navigation.navigate('Current List');
+
+      //await dispatch(foodsAction.getSavedLists());
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   const bringListIdToFront = (listId, listName) => {
     props.navigation.navigate('Current List', {
       listId,
@@ -40,14 +73,23 @@ const SavedListDetails = (props) => {
     });
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#ccc" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <View style={{ marginVertical: 10 }}>
-        <Button
-          style={styles.button}
-          title="Use this list for today"
-          onPress={() => bringListIdToFront(listId, listName)}
-        />
+      <View style={{ marginVertical: 5 }}>
+        <CustomButton
+          style={styles.useThisButton}
+          onSelect={() => bringListIdToFront(listId, listName)}
+        >
+          <Text style={styles.buttonText}>Use this list</Text>
+        </CustomButton>
       </View>
       <FlatList
         data={foodItemsData}
@@ -63,6 +105,12 @@ const SavedListDetails = (props) => {
           </View>
         )}
       />
+      <CustomButton
+        style={styles.removeButton}
+        onSelect={() => deleteListByIdHandler(listId)}
+      >
+        <Text style={styles.buttonText}>Delete this list</Text>
+      </CustomButton>
     </View>
   );
 };
@@ -74,6 +122,11 @@ export const savedListDetailsScreenOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -81,15 +134,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 20,
   },
-  button: {
-    fontFamily: 'open-sans',
-  },
+  useThisButton: {},
   listFoodContainer: {
     marginVertical: 5,
   },
   listFoodText: {
     fontSize: 20,
     fontFamily: 'open-sans',
+  },
+  removeButton: {
+    marginBottom: 20,
+  },
+  buttonText: {
+    fontSize: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    textAlign: 'center',
+    fontFamily: 'open-sans-bold',
+    color: 'white',
   },
 });
 
