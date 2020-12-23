@@ -92,32 +92,3 @@ exports.deleteGroceryListById = asyncHandler(async (req, res, next) => {
     data: updateLists,
   });
 });
-
-//desc    ADD food to an existing list by id
-//route   PUT /api/groceryList/add/:id
-//access  private
-exports.addToList = asyncHandler(async (req, res, next) => {
-  // To be fixed later
-  // const foodToAdd = await Food.findOne({ _id: req.params.id });
-  // const foodToAddName = foodToAdd.name;
-  // const groceryLists = await GroceryList.find(req.user.id);
-  // if (!groceryLists) {
-  //   return next(ErrorResponse('This user does not have any grocery list', 400));
-  // }
-  // for (const food of groceryListArray) {
-  //   if (food.name === foodToAddName) {
-  //     return next(
-  //       new ErrorResponse(
-  //         `${foodToAddName} is already on this grocery list`,
-  //         400
-  //       )
-  //     );
-  //   }
-  // }
-  // groceryListArray.push(foodToAddName);
-  // groceryList.save();
-  // res.status(201).json({
-  //   success: true,
-  //   data: groceryList,
-  // });
-});

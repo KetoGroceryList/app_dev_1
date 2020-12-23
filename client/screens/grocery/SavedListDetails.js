@@ -59,8 +59,6 @@ const SavedListDetails = (props) => {
       await dispatch(foodsAction.deleteListById(listId));
       setIsLoading(false);
       props.navigation.navigate('Current List');
-
-      //await dispatch(foodsAction.getSavedLists());
     } catch (err) {
       setError(err.message);
     }

@@ -12,6 +12,7 @@ import { PieChart } from 'react-native-svg-charts';
 import * as svg from 'react-native-svg';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+import CustomButton from '../../components/UI/CustomButton';
 import * as foodActions from '../../store/actions/foods';
 import Colors from '../../constants/Colors';
 
@@ -77,8 +78,6 @@ const FoodDetails = (props) => {
           textAnchor={'middle'}
           alignmentBaseline={'middle'}
           fontSize={19}
-          stroke={'black'}
-          strokeWidth={0.1}
         >
           {data.amount > 0 ? data.amount + `g` : null}
         </svg.Text>
@@ -92,11 +91,15 @@ const FoodDetails = (props) => {
         <Image style={styles.image} source={{ uri: selectedFood.imageUrl }} />
         <View style={styles.action}>
           <Text style={styles.title}>{foodName}</Text>
-          <Button
+          <CustomButton
             color={Colors.greenText}
-            title={favOrNot ? 'Remove from favourites' : 'Add to favourites'}
-            onPress={() => favHandler(selectedFood._id)}
-          />
+            style={{ marginTop: 12 }}
+            onSelect={() => favHandler(selectedFood._id)}
+          >
+            <Text style={styles.buttonText}>
+              {favOrNot ? 'Remove from favourites' : 'Add to favourites'}
+            </Text>
+          </CustomButton>
         </View>
         <View style={styles.legendContainer}>
           <View style={styles.legendInnerContainer}>
@@ -104,44 +107,44 @@ const FoodDetails = (props) => {
               <View style={styles.macroContainer}>
                 <MaterialCommunityIcons
                   name="rectangle"
-                  size={30}
+                  size={35}
                   color={Colors.purple}
                 />
-                <Text style={styles.textPosition}>Protein</Text>
+                <Text style={styles.macroText}>Protein</Text>
               </View>
               <View style={styles.macroContainer}>
                 <MaterialCommunityIcons
                   name="rectangle"
-                  size={30}
+                  size={35}
                   color={Colors.pink}
                 />
-                <Text style={styles.textPosition}>Fats</Text>
+                <Text style={styles.macroText}>Fats</Text>
               </View>
             </View>
             <View style={styles.legendRow}>
               <View style={styles.macroContainer}>
                 <MaterialCommunityIcons
                   name="rectangle"
-                  size={30}
+                  size={35}
                   color={Colors.green}
                 />
-                <Text style={styles.textPosition}>Fiber</Text>
+                <Text style={styles.macroText}>Fiber</Text>
               </View>
               <View style={styles.macroContainer}>
                 <MaterialCommunityIcons
                   name="rectangle"
-                  size={30}
+                  size={35}
                   color={Colors.orange}
                 />
-                <Text style={styles.textPosition}>Net Carbs</Text>
+                <Text style={styles.macroText}>Net Carbs</Text>
               </View>
             </View>
           </View>
-          <Text style={{ marginTop: 20 }}>per 100g</Text>
+          <Text style={styles.macroText}>per 100g</Text>
         </View>
         <View></View>
         <PieChart
-          style={{ height: 250 }}
+          style={{ height: 250, marginTop: 12 }}
           valueAccessor={({ item }) => item.amount}
           data={data}
           spacing={1}
@@ -193,15 +196,26 @@ const styles = StyleSheet.create({
   legendRow: {
     flex: 1,
     flexDirection: 'row',
+    marginBottom: 5,
   },
   macroContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
-  textPosition: {
+  macroText: {
     top: 7,
     paddingLeft: 5,
+    fontFamily: 'open-sans',
+    fontSize: 18,
+  },
+  buttonText: {
+    fontSize: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    textAlign: 'center',
+    fontFamily: 'open-sans-bold',
+    color: 'white',
   },
 });
 
