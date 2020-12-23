@@ -2,7 +2,6 @@ const express = require('express');
 const {
   getSavedLists,
   saveNewList,
-  addToList,
   updateExistingListById,
   deleteGroceryListById,
   deleteAllGroceryLists,
@@ -17,7 +16,6 @@ router.post('/', protect, saveNewList);
 router.delete('/', protect, deleteAllGroceryLists);
 router.delete('/:id', protect, deleteGroceryListById);
 router.put('/:id', protect, updateExistingListById);
-router.put('/add/:id', protect, addToList);
 
 //router.get('/:id', protect, getSavedListById);
 

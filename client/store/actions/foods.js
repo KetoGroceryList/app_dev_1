@@ -224,5 +224,3 @@ export const deleteListById = (id) => {
     }
   };
 };
-
-export const addToList = (listId, food) => {};

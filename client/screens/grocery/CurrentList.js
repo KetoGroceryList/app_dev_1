@@ -16,6 +16,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 
+import CustomButton from '../../components/UI/CustomButton';
 import * as foodsActions from '../../store/actions/foods';
 import Colors from '../../constants/Colors';
 
@@ -294,20 +295,22 @@ const CurrentList = (props) => {
       </View>
       <View style={styles.bottomSection}>
         <View style={styles.buttonContainer}>
-          <Button
-            title="Save List"
+          <CustomButton
             color={Colors.greenText}
-            onPress={() => {
+            onSelect={() => {
               setModalVisible(true);
             }}
-          />
-          <Button
-            title="Load Lists"
+          >
+            <Text style={styles.buttonText}>Save List</Text>
+          </CustomButton>
+          <CustomButton
             color={Colors.greenText}
-            onPress={() => {
+            onSelect={() => {
               props.navigation.navigate('Saved Lists');
             }}
-          />
+          >
+            <Text style={styles.buttonText}>Load Lists</Text>
+          </CustomButton>
         </View>
       </View>
       <View style={styles.centered}>
@@ -324,41 +327,44 @@ const CurrentList = (props) => {
                 fontFamily="open-sans"
                 defaultValue={listFoodsName}
                 value={listName}
-                maxLength={15}
+                maxLength={25}
                 onChangeText={(text) => setListName(text)}
                 style={styles.searchTextInput}
               />
               <View style={styles.modalButtonContainer}>
-                <Button
-                  title="Update"
+                <CustomButton
                   color={Colors.greenText}
-                  onPress={() => {
+                  onSelect={() => {
                     updateExistingListHandler(
                       foodItemsData,
-                      listNameToBeUpdated, //listName
+                      listNameToBeUpdated,
                       listFoodsId
                     );
                     setModalVisible(!modalVisible);
                     setListName(null);
                   }}
-                />
-                <Button
-                  title="Save As"
+                >
+                  <Text style={styles.smallButtonText}>Update</Text>
+                </CustomButton>
+                <CustomButton
                   color={Colors.greenText}
-                  onPress={() => {
+                  onSelect={() => {
                     saveNewListHandler(foodItemsData, listName);
                     setModalVisible(!modalVisible);
                     setListName(null);
                   }}
-                />
-                <Button
-                  title="Cancel"
+                >
+                  <Text style={styles.smallButtonText}>Save as</Text>
+                </CustomButton>
+                <CustomButton
                   color={Colors.greenText}
-                  onPress={() => {
+                  onSelect={() => {
                     setModalVisible(!modalVisible);
                     setListName(null);
                   }}
-                />
+                >
+                  <Text style={styles.smallButtonText}>Cancel</Text>
+                </CustomButton>
               </View>
             </View>
           </View>
@@ -510,6 +516,22 @@ const styles = StyleSheet.create({
     opacity: 0.98,
     marginTop: 12,
     justifyContent: 'space-between',
+  },
+  buttonText: {
+    fontSize: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    textAlign: 'center',
+    fontFamily: 'open-sans-bold',
+    color: 'white',
+  },
+  smallButtonText: {
+    fontSize: 15,
+    paddingVertical: 5,
+    paddingHorizontal: 9,
+    textAlign: 'center',
+    fontFamily: 'open-sans-bold',
+    color: 'white',
   },
 });
 

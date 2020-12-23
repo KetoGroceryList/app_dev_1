@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer, useCallback } from 'react';
 import {
   View,
-  Button,
+  Text,
   Alert,
   ScrollView,
   Platform,
@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 
 import Card from '../../components/UI/Card';
 import Input from '../../components/UI/Input';
+import CustomButton from '../../components/UI/CustomButton';
 import Colors from '../../constants/Colors';
 import * as authActions from '../../store/actions/auth';
 
@@ -156,25 +157,30 @@ const Auth = (props) => {
             />
             <View style={styles.buttonGroupContainer}>
               <View style={styles.buttonContainer}>
-                <Button
-                  title={isSignup ? 'Register' : 'Login'}
-                  onPress={authHandler}
-                  color={Colors.greenText}
-                />
+                <CustomButton onSelect={authHandler} color={Colors.greenText}>
+                  <Text style={styles.buttonText}>
+                    {isSignup ? 'Register' : 'Login'}
+                  </Text>
+                </CustomButton>
               </View>
               <View style={styles.buttonContainer}>
-                <Button
-                  title={`Switch to ${isSignup ? 'Login' : 'Register'}`}
-                  onPress={() => setIsSignup((prevState) => !prevState)}
+                <CustomButton
+                  onSelect={() => setIsSignup((prevState) => !prevState)}
                   color={Colors.greenText}
-                />
+                >
+                  <Text style={styles.buttonText}>{`Switch to ${
+                    isSignup ? 'Login' : 'Register'
+                  }`}</Text>
+                </CustomButton>
               </View>
               <View style={styles.buttonContainer}>
-                <Button
+                <CustomButton
                   title="Forgot Password"
-                  onPress={() => props.navigation.navigate('ForgotPassword')}
+                  onSelect={() => props.navigation.navigate('ForgotPassword')}
                   color={Colors.greenText}
-                />
+                >
+                  <Text style={styles.buttonText}>Forgot Password</Text>
+                </CustomButton>
               </View>
             </View>
           </ScrollView>
@@ -216,6 +222,14 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginVertical: 3,
+  },
+  buttonText: {
+    fontSize: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    textAlign: 'center',
+    fontFamily: 'open-sans-bold',
+    color: 'white',
   },
 });
 
