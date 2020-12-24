@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   View,
@@ -6,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -19,6 +21,8 @@ const SavedListDetails = (props) => {
   const listId = props.route.params.id;
 
   const foods = useSelector((state) => state.foods.foods);
+  const groceryLists = useSelector((state) => state.foods.groceryLists);
+
   const list = useSelector((state) =>
     state.foods.groceryLists.find((list) => list._id === listId)
   );
@@ -54,6 +58,14 @@ const SavedListDetails = (props) => {
   };
 
   const deleteListByIdHandler = async (listId) => {
+    if (groceryLists.length === 1) {
+      Alert.alert(
+        'Stop!',
+        'You only have one grocery list left. You cannot delete your last list.',
+        [{ text: 'Cancel', style: 'cancel' }]
+      );
+      return;
+    }
     try {
       setIsLoading(true);
       await dispatch(foodsAction.deleteListById(listId));
@@ -103,12 +115,14 @@ const SavedListDetails = (props) => {
           </View>
         )}
       />
-      <CustomButton
-        style={styles.removeButton}
-        onSelect={() => deleteListByIdHandler(listId)}
-      >
-        <Text style={styles.buttonText}>Delete this list</Text>
-      </CustomButton>
+      <View style={styles.buttonContainer}>
+        <CustomButton
+          style={styles.removeButton}
+          onSelect={() => deleteListByIdHandler(listId)}
+        >
+          <Text style={styles.buttonText}>Delete this list</Text>
+        </CustomButton>
+      </View>
     </View>
   );
 };
@@ -140,7 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'open-sans',
   },
-  removeButton: {
+  buttonContainer: {
     marginBottom: 20,
   },
   buttonText: {

@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
-  Button,
   Platform,
   TouchableOpacity,
   TouchableNativeFeedback,
@@ -18,7 +16,7 @@ const CustomButton = (props) => {
     : TouchableOpacity;
 
   return (
-    <View>
+    <View style={styles.androidCustomButton}>
       <TouchableCmp
         style={{ ...styles.customButton, ...props.style }}
         onPress={props.onSelect}
@@ -31,8 +29,22 @@ const CustomButton = (props) => {
 
 const styles = StyleSheet.create({
   customButton: {
+    // backgroundColor: Colors.greenText,
+    // borderRadius: 10,
+    // shadowColor: '#aaa',
+    // shadowOpacity: 0.3,
+    // shadowOffset: { width: 0, height: 3 },
+    // shadowRadius: 5,
+    // elevation: 3,
+  },
+  androidCustomButton: {
     backgroundColor: Colors.greenText,
     borderRadius: 10,
+    shadowColor: '#888',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 4,
   },
 });
 

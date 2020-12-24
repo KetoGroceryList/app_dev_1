@@ -157,7 +157,7 @@ const Auth = (props) => {
             />
             <View style={styles.buttonGroupContainer}>
               <View style={styles.buttonContainer}>
-                <CustomButton onSelect={authHandler} color={Colors.greenText}>
+                <CustomButton onSelect={authHandler}>
                   <Text style={styles.buttonText}>
                     {isSignup ? 'Register' : 'Login'}
                   </Text>
@@ -166,7 +166,6 @@ const Auth = (props) => {
               <View style={styles.buttonContainer}>
                 <CustomButton
                   onSelect={() => setIsSignup((prevState) => !prevState)}
-                  color={Colors.greenText}
                 >
                   <Text style={styles.buttonText}>{`Switch to ${
                     isSignup ? 'Login' : 'Register'
@@ -177,7 +176,6 @@ const Auth = (props) => {
                 <CustomButton
                   title="Forgot Password"
                   onSelect={() => props.navigation.navigate('ForgotPassword')}
-                  color={Colors.greenText}
                 >
                   <Text style={styles.buttonText}>Forgot Password</Text>
                 </CustomButton>

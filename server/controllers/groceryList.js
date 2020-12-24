@@ -54,10 +54,11 @@ exports.updateExistingListById = asyncHandler(async (req, res, next) => {
     {
       groceryListArray: req.body.foods,
       name: req.body.name,
+      lastModifiedAt: Date.now(),
     },
     {
       new: true,
-      //runValidators: true,
+      runValidators: true,
     }
   );
 

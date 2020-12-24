@@ -60,10 +60,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
   },
-  searchOptions: {
-    fontFamily: 'open-sans',
-    marginVertical: 3,
-  },
   listLabel: {
     width: 300,
     backgroundColor: Colors.greenText,
@@ -74,7 +70,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingVertical: 10,
     textAlign: 'center',
-    fontFamily: 'open-sans',
+    fontFamily: 'open-sans-bold',
     color: 'white',
   },
 });
