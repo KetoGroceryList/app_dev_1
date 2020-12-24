@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  Image,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { PieChart } from 'react-native-svg-charts';
 import * as svg from 'react-native-svg';
@@ -91,15 +84,13 @@ const FoodDetails = (props) => {
         <Image style={styles.image} source={{ uri: selectedFood.imageUrl }} />
         <View style={styles.action}>
           <Text style={styles.title}>{foodName}</Text>
-          <CustomButton
-            color={Colors.greenText}
-            style={{ marginTop: 12 }}
-            onSelect={() => favHandler(selectedFood._id)}
-          >
-            <Text style={styles.buttonText}>
-              {favOrNot ? 'Remove from favourites' : 'Add to favourites'}
-            </Text>
-          </CustomButton>
+          <View style={{ marginTop: 12 }}>
+            <CustomButton onSelect={() => favHandler(selectedFood._id)}>
+              <Text style={styles.buttonText}>
+                {favOrNot ? 'Remove from favourites' : 'Add to favourites'}
+              </Text>
+            </CustomButton>
+          </View>
         </View>
         <View style={styles.legendContainer}>
           <View style={styles.legendInnerContainer}>

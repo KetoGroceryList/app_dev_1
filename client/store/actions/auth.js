@@ -98,7 +98,7 @@ const saveDataToStorage = (token, userId, expirationDate) => {
   );
 };
 
-const initialGroceryList = async (foods, name) => {
+export const initialGroceryList = async (foods, name) => {
   const body = JSON.stringify({ foods, name });
   const config = {
     headers: {

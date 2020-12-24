@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import CustomButton from '../../components/UI/CustomButton';
 import * as foodsActions from '../../store/actions/foods';
+import * as authActions from '../../store/actions/auth';
 import Colors from '../../constants/Colors';
 
 const CurrentList = (props) => {
@@ -72,12 +73,24 @@ const CurrentList = (props) => {
   let loadedListId;
   let loadedListName;
   let loadedFoodsList;
-  let lastGroceryList;
-  let lastGroceryListName;
+  let lastModifiedList;
+  let lastModifiedListName;
   let listFoods = []; //listFoods will depend on whether a saved list (listLoaded) is chosen
   let listFoodsName;
   let listFoodsId;
   let foodItemsData = [];
+
+  //look for the latest lastModified grocery list
+  const sortLastModified = (lists) => {
+    for (let i = 0; i < lists.length - 1; i++) {
+      for (let j = 0; j < lists.length - 1; j++) {
+        if (lists[j].lastModifiedAt < lists[j + 1].lastModifiedAt) {
+          [lists[j + 1], lists[j]] = [lists[j], lists[j + 1]];
+        }
+      }
+    }
+    return lists[0];
+  };
 
   if (listLoaded && !isLoading) {
     loadedListId = listLoaded.listId;
@@ -87,11 +100,11 @@ const CurrentList = (props) => {
     listFoodsName = loadedFoodsList.name;
     listFoodsId = loadedFoodsList._id;
   } else if (!listLoaded && !isLoading) {
-    lastGroceryList = groceryLists[groceryLists.length - 1];
-    lastGroceryListName = lastGroceryList.name;
-    listFoods = lastGroceryList.groceryListArray; //default list user's latest list
-    listFoodsName = lastGroceryList.name;
-    listFoodsId = lastGroceryList._id;
+    lastModifiedList = sortLastModified(groceryLists);
+    lastModifiedListName = lastModifiedList.name;
+    listFoods = lastModifiedList.groceryListArray; //default list user's latest modified list
+    listFoodsName = lastModifiedList.name;
+    listFoodsId = lastModifiedList._id;
   }
 
   const foodItemsDataFn = (list, foods) => {
@@ -222,7 +235,7 @@ const CurrentList = (props) => {
             keyboardType="default"
             autoCapitalize="none"
             maxLength={25}
-            value={search}
+            value={search.toLowerCase()}
             onChangeText={(value) => setSearch(value)}
             style={styles.searchTextInput}
           />
@@ -344,7 +357,7 @@ const CurrentList = (props) => {
                     setListName(null);
                   }}
                 >
-                  <Text style={styles.smallButtonText}>Update</Text>
+                  <Text style={styles.smallButtonText}>Save</Text>
                 </CustomButton>
                 <CustomButton
                   color={Colors.greenText}
