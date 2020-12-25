@@ -1,9 +1,7 @@
-import { useIsFocused } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   View,
   Text,
-  Button,
   FlatList,
   ActivityIndicator,
   StyleSheet,

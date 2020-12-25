@@ -4,6 +4,7 @@ export const ADD_FAV = 'ADD_FAV';
 export const GET_FAVS = 'ADD_FAVS';
 export const DEL_FAV = 'DEL_FAV';
 export const SAVE_LIST = 'SAVE_LIST';
+export const GET_MUTABLE_LISTS = 'GET_MUTABLE_LISTS';
 export const GET_LISTS = 'GET_LISTS';
 export const LOAD_LIST = 'LOAD_LIST';
 export const DEL_LIST = 'DEL_LIST';

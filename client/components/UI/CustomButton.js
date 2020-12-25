@@ -16,11 +16,8 @@ const CustomButton = (props) => {
     : TouchableOpacity;
 
   return (
-    <View style={styles.androidCustomButton}>
-      <TouchableCmp
-        style={{ ...styles.customButton, ...props.style }}
-        onPress={props.onSelect}
-      >
+    <View style={styles.customButton}>
+      <TouchableCmp style={{ ...props.style }} onPress={props.onSelect}>
         {props.children}
       </TouchableCmp>
     </View>
@@ -29,15 +26,6 @@ const CustomButton = (props) => {
 
 const styles = StyleSheet.create({
   customButton: {
-    // backgroundColor: Colors.greenText,
-    // borderRadius: 10,
-    // shadowColor: '#aaa',
-    // shadowOpacity: 0.3,
-    // shadowOffset: { width: 0, height: 3 },
-    // shadowRadius: 5,
-    // elevation: 3,
-  },
-  androidCustomButton: {
     backgroundColor: Colors.greenText,
     borderRadius: 10,
     shadowColor: '#888',
