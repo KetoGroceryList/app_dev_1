@@ -18,12 +18,15 @@ import { Ionicons } from '@expo/vector-icons';
 
 import CustomButton from '../../components/UI/CustomButton';
 import * as foodsActions from '../../store/actions/foods';
-import * as authActions from '../../store/actions/auth';
 import Colors from '../../constants/Colors';
 
 const CurrentList = (props) => {
   const foods = useSelector((state) => state.foods.foods);
   const groceryLists = useSelector((state) => state.foods.groceryLists);
+  const mutableGroceryLists = useSelector(
+    (state) => state.foods.mutableGroceryLists
+  );
+
   let listLoaded = props.route.params;
 
   const [search, setSearch] = useState('');
@@ -100,7 +103,7 @@ const CurrentList = (props) => {
     listFoodsName = loadedFoodsList.name;
     listFoodsId = loadedFoodsList._id;
   } else if (!listLoaded && !isLoading) {
-    lastModifiedList = sortLastModified(groceryLists);
+    lastModifiedList = sortLastModified(mutableGroceryLists);
     lastModifiedListName = lastModifiedList.name;
     listFoods = lastModifiedList.groceryListArray; //default list user's latest modified list
     listFoodsName = lastModifiedList.name;
@@ -330,9 +333,7 @@ const CurrentList = (props) => {
         <Modal animationType="fade" transparent={true} visible={modalVisible}>
           <View style={styles.centered}>
             <View style={styles.modalView}>
-              <Text style={styles.modalLabel}>
-                To save to new list, click 'Save As'
-              </Text>
+              <Text style={styles.modalLabel}>Save your list</Text>
               <TextInput
                 id="listName"
                 keyboardType="default"
@@ -359,16 +360,18 @@ const CurrentList = (props) => {
                 >
                   <Text style={styles.smallButtonText}>Save</Text>
                 </CustomButton>
-                <CustomButton
-                  color={Colors.greenText}
-                  onSelect={() => {
-                    saveNewListHandler(foodItemsData, listName);
-                    setModalVisible(!modalVisible);
-                    setListName(null);
-                  }}
-                >
-                  <Text style={styles.smallButtonText}>Save as</Text>
-                </CustomButton>
+                {groceryLists.length < 10 ? (
+                  <CustomButton
+                    color={Colors.greenText}
+                    onSelect={() => {
+                      saveNewListHandler(foodItemsData, listName);
+                      setModalVisible(!modalVisible);
+                      setListName(null);
+                    }}
+                  >
+                    <Text style={styles.smallButtonText}>Save as</Text>
+                  </CustomButton>
+                ) : null}
                 <CustomButton
                   color={Colors.greenText}
                   onSelect={() => {

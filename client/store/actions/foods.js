@@ -6,7 +6,7 @@ import {
   DEL_FAV,
   SAVE_LIST,
   GET_LISTS,
-  LOAD_LIST,
+  GET_MUTABLE_LISTS,
   DEL_LIST,
 } from '../types';
 
@@ -179,13 +179,18 @@ export const getSavedLists = () => {
         throw new Error('Something went wrong');
       }
 
-      //returning an array of objects,
-      //each object is an array of food Id's, representing a grocery list
-      const groceryLists = await response.data.data;
+      const data = await response.data.data;
+
+      const groceryLists = data;
+      const mutableGroceryLists = JSON.parse(JSON.stringify(data));
 
       dispatch({
         type: GET_LISTS,
         foods: groceryLists,
+      });
+      dispatch({
+        type: GET_MUTABLE_LISTS,
+        foods: mutableGroceryLists,
       });
     } catch (err) {
       throw err;
@@ -193,11 +198,11 @@ export const getSavedLists = () => {
   };
 };
 
-export const loadCurrentList = (listId) => {
+export const saveCurrentList = (list) => {
   return (dispatch) => {
     dispatch({
-      type: LOAD_LIST,
-      id: listId,
+      type: SAVE_CURRENT_LIST,
+      foods: list,
     });
   };
 };
