@@ -5,6 +5,7 @@ import {
   DEL_FAV,
   SAVE_LIST,
   GET_MUTABLE_LISTS,
+  RESTORE_MUTABLE_LIST,
   GET_LISTS,
   DEL_LIST,
 } from '../types';
@@ -49,6 +50,11 @@ export default (state = initialState, action) => {
         groceryLists: action.foods,
       };
     case GET_MUTABLE_LISTS:
+      return {
+        ...state,
+        mutableGroceryLists: action.foods,
+      };
+    case RESTORE_MUTABLE_LIST:
       return {
         ...state,
         mutableGroceryLists: action.foods,

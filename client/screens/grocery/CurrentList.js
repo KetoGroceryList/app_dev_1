@@ -98,7 +98,9 @@ const CurrentList = (props) => {
   if (listLoaded && !isLoading) {
     loadedListId = listLoaded.listId;
     loadedListName = listLoaded.listName;
-    loadedFoodsList = groceryLists.find((list) => list._id === loadedListId);
+    loadedFoodsList = mutableGroceryLists.find(
+      (list) => list._id === loadedListId
+    );
     listFoods = loadedFoodsList.groceryListArray; //if user loads a saved list
     listFoodsName = loadedFoodsList.name;
     listFoodsId = loadedFoodsList._id;
@@ -290,7 +292,7 @@ const CurrentList = (props) => {
                 <View style={styles.listItemContainerChecks}>
                   <Ionicons
                     name="basket-outline"
-                    style={{ marginRight: 7 }}
+                    style={{ marginRight: 7, opacity: 0.7 }}
                     size={36}
                     onPress={() => {
                       fadedItems.includes(itemData.item._id)
@@ -300,6 +302,7 @@ const CurrentList = (props) => {
                   />
                   <Ionicons
                     name="close-circle-outline"
+                    style={{ opacity: 0.7 }}
                     size={36}
                     onPress={() => removeFromListHandler(itemData.item.name)}
                   />
@@ -402,7 +405,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   listText: {
-    color: Colors.greenText,
+    fontSize: 24,
+    fontFamily: 'open-sans',
+    color: '#111',
   },
   container: {
     flex: 4,
@@ -485,10 +490,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-end',
     top: -6,
-  },
-  listText: {
-    fontSize: 24,
-    fontFamily: 'open-sans',
   },
   bottomSection: {
     height: 50,

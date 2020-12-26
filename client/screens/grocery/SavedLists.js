@@ -34,16 +34,16 @@ const SavedLists = (props) => {
         data={groceryLists}
         keyExtractor={(item) => item._id}
         renderItem={(itemData) => (
-          <TouchableCmp
-            onPress={() =>
-              selectListHandler(itemData.item._id, itemData.item.name)
-            }
-            useForeground
-          >
-            <View style={styles.listLabel}>
+          <View style={styles.listLabel}>
+            <CustomButton
+              onSelect={() =>
+                selectListHandler(itemData.item._id, itemData.item.name)
+              }
+              useForeground
+            >
               <Text style={styles.listText}>{itemData.item.name}</Text>
-            </View>
-          </TouchableCmp>
+            </CustomButton>
+          </View>
         )}
       />
     </View>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   listText: {
     fontSize: 20,
-    paddingVertical: 10,
+    paddingVertical: 12,
     textAlign: 'center',
     fontFamily: 'open-sans-bold',
     color: 'white',
