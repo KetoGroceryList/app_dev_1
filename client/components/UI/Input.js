@@ -28,6 +28,7 @@ const Input = (props) => {
   });
 
   const { onInputChange, id } = props;
+  console.log(inputState);
 
   useEffect(() => {
     //onInputChange is only triggered when onBlur
@@ -93,6 +94,8 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   input: {
+    fontSize: 18,
+    fontFamily: 'open-sans',
     paddingHorizontal: 2,
     paddingVertical: 5,
     borderBottomColor: '#ccc',

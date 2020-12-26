@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,13 @@ import * as foodsAction from '../../store/actions/foods';
 const SavedListDetails = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(undefined);
+
+  useEffect(() => {
+    const restore = async () => {
+      await dispatch(foodsAction.restoreMutableList());
+    };
+    restore();
+  }, []);
 
   const listId = props.route.params.id;
 
@@ -91,11 +98,8 @@ const SavedListDetails = (props) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ marginVertical: 5 }}>
-        <CustomButton
-          style={styles.useThisButton}
-          onSelect={() => bringListIdToFront(listId, listName)}
-        >
+      <View style={{ marginVertical: 5, marginBottom: 10 }}>
+        <CustomButton onSelect={() => bringListIdToFront(listId, listName)}>
           <Text style={styles.buttonText}>Use this list</Text>
         </CustomButton>
       </View>
@@ -105,7 +109,7 @@ const SavedListDetails = (props) => {
         renderItem={(itemData) => (
           <View style={styles.listFoodContainer}>
             <Text
-              style={styles.listFoodText}
+              style={styles.listText}
               onPress={() => selectFoodDetailsHandler(itemData.item.name)}
             >
               {itemData.item.name}
@@ -144,13 +148,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 20,
   },
-  useThisButton: {},
   listFoodContainer: {
     marginVertical: 5,
   },
-  listFoodText: {
-    fontSize: 20,
+  listText: {
+    fontSize: 24,
     fontFamily: 'open-sans',
+    color: '#111',
   },
   buttonContainer: {
     marginBottom: 20,

@@ -7,6 +7,7 @@ import {
   SAVE_LIST,
   GET_LISTS,
   GET_MUTABLE_LISTS,
+  RESTORE_MUTABLE_LIST,
   DEL_LIST,
 } from '../types';
 
@@ -191,6 +192,29 @@ export const getSavedLists = () => {
       dispatch({
         type: GET_MUTABLE_LISTS,
         foods: mutableGroceryLists,
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+};
+
+export const restoreMutableList = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        'http://192.168.0.197:5000/api/groceryList'
+      );
+
+      if (!response) {
+        throw new Error('Something went wrong');
+      }
+
+      const groceryLists = await response.data.data;
+
+      dispatch({
+        type: RESTORE_MUTABLE_LIST,
+        foods: groceryLists,
       });
     } catch (err) {
       throw err;
