@@ -28,7 +28,6 @@ const Input = (props) => {
   });
 
   const { onInputChange, id } = props;
-  console.log(inputState);
 
   useEffect(() => {
     //onInputChange is only triggered when onBlur

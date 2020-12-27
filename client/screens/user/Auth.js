@@ -54,6 +54,7 @@ const Auth = (props) => {
       name: '',
       email: '',
       password: '',
+      password2: '',
     },
     inputValidities: {
       name: false,
@@ -72,6 +73,14 @@ const Auth = (props) => {
   const authHandler = async () => {
     let action;
     if (isSignup) {
+      if (formState.inputValues.password !== formState.inputValues.password2) {
+        Alert.alert(
+          'Password Invalid',
+          'Please make sure your confirm password is identical to your password',
+          [{ text: 'Okay' }]
+        );
+        return;
+      }
       action = authActions.register(
         formState.inputValues.name,
         formState.inputValues.email,
@@ -83,7 +92,6 @@ const Auth = (props) => {
         formState.inputValues.password
       );
     }
-
     setError(null);
     setIsLoading(true);
     try {
@@ -155,6 +163,19 @@ const Auth = (props) => {
               required
               style={styles.textInput}
             />
+            <Input
+              id="password2"
+              label="confirm password"
+              keyboardType="default"
+              secureTextEntry
+              autoCapitalize="none"
+              minLength={6}
+              errorText="Please confirm your password"
+              onInputChange={inputChangeHandler}
+              initialValue=""
+              required
+              style={styles.textInput}
+            />
             <View style={styles.buttonGroupContainer}>
               <View style={styles.buttonContainer}>
                 <CustomButton onSelect={authHandler}>
@@ -209,8 +230,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   textInput: {
-    height: 24,
-    marginVertical: 10,
+    height: 22,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     fontSize: 16,
