@@ -90,7 +90,7 @@ const Profile = (props) => {
                 color={Colors.greenText}
                 onSelect={() => console.log('saving profile')}
               >
-                <Text style={styles.buttonText}>Save</Text>
+                <Text style={styles.buttonText}>Save Profile</Text>
               </CustomButton>
             </View>
           </ScrollView>
