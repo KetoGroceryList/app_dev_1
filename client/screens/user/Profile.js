@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import CustomButton from '../../components/UI/CustomButton';
 import Input from '../../components/UI/Input';
+import Card from '../../components/UI/Card';
 import * as authActions from '../../store/actions/auth';
 import * as userActions from '../../store/actions/user';
 import Colors from '../../constants/Colors';
@@ -45,52 +46,57 @@ const Profile = (props) => {
       style={styles.screen}
     >
       <View style={styles.profileContainer}>
-        <Text style={styles.profileText}>name: {user ? user.name : null}</Text>
-        <Text style={styles.profileText}>
-          email: {user ? user.email : null}
-        </Text>
-        <ScrollView>
-          <Input
-            id="name"
-            label="name"
-            keyboardType="default"
-            autoCapitalize="none"
-            errorMessage="Please enter a name"
-            onInputChange={() => {}}
-            initialValue={user ? user.name : null}
-          />
-          <Input
-            id="email"
-            label="e-mail"
-            keyboardType="email-address"
-            email
-            autoCapitalize="none"
-            errorMessage="Please enter a valid email address"
-            onInputChange={() => {}}
-            initialValue={user ? user.email : null}
-          />
-          <Input
-            id="password"
-            label="password"
-            keyboardType="default"
-            secureTextEntry
-            minLength={6}
-            autoCapitalize="none"
-            errorMessage="Please enter a password"
-            onInputChange={() => {}}
-            initialValue="password-string"
-          />
-          <View style={{ marginTop: 14 }}>
-            <CustomButton
-              color={Colors.greenText}
-              onSelect={() => console.log('saving profile')}
-            >
-              <Text style={styles.buttonText}>Update Profile</Text>
-            </CustomButton>
-          </View>
-        </ScrollView>
+        <View style={styles.profileDetails}>
+          <Text style={styles.profileLabel}>Profile Info</Text>
+          <Text style={styles.profileText}>{user ? user.name : null}</Text>
+          <Text style={styles.profileText}>{user ? user.email : null}</Text>
+        </View>
+        <View style={styles.line}></View>
+        <Card style={styles.profileUpdateContainer}>
+          <Text style={styles.profileLabel}>Update Profile</Text>
+          <ScrollView style={{ width: '80%', marginVertical: 15 }}>
+            <Input
+              id="name"
+              label="name"
+              keyboardType="default"
+              autoCapitalize="none"
+              errorMessage="Please enter a name"
+              onInputChange={() => {}}
+              initialValue={user ? user.name : null}
+            />
+            <Input
+              id="email"
+              label="e-mail"
+              keyboardType="email-address"
+              email
+              autoCapitalize="none"
+              errorMessage="Please enter a valid email address"
+              onInputChange={() => {}}
+              initialValue={user ? user.email : null}
+            />
+            <Input
+              id="password"
+              label="password"
+              keyboardType="default"
+              secureTextEntry
+              minLength={6}
+              autoCapitalize="none"
+              errorMessage="Please enter a password"
+              onInputChange={() => {}}
+              initialValue="password-string"
+            />
+            <View style={{ marginVertical: 10 }}>
+              <CustomButton
+                color={Colors.greenText}
+                onSelect={() => console.log('saving profile')}
+              >
+                <Text style={styles.buttonText}>Save</Text>
+              </CustomButton>
+            </View>
+          </ScrollView>
+        </Card>
       </View>
-      <View>
+      <View style={{ marginBottom: 10 }}>
         <View style={styles.buttonContainer}>
           <CustomButton
             color={Colors.greenText}
@@ -125,8 +131,24 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     flex: 1,
-    marginVertical: 15,
-    justifyContent: 'center',
+    width: 300,
+    alignItems: 'center',
+  },
+  profileDetails: {
+    width: '80%',
+    marginVertical: 20,
+  },
+  profileLabel: {
+    fontFamily: 'open-sans-bold',
+    marginVertical: 10,
+    fontSize: 20,
+    alignSelf: 'center',
+  },
+  line: {
+    width: '100%',
+    borderTopColor: '#ccc',
+    borderTopWidth: 1,
+    paddingBottom: 12,
   },
   profileText: {
     fontSize: 18,
@@ -134,6 +156,12 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginVertical: 4,
+  },
+  profileUpdateContainer: {
+    width: 300,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     fontSize: 18,
