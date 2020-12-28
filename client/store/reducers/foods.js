@@ -5,9 +5,11 @@ import {
   DEL_FAV,
   SAVE_LIST,
   GET_MUTABLE_LISTS,
-  RESTORE_MUTABLE_LIST,
+  RESTORE_MUTABLE_LISTS,
   GET_LISTS,
   DEL_LIST,
+  SET_CURRENT_LIST,
+  ADD_TO_CURR_MUTABLE_LISTS,
 } from '../types';
 
 const initialState = {
@@ -15,6 +17,7 @@ const initialState = {
   favFoods: [],
   groceryLists: [],
   mutableGroceryLists: [],
+  currentListId: '',
 };
 
 export default (state = initialState, action) => {
@@ -54,7 +57,7 @@ export default (state = initialState, action) => {
         ...state,
         mutableGroceryLists: action.foods,
       };
-    case RESTORE_MUTABLE_LIST:
+    case RESTORE_MUTABLE_LISTS:
       return {
         ...state,
         mutableGroceryLists: action.foods,
@@ -63,6 +66,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         groceryLists: action.foods,
+      };
+    case SET_CURRENT_LIST:
+      return {
+        ...state,
+        currentListId: action.id,
+      };
+    case ADD_TO_CURR_MUTABLE_LISTS:
+      return {
+        ...state,
+        mutableGroceryLists: action.foods,
       };
   }
   return state;
