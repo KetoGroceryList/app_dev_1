@@ -7,8 +7,10 @@ import {
   SAVE_LIST,
   GET_LISTS,
   GET_MUTABLE_LISTS,
-  RESTORE_MUTABLE_LIST,
+  RESTORE_MUTABLE_LISTS,
+  SET_CURRENT_LIST,
   DEL_LIST,
+  ADD_TO_CURR_MUTABLE_LISTS,
 } from '../types';
 
 export const getFoods = () => {
@@ -213,7 +215,7 @@ export const restoreMutableList = () => {
       const groceryLists = await response.data.data;
 
       dispatch({
-        type: RESTORE_MUTABLE_LIST,
+        type: RESTORE_MUTABLE_LISTS,
         foods: groceryLists,
       });
     } catch (err) {
@@ -227,6 +229,26 @@ export const saveCurrentList = (list) => {
     dispatch({
       type: SAVE_CURRENT_LIST,
       foods: list,
+    });
+  };
+};
+
+export const setCurrentList = (id) => {
+  return (dispatch) => {
+    dispatch({
+      type: SET_CURRENT_LIST,
+      id: id,
+    });
+  };
+};
+
+export const addFoodToCurrMutableList = (lists, id) => {
+  return (dispatch) => {
+    console.log(lists, id);
+
+    dispatch({
+      type: ADD_TO_CURR_MUTABLE_LISTS,
+      foods: lists,
     });
   };
 };

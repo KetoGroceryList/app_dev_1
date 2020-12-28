@@ -101,11 +101,15 @@ const CurrentList = (props) => {
     loadedFoodsList = mutableGroceryLists.find(
       (list) => list._id === loadedListId
     );
+    //currentList = loadedListId
+    dispatch(foodsActions.setCurrentList(loadedListId));
     listFoods = loadedFoodsList.groceryListArray; //if user loads a saved list
     listFoodsName = loadedFoodsList.name;
     listFoodsId = loadedFoodsList._id;
   } else if (!listLoaded && !isLoading) {
     lastModifiedList = sortLastModified(mutableGroceryLists);
+    //currentList = lastModifiedList
+    dispatch(foodsActions.setCurrentList(lastModifiedList._id));
     lastModifiedListName = lastModifiedList.name;
     listFoods = lastModifiedList.groceryListArray; //default list user's latest modified list
     listFoodsName = lastModifiedList.name;

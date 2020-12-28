@@ -26,7 +26,7 @@ exports.addFavFood = asyncHandler(async (req, res, next) => {
     }
   }
 
-  favFoods.favFoodsArray.push(food);
+  favFoods.favFoodsArray.push(food._id);
   favFoods.save();
 
   res.status(200).json({

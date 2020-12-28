@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { PieChart } from 'react-native-svg-charts';
@@ -15,11 +15,24 @@ const FoodDetails = (props) => {
     state.foods.foods.find((food) => food.name === foodName)
   );
   const favFoods = useSelector((state) => state.foods.favFoods);
+  const currentListId = useSelector((state) => state.foods.currentListId);
+  const mutableGroceryLists = useSelector(
+    (state) => state.foods.mutableGroceryLists
+  );
+
+  const currentList = mutableGroceryLists.find(
+    (list) => list._id === currentListId
+  );
 
   let favOrNot = false;
+  let onListOrNot = false;
 
   if (favFoods.includes(selectedFood._id)) {
     favOrNot = true;
+  }
+
+  if (currentList.groceryListArray.includes(selectedFood._id)) {
+    onListOrNot = true;
   }
 
   const dispatch = useDispatch();
@@ -30,6 +43,16 @@ const FoodDetails = (props) => {
     } else {
       dispatch(foodActions.deleteFav(id));
     }
+  };
+
+  const addFoodToCurrentList = (lists, id) => {
+    currentList.groceryListArray.push(selectedFood._id);
+    for (let i = 0; i < lists.length; i++) {
+      if (lists._id === currentList._id) {
+        lists.groceryListArray === currentList.groceryListArray;
+      }
+    }
+    dispatch(foodActions.addFoodToCurrMutableList(lists, id));
   };
 
   const data = [
@@ -91,6 +114,19 @@ const FoodDetails = (props) => {
               </Text>
             </CustomButton>
           </View>
+          {!onListOrNot ? (
+            <View style={{ marginTop: 12 }}>
+              <CustomButton
+                onSelect={() =>
+                  addFoodToCurrentList(mutableGroceryLists, selectedFood._id)
+                }
+              >
+                <Text style={styles.buttonText}>
+                  Add to today's grocery list
+                </Text>
+              </CustomButton>
+            </View>
+          ) : null}
         </View>
         <View style={styles.legendContainer}>
           <View style={styles.legendInnerContainer}>
