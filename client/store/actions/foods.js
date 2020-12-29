@@ -9,6 +9,7 @@ import {
   GET_MUTABLE_LISTS,
   RESTORE_MUTABLE_LISTS,
   SET_CURRENT_LIST,
+  CLEAR_CURRENT_LIST,
   DEL_LIST,
   ADD_TO_CURR_MUTABLE_LISTS,
 } from '../types';
@@ -242,9 +243,14 @@ export const setCurrentList = (id) => {
   };
 };
 
-export const addFoodToCurrMutableList = (lists, id) => {
+export const addFoodToCurrMutableList = (lists, currentList, foodId) => {
   return (dispatch) => {
-    console.log(lists, id);
+    currentList.groceryListArray = [...currentList.groceryListArray, foodId];
+    for (let i = 0; i < lists.length; i++) {
+      if (lists[i]._id === currentList._id) {
+        lists[i].groceryListArray === currentList.groceryListArray;
+      }
+    }
 
     dispatch({
       type: ADD_TO_CURR_MUTABLE_LISTS,
