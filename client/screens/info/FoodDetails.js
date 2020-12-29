@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { PieChart } from 'react-native-svg-charts';
 import * as svg from 'react-native-svg';
@@ -10,6 +17,9 @@ import * as foodActions from '../../store/actions/foods';
 import Colors from '../../constants/Colors';
 
 const FoodDetails = (props) => {
+  const [toReload, setToReLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const foodName = props.route.params.name;
   const selectedFood = useSelector((state) =>
     state.foods.foods.find((food) => food.name === foodName)
@@ -45,14 +55,11 @@ const FoodDetails = (props) => {
     }
   };
 
-  const addFoodToCurrentList = (lists, id) => {
-    currentList.groceryListArray.push(selectedFood._id);
-    for (let i = 0; i < lists.length; i++) {
-      if (lists._id === currentList._id) {
-        lists.groceryListArray === currentList.groceryListArray;
-      }
-    }
-    dispatch(foodActions.addFoodToCurrMutableList(lists, id));
+  const addFoodToCurrMutableListHandler = (lists, currentList, foodId) => {
+    dispatch(foodActions.addFoodToCurrMutableList(lists, currentList, foodId));
+    props.navigation.navigate('Current List', {
+      mutableGroceryLists,
+    });
   };
 
   const data = [
@@ -101,6 +108,14 @@ const FoodDetails = (props) => {
     });
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#ccc" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView>
       <View style={{ backgroundColor: '#fff' }}>
@@ -118,7 +133,11 @@ const FoodDetails = (props) => {
             <View style={{ marginTop: 12 }}>
               <CustomButton
                 onSelect={() =>
-                  addFoodToCurrentList(mutableGroceryLists, selectedFood._id)
+                  addFoodToCurrMutableListHandler(
+                    mutableGroceryLists,
+                    currentList,
+                    selectedFood._id
+                  )
                 }
               >
                 <Text style={styles.buttonText}>

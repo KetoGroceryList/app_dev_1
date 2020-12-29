@@ -9,6 +9,7 @@ import {
   GET_LISTS,
   DEL_LIST,
   SET_CURRENT_LIST,
+  CLEAR_CURRENT_LIST,
   ADD_TO_CURR_MUTABLE_LISTS,
 } from '../types';
 

@@ -10,6 +10,7 @@ export const GET_LISTS = 'GET_LISTS';
 export const LOAD_LIST = 'LOAD_LIST';
 export const DEL_LIST = 'DEL_LIST';
 export const SET_CURRENT_LIST = 'SET_CURRENT_LIST';
+export const CLEAR_CURRENT_LIST = 'CLEAR_CURRENT_LIST';
 export const ADD_TO_CURR_MUTABLE_LISTS = 'ADD_TO_CURR_MUTABLE_LISTS';
 
 //User

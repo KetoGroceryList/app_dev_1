@@ -23,11 +23,23 @@ import Colors from '../../constants/Colors';
 const CurrentList = (props) => {
   const foods = useSelector((state) => state.foods.foods);
   const groceryLists = useSelector((state) => state.foods.groceryLists);
-  const mutableGroceryLists = useSelector(
+  let mutableGroceryLists = useSelector(
     (state) => state.foods.mutableGroceryLists
   );
+  const currentListId = useSelector((state) => state.foods.currentListId);
+  console.log(currentListId);
 
-  let listLoaded = props.route.params;
+  let listLoaded;
+
+  const dispatch = useDispatch();
+
+  if (props.route.params) {
+    if (props.route.params.listId) {
+      listLoaded = props.route.params;
+    } else if (props.route.params.mutableGroceryLists) {
+      mutableGroceryLists = mutableGroceryLists;
+    }
+  }
 
   const [search, setSearch] = useState('');
   const [foodSelection, setFoodSelection] = useState(null);
@@ -39,8 +51,6 @@ const CurrentList = (props) => {
   const [listName, setListName] = useState(null);
 
   const windowHeight = useWindowDimensions().height;
-
-  const dispatch = useDispatch();
 
   const loadData = async () => {
     setError(null);
@@ -101,20 +111,22 @@ const CurrentList = (props) => {
     loadedFoodsList = mutableGroceryLists.find(
       (list) => list._id === loadedListId
     );
-    //currentList = loadedListId
-    dispatch(foodsActions.setCurrentList(loadedListId));
     listFoods = loadedFoodsList.groceryListArray; //if user loads a saved list
     listFoodsName = loadedFoodsList.name;
     listFoodsId = loadedFoodsList._id;
   } else if (!listLoaded && !isLoading) {
     lastModifiedList = sortLastModified(mutableGroceryLists);
-    //currentList = lastModifiedList
-    dispatch(foodsActions.setCurrentList(lastModifiedList._id));
     lastModifiedListName = lastModifiedList.name;
     listFoods = lastModifiedList.groceryListArray; //default list user's latest modified list
     listFoodsName = lastModifiedList.name;
     listFoodsId = lastModifiedList._id;
   }
+
+  useEffect(() => {
+    if (listFoodsId) {
+      dispatch(foodsActions.setCurrentList(listFoodsId));
+    }
+  }, [listFoodsId]);
 
   const foodItemsDataFn = (list, foods) => {
     for (let i = 0; i < list.length; i++) {
@@ -126,7 +138,12 @@ const CurrentList = (props) => {
       if (foodItemsData.length === list.length) return;
     }
   };
+
   foodItemsDataFn(listFoods, foods);
+
+  // useEffect(() => {
+  //   foodItemsDataFn(listFoods, foods);
+  // }, [mutableGroceryLists]);
 
   /** End of Main Logic */
 
