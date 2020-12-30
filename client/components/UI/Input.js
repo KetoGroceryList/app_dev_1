@@ -24,7 +24,7 @@ const Input = (props) => {
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: props.initialValue ? props.initialValue : '',
     isValid: props.initiallyValid,
-    touched: false,
+    touched: props.initialValue ? true : false,
   });
 
   const { onInputChange, id } = props;
@@ -74,6 +74,7 @@ const Input = (props) => {
         value={inputState.value}
         onChangeText={textChangeHandler}
         onBlur={lostFocusHandler}
+        returnKeyType="next"
       />
       {!inputState.isValid && inputState.touched && (
         <View style={styles.errorContainer}>
