@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   ScrollView,
-  Button,
   TextInput,
   Alert,
   ActivityIndicator,
@@ -26,13 +25,14 @@ const CurrentList = (props) => {
   let mutableGroceryLists = useSelector(
     (state) => state.foods.mutableGroceryLists
   );
-  const currentListId = useSelector((state) => state.foods.currentListId);
-  console.log(currentListId);
+  // const currentListId = useSelector((state) => state.foods.currentListId);
+  // console.log(currentListId);
 
   let listLoaded;
 
   const dispatch = useDispatch();
 
+  //which route.params should component use
   if (props.route.params) {
     if (props.route.params.listId) {
       listLoaded = props.route.params;
@@ -83,15 +83,12 @@ const CurrentList = (props) => {
   }, [search]);
 
   /** Main Logic To Load Grocery List*/
-  let loadedListId;
-  let loadedListName;
   let loadedFoodsList;
   let lastModifiedList;
-  let lastModifiedListName;
   let listFoods = []; //listFoods will depend on whether a saved list (listLoaded) is chosen
   let listFoodsName;
   let listFoodsId;
-  let foodItemsData = [];
+  let foodItemsData = []; //data for Flatlist in JSX
 
   //look for the latest lastModified grocery list
   const sortLastModified = (lists) => {
@@ -106,18 +103,15 @@ const CurrentList = (props) => {
   };
 
   if (listLoaded && !isLoading) {
-    loadedListId = listLoaded.listId;
-    loadedListName = listLoaded.listName;
     loadedFoodsList = mutableGroceryLists.find(
-      (list) => list._id === loadedListId
+      (list) => list._id === listLoaded.listId
     );
     listFoods = loadedFoodsList.groceryListArray; //if user loads a saved list
     listFoodsName = loadedFoodsList.name;
     listFoodsId = loadedFoodsList._id;
   } else if (!listLoaded && !isLoading) {
     lastModifiedList = sortLastModified(mutableGroceryLists);
-    lastModifiedListName = lastModifiedList.name;
-    listFoods = lastModifiedList.groceryListArray; //default list user's latest modified list
+    listFoods = lastModifiedList.groceryListArray; //default list - user's latest modified list
     listFoodsName = lastModifiedList.name;
     listFoodsId = lastModifiedList._id;
   }
@@ -140,10 +134,6 @@ const CurrentList = (props) => {
   };
 
   foodItemsDataFn(listFoods, foods);
-
-  // useEffect(() => {
-  //   foodItemsDataFn(listFoods, foods);
-  // }, [mutableGroceryLists]);
 
   /** End of Main Logic */
 
@@ -229,11 +219,13 @@ const CurrentList = (props) => {
       <View style={styles.centered}>
         <Text>An error occurred.</Text>
         <View style={{ margin: 5 }}>
-          <Button
+          <CustomButton
             title="Try again"
-            onPress={loadData}
+            onSelect={loadData}
             color={Colors.greenText}
-          />
+          >
+            <Text style={styles.buttonText}>Try Again</Text>
+          </CustomButton>
         </View>
       </View>
     );
@@ -257,7 +249,6 @@ const CurrentList = (props) => {
         <View style={styles.searchInputContainer}>
           <Text style={styles.searchLabel}>Search Food</Text>
           <TextInput
-            id="search"
             keyboardType="default"
             autoCapitalize="none"
             maxLength={25}

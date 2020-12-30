@@ -15,6 +15,7 @@ export const ADD_TO_CURR_MUTABLE_LISTS = 'ADD_TO_CURR_MUTABLE_LISTS';
 
 //User
 export const GET_USER = 'GET_USER';
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
 //Authentication
 export const AUTHENTICATE = 'AUTHENTICATE';

@@ -98,8 +98,8 @@ const Auth = (props) => {
       await dispatch(action);
     } catch (err) {
       setError(err.message);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   const inputChangeHandler = useCallback(
@@ -163,19 +163,21 @@ const Auth = (props) => {
               required
               style={styles.textInput}
             />
-            <Input
-              id="password2"
-              label="confirm password"
-              keyboardType="default"
-              secureTextEntry
-              autoCapitalize="none"
-              minLength={6}
-              errorText="Please confirm your password"
-              onInputChange={inputChangeHandler}
-              initialValue=""
-              required
-              style={styles.textInput}
-            />
+            {isSignup ? (
+              <Input
+                id="password2"
+                label="confirm password"
+                keyboardType="default"
+                secureTextEntry
+                autoCapitalize="none"
+                minLength={6}
+                errorText="Please confirm your password"
+                onInputChange={inputChangeHandler}
+                initialValue=""
+                required
+                style={styles.textInput}
+              />
+            ) : null}
             <View style={styles.buttonGroupContainer}>
               <View style={styles.buttonContainer}>
                 <CustomButton onSelect={authHandler}>

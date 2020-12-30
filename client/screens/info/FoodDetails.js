@@ -57,6 +57,7 @@ const FoodDetails = (props) => {
 
   const addFoodToCurrMutableListHandler = (lists, currentList, foodId) => {
     dispatch(foodActions.addFoodToCurrMutableList(lists, currentList, foodId));
+    setToReLoad((prevState) => !prevState);
     props.navigation.navigate('Current List', {
       mutableGroceryLists,
     });

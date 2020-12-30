@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useReducer, useCallback } from 'react';
 import {
   View,
   Text,
+  Alert,
   ScrollView,
   KeyboardAvoidingView,
   ActivityIndicator,
@@ -11,18 +12,58 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import CustomButton from '../../components/UI/CustomButton';
 import Input from '../../components/UI/Input';
-import Card from '../../components/UI/Card';
 import * as authActions from '../../store/actions/auth';
 import * as userActions from '../../store/actions/user';
 import Colors from '../../constants/Colors';
 
+import { FORM_INPUT_UPDATE } from '../../store/types';
+
+const formReducer = (state, action) => {
+  if (action.type === FORM_INPUT_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      [action.input]: action.value,
+    };
+    const updatedValidities = {
+      ...state.inputValidities,
+      [action.input]: action.isValid,
+    };
+    let updatedFormIsValid = true;
+    for (const key in updatedValidities) {
+      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+    }
+    return {
+      formIsValid: updatedFormIsValid,
+      inputValues: updatedValues,
+      inputValidities: updatedValidities,
+    };
+  }
+  return state;
+};
+
 const Profile = (props) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [toReload, setToReLoad] = useState(false);
+  const [error, setError] = useState(null);
 
   const user = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
+
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      name: '',
+      email: '',
+      password: '',
+      password2: '',
+    },
+    inputValidities: {
+      name: false,
+      email: false,
+      password: false,
+    },
+    formIsValid: false,
+  });
+
   useEffect(() => {
     const getUser = async () => {
       await dispatch(userActions.getUser());
@@ -30,6 +71,44 @@ const Profile = (props) => {
     };
     getUser();
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An error occurred', error, [{ text: 'Okay' }]);
+    }
+  }, [error]);
+
+  const profileUpdateHandler = async () => {
+    console.log(formState);
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(
+        userActions.updateProfile(
+          formState.inputValues.name,
+          formState.inputValues.email
+        )
+      );
+      if (!error) {
+        Alert.alert('Profile updated', null, [{ text: 'Okay' }]);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+    setIsLoading(false);
+  };
+
+  const inputChangeHandler = useCallback(
+    (inputIdentifier, inputValue, inputValidity) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputIdentifier,
+      });
+    },
+    [dispatchFormState]
+  );
 
   if (isLoading) {
     return (
@@ -45,24 +124,19 @@ const Profile = (props) => {
       keyboardVerticalOffset={15}
       style={styles.screen}
     >
-      <View style={styles.profileContainer}>
-        <View style={styles.profileDetails}>
-          <Text style={styles.profileLabel}>Profile Info</Text>
-          <Text style={styles.profileText}>{user ? user.name : null}</Text>
-          <Text style={styles.profileText}>{user ? user.email : null}</Text>
-        </View>
-        <View style={styles.line}></View>
-        <Card style={styles.profileUpdateContainer}>
-          <Text style={styles.profileLabel}>Update Profile</Text>
-          <ScrollView style={{ width: '80%', marginVertical: 15 }}>
+      <View style={{ alignItems: 'center' }}>
+        <ScrollView style={{ width: '80%', marginVertical: 15 }}>
+          <View style={styles.container}>
+            <Text style={styles.profileLabel}>Update Profile</Text>
             <Input
               id="name"
               label="name"
               keyboardType="default"
               autoCapitalize="none"
-              errorMessage="Please enter a name"
-              onInputChange={() => {}}
+              errorText="Please enter name"
+              onInputChange={inputChangeHandler}
               initialValue={user ? user.name : null}
+              initiallyValid={!!user}
             />
             <Input
               id="email"
@@ -70,9 +144,10 @@ const Profile = (props) => {
               keyboardType="email-address"
               email
               autoCapitalize="none"
-              errorMessage="Please enter a valid email address"
-              onInputChange={() => {}}
+              errorText="Please enter valid email address"
+              onInputChange={inputChangeHandler}
               initialValue={user ? user.email : null}
+              initiallyValid={!!user}
             />
             <Input
               id="password"
@@ -81,42 +156,59 @@ const Profile = (props) => {
               secureTextEntry
               minLength={6}
               autoCapitalize="none"
-              errorMessage="Please enter a password"
-              onInputChange={() => {}}
-              initialValue="password-string"
+              errorText="Please enter password"
+              onInputChange={inputChangeHandler}
+              initialValue=""
+              required
+              style={styles.textInput}
+              initiallyValid={!!user}
             />
-            <View style={{ marginVertical: 10 }}>
+            <Input
+              id="password2"
+              label="confirm password"
+              keyboardType="default"
+              secureTextEntry
+              autoCapitalize="none"
+              minLength={6}
+              errorText="Please confirm your password"
+              onInputChange={inputChangeHandler}
+              initialValue=""
+              required
+              style={styles.textInput}
+              initiallyValid={!!user}
+            />
+            <View style={{ marginVertical: 20, width: 200 }}>
               <CustomButton
                 color={Colors.greenText}
-                onSelect={() => console.log('saving profile')}
+                onSelect={profileUpdateHandler}
               >
                 <Text style={styles.buttonText}>Save Profile</Text>
               </CustomButton>
             </View>
-          </ScrollView>
-        </Card>
-      </View>
-      <View style={{ marginBottom: 10 }}>
-        <View style={styles.buttonContainer}>
-          <CustomButton
-            color={Colors.greenText}
-            onSelect={() => {
-              props.navigation.navigate('Contact Us');
-            }}
-          >
-            <Text style={styles.buttonText}>Contact Us</Text>
-          </CustomButton>
-        </View>
-        <View style={styles.buttonContainer}>
-          <CustomButton
-            color={Colors.greenText}
-            onSelect={() => {
-              dispatch(authActions.logout());
-            }}
-          >
-            <Text style={styles.buttonText}>Logout</Text>
-          </CustomButton>
-        </View>
+          </View>
+          <View style={styles.container}>
+            <View style={styles.buttonContainer}>
+              <CustomButton
+                color={Colors.greenText}
+                onSelect={() => {
+                  props.navigation.navigate('Contact Us');
+                }}
+              >
+                <Text style={styles.buttonText}>Contact Us</Text>
+              </CustomButton>
+            </View>
+            <View style={styles.buttonContainer}>
+              <CustomButton
+                color={Colors.greenText}
+                onSelect={() => {
+                  dispatch(authActions.logout());
+                }}
+              >
+                <Text style={styles.buttonText}>Logout</Text>
+              </CustomButton>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     </KeyboardAvoidingView>
   );
@@ -129,11 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-  profileContainer: {
-    flex: 1,
-    width: 300,
-    alignItems: 'center',
-  },
+
   profileDetails: {
     width: '80%',
     marginVertical: 20,
@@ -155,9 +243,10 @@ const styles = StyleSheet.create({
     fontFamily: 'open-sans',
   },
   buttonContainer: {
+    width: 200,
     marginVertical: 4,
   },
-  profileUpdateContainer: {
+  container: {
     width: 300,
     marginVertical: 10,
     alignItems: 'center',

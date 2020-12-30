@@ -1,6 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AUTHENTICATE, SET_DID_TRY_AL, LOGOUT } from '../types';
+import { AUTHENTICATE, SET_DID_TRY_AL, UPDATE_PROFILE, LOGOUT } from '../types';
 
 let timer;
 const oneMonth = 30 * 24 * 60 * 60 * 1000;

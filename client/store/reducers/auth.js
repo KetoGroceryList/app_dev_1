@@ -1,4 +1,4 @@
-import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL } from '../types';
+import { AUTHENTICATE, LOGOUT, UPDATE_PROFILE, SET_DID_TRY_AL } from '../types';
 
 const initialState = {
   token: null,
