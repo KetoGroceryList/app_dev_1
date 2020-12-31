@@ -54,7 +54,6 @@ const Profile = (props) => {
       name: '',
       email: '',
       password: '',
-      password2: '',
     },
     inputValidities: {
       name: false,
@@ -79,14 +78,13 @@ const Profile = (props) => {
   }, [error]);
 
   const profileUpdateHandler = async () => {
-    console.log(formState);
     setError(null);
-    setIsLoading(true);
     try {
       await dispatch(
         userActions.updateProfile(
           formState.inputValues.name,
-          formState.inputValues.email
+          formState.inputValues.email,
+          formState.inputValues.password
         )
       );
       if (!error) {
@@ -163,7 +161,7 @@ const Profile = (props) => {
               style={styles.textInput}
               initiallyValid={!!user}
             />
-            <Input
+            {/* <Input
               id="password2"
               label="confirm password"
               keyboardType="default"
@@ -176,7 +174,7 @@ const Profile = (props) => {
               required
               style={styles.textInput}
               initiallyValid={!!user}
-            />
+            /> */}
             <View style={{ marginVertical: 20, width: 200 }}>
               <CustomButton
                 color={Colors.greenText}

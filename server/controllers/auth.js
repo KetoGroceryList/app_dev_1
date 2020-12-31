@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const FavFoods = require('../models/FavFoods');
 const ErrorResponse = require('../utils/errorResponse');
+const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 const asyncHandler = require('../middleware/async');
 const GroceryList = require('../models/GroceryList');
@@ -72,6 +73,77 @@ exports.getMe = asyncHandler(async (req, res, next) => {
   });
 });
 
+//desc    FORGOT Password
+//route   POST /api/auth/forgotpassword
+//access  public
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new ErrorResponse('There is no user with that email', 404));
+  }
+
+  //get reset token
+  const resetToken = user.getResetPasswordToken();
+
+  await user.save({ validateBeforeSave: false });
+  console.log(resetToken);
+
+  //create reset url - this has to change to the mobile app screen
+  const resetUrl = `${req.protocol}://${req.get(
+    'host'
+  )}/api/auth/resetpassword/${resetToken}`;
+
+  const message = `Link to reset password, PUT request: ${resetUrl}`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Password reset token',
+      message,
+    });
+    res.status(200).json({
+      success: true,
+      data: 'email sent',
+    });
+  } catch (err) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorResponse('Email could not be sent', 500));
+  }
+});
+
+//desc    RESET password
+//route   PUT /api/auth/resetpassword/:resettoken
+//access  public
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  //get hashed token
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(req.params.resettoken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(new ErrorResponse('Invalid token', 400));
+  }
+
+  //set new password
+  user.password = req.body.password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  sendTokenResponse(user, 200, res);
+});
+
 //desc    LOGOUT user / clear cookie
 //route   GET /api/auth/logout
 //access  private
@@ -91,15 +163,32 @@ exports.logOut = asyncHandler(async (req, res, next) => {
 //route   PUT /api/auth/updatedetails
 //access  private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
-  const fieldsToUpdate = {
-    name: req.body.name,
-    email: req.body.email,
-  };
+  const { name, email, password } = req.body;
 
-  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
-    new: true,
-    runValidators: true,
-  });
+  //Validate email and password
+  if (!name || !email || !password) {
+    return next(
+      new ErrorResponse('Please provide a name, email and password', 400)
+    );
+  }
+
+  //Check for user
+  const user = await User.findOne({ email }).select('+password'); //need to see password for login
+
+  if (!user) {
+    return next(new ErrorResponse('Invalid email', 401));
+  }
+
+  //Check if password matches
+  const isMatch = await user.matchPassword(password);
+
+  if (!isMatch) {
+    return next(new ErrorResponse('Invalid password', 401));
+  }
+
+  user.name = name;
+  user.email = email;
+  await user.save();
 
   res.status(200).json({
     success: true,
