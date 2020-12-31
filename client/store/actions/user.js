@@ -21,12 +21,13 @@ export const getUser = () => {
   };
 };
 
-export const updateProfile = (name, email) => {
+export const updateProfile = (name, email, password) => {
   console.log(name);
   console.log(email);
+  console.log(password);
   return async (dispatch) => {
     try {
-      const body = JSON.stringify({ name, email });
+      const body = JSON.stringify({ name, email, password });
       const config = {
         headers: {
           'Content-Type': 'application/json',
