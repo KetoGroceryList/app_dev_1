@@ -1,10 +1,65 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Alert,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
+import Colors from '../../constants/Colors';
 import Card from '../../components/UI/Card';
 import CustomButton from '../../components/UI/CustomButton';
+import * as authAction from '../../store/actions/auth';
 
 const Verification = (props) => {
+  const [code, setCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [error, setError] = useState(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const veriCode = useSelector((state) => state.auth.veriCode);
+
+  const dispatch = useDispatch();
+
+  const resetLoginHandler = async (code, password) => {
+    if (password !== passwordConfirm) {
+      Alert.alert(
+        'Please make sure your password inputs are identical.',
+        'Please try again.',
+        [{ text: 'Okay' }]
+      );
+    }
+
+    if (code !== veriCode) {
+      Alert.alert('Your verification code is incorrect.', 'Please try again.', [
+        { text: 'Okay' },
+      ]);
+    }
+
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(authAction.resetPassword(code, password));
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color={Colors.greenText}
+        style={{ flex: 1 }}
+      />
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <View style={styles.instructionsContainer}>
@@ -16,13 +71,39 @@ const Verification = (props) => {
       <Card>
         <View style={styles.container}>
           <Text style={styles.label}>enter your verification code:</Text>
-          <TextInput style={styles.emailInput} />
+          <TextInput
+            style={styles.emailInput}
+            keyboardType="number-pad"
+            autoCapitalize="none"
+            required
+            value={code}
+            onChangeText={(value) => setCode(value)}
+            maxLength={4}
+          />
           <Text style={styles.label}>enter your new password:</Text>
-          <TextInput style={styles.emailInput} />
+          <TextInput
+            style={styles.emailInput}
+            keyboardType="default"
+            autoCapitalize="none"
+            secureTextEntry
+            required
+            value={password}
+            onChangeText={(value) => setPassword(value)}
+            minLength={6}
+          />
           <Text style={styles.label}>confirm your new password:</Text>
-          <TextInput style={styles.emailInput} />
+          <TextInput
+            style={styles.emailInput}
+            keyboardType="default"
+            autoCapitalize="none"
+            secureTextEntry
+            required
+            value={passwordConfirm}
+            onChangeText={(value) => setPasswordConfirm(value)}
+            minLength={6}
+          />
           <View style={styles.buttonContainer}>
-            <CustomButton onSelect={() => console.log('should log in now')}>
+            <CustomButton onSelect={() => resetLoginHandler(code, password)}>
               <Text style={styles.buttonText}>Reset Password</Text>
             </CustomButton>
           </View>

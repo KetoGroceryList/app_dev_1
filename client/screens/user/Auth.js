@@ -98,8 +98,8 @@ const Auth = (props) => {
       await dispatch(action);
     } catch (err) {
       setError(err.message);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const inputChangeHandler = useCallback(

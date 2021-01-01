@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  Alert,
+  TextInput,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Card from '../../components/UI/Card';
 import CustomButton from '../../components/UI/CustomButton';
+import Colors from '../../constants/Colors';
 import * as authActions from '../../store/actions/auth';
 
 const ForgotPassword = (props) => {
   const [email, setEmail] = useState('');
+  const [error, setError] = useState(undefined);
+  const [isLoading, setIsLoading] = useState(false);
 
   const veriCode = useSelector((state) => state.auth.veriCode);
-  console.log(veriCode);
 
   const dispatch = useDispatch();
 
   const forgotPasswordHandler = async (email) => {
-    await dispatch(authActions.forgotPassword(email));
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(authActions.forgotPassword(email));
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -23,6 +39,22 @@ const ForgotPassword = (props) => {
       props.navigation.navigate('Verification');
     }
   }, [veriCode]);
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An error occurred', error, [{ text: 'Okay' }]);
+    }
+  }, [error]);
+
+  if (isLoading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color={Colors.greenText}
+        style={{ flex: 1 }}
+      />
+    );
+  }
 
   return (
     <View style={styles.screen}>

@@ -100,6 +100,33 @@ export const forgotPassword = (email) => {
   };
 };
 
+export const resetPassword = (veriCode, password) => {
+  return async (dispatch) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const body = JSON.stringify({ password });
+    const response = await axios.post(
+      `http://192.168.0.197:5000/api/auth/verificationcode/${veriCode}`,
+      body,
+      config
+    );
+
+    console.log(veriCode);
+
+    if (!response) {
+      throw new Error('Something went wrong');
+    }
+
+    const resData = response.data;
+    dispatch(authenticate(resData.token, resData.user._id, oneMonth));
+    const expirationDate = resData.options.expires;
+    saveDataToStorage(resData.token, resData.user._id, expirationDate);
+  };
+};
+
 export const logout = () => {
   clearLogoutTimer();
   AsyncStorage.removeItem('userData');
