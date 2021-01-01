@@ -138,7 +138,6 @@ const Auth = (props) => {
                 style={styles.textInput}
               />
             ) : null}
-
             <Input
               id="email"
               label="e-mail"

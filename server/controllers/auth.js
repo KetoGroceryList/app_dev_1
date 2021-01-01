@@ -84,31 +84,25 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   }
 
   //get reset token
-  const resetToken = user.getResetPasswordToken();
+  const veriCode = user.getVerificationCode();
 
   await user.save({ validateBeforeSave: false });
-  console.log(resetToken);
 
-  //create reset url - this has to change to the mobile app screen
-  const resetUrl = `${req.protocol}://${req.get(
-    'host'
-  )}/api/auth/resetpassword/${resetToken}`;
-
-  const message = `Link to reset password, PUT request: ${resetUrl}`;
+  const message = `Here is your 4 digit verification code: ${veriCode}`;
 
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Password reset token',
+      subject: 'Password reset verification code',
       message,
     });
     res.status(200).json({
       success: true,
-      data: 'email sent',
+      data: veriCode,
     });
   } catch (err) {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    user.verificationCode = undefined;
+    user.verificationCodeExpire = undefined;
 
     await user.save({ validateBeforeSave: false });
 
@@ -116,33 +110,65 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   }
 });
 
-//desc    RESET password
-//route   PUT /api/auth/resetpassword/:resettoken
+//desc    POST verification code
+//route   PUT /api/auth/verificationCode/:vericode
 //access  public
-exports.resetPassword = asyncHandler(async (req, res, next) => {
+exports.verificationCode = asyncHandler(async (req, res, next) => {
   //get hashed token
-  const resetPasswordToken = crypto
+  const verificationCode = crypto
     .createHash('sha256')
-    .update(req.params.resettoken)
+    .update(req.params.vericode)
     .digest('hex');
 
+  //const verificationCode = req.params.vericode;
+
   const user = await User.findOne({
-    resetPasswordToken,
-    resetPasswordExpire: { $gt: Date.now() },
+    verificationCode,
+    verificationCodeExpire: { $gt: Date.now() },
   });
 
   if (!user) {
-    return next(new ErrorResponse('Invalid token', 400));
+    return next(new ErrorResponse('Invalid verification code', 400));
   }
 
   //set new password
   user.password = req.body.password;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpire = undefined;
+  user.verificationCode = undefined;
+  user.verificationCodeExpire = undefined;
   await user.save();
 
   sendTokenResponse(user, 200, res);
 });
+
+//desc    POST reset password
+//route   PUT /api/auth/resetpassword/
+//access  public
+// exports.resetPassword = asyncHandler(async (req, res, next) => {
+//   //get hashed token
+//   // const verificationCode = crypto
+//   //   .createHash('sha256')
+//   //   .update(req.params.veriCode)
+//   //   .digest('hex');
+
+//   const verificationCode = req.params.veriCode;
+
+//   const user = await User.findOne({
+//     verificationCode,
+//     verificationCodeExpire: { $gt: Date.now() },
+//   });
+
+//   if (!user) {
+//     return next(new ErrorResponse('Invalid verification code', 400));
+//   }
+
+//   //set new password
+//   user.password = req.body.password;
+//   user.resetPasswordToken = undefined;
+//   user.resetPasswordExpire = undefined;
+//   await user.save();
+
+//   sendTokenResponse(user, 200, res);
+// });
 
 //desc    LOGOUT user / clear cookie
 //route   GET /api/auth/logout
@@ -150,7 +176,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 exports.logOut = asyncHandler(async (req, res, next) => {
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
-    //httpOnly: true,
   });
 
   res.status(200).json({

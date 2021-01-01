@@ -1,54 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
 
 import Card from '../../components/UI/Card';
 import CustomButton from '../../components/UI/CustomButton';
-import * as authActions from '../../store/actions/auth';
 
-const ForgotPassword = (props) => {
-  const [email, setEmail] = useState('');
-
-  const veriCode = useSelector((state) => state.auth.veriCode);
-  console.log(veriCode);
-
-  const dispatch = useDispatch();
-
-  const forgotPasswordHandler = async (email) => {
-    await dispatch(authActions.forgotPassword(email));
-  };
-
-  useEffect(() => {
-    if (veriCode) {
-      props.navigation.navigate('Verification');
-    }
-  }, [veriCode]);
-
+const Verification = (props) => {
   return (
     <View style={styles.screen}>
       <View style={styles.instructionsContainer}>
         <Text style={styles.label}>Instructions</Text>
         <Text style={styles.instructions}>
-          To reset your password, please enter your email here and click
-          'Verification Code'. Nordin will send a 4 digit verification code to
-          your email. Use that code for the next step.
+          Enter the 4 digit verification code and your new password here.
         </Text>
       </View>
       <Card>
         <View style={styles.container}>
-          <Text style={styles.label}>enter your email:</Text>
-          <TextInput
-            style={styles.emailInput}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            required
-            value={email}
-            onChangeText={(value) => setEmail(value)}
-            maxLength={25}
-          />
+          <Text style={styles.label}>enter your verification code:</Text>
+          <TextInput style={styles.emailInput} />
+          <Text style={styles.label}>enter your new password:</Text>
+          <TextInput style={styles.emailInput} />
+          <Text style={styles.label}>confirm your new password:</Text>
+          <TextInput style={styles.emailInput} />
           <View style={styles.buttonContainer}>
-            <CustomButton onSelect={() => forgotPasswordHandler(email)}>
-              <Text style={styles.buttonText}>Get Verification Code</Text>
+            <CustomButton onSelect={() => console.log('should log in now')}>
+              <Text style={styles.buttonText}>Reset Password</Text>
             </CustomButton>
           </View>
         </View>
@@ -106,4 +81,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ForgotPassword;
+export default Verification;
