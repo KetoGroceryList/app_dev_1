@@ -1,9 +1,15 @@
-import { AUTHENTICATE, LOGOUT, UPDATE_PROFILE, SET_DID_TRY_AL } from '../types';
+import {
+  AUTHENTICATE,
+  LOGOUT,
+  FORGOT_PASSWORD,
+  SET_DID_TRY_AL,
+} from '../types';
 
 const initialState = {
   token: null,
   userId: null,
   didTryAutoLogin: false,
+  veriCode: null,
 };
 
 export default (state = initialState, action) => {
@@ -23,6 +29,11 @@ export default (state = initialState, action) => {
       return {
         ...initialState,
         didTryAutoLogin: true,
+      };
+    case FORGOT_PASSWORD:
+      return {
+        ...state,
+        veriCode: action.code,
       };
     default:
       return state;

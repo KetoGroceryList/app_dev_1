@@ -1,6 +1,12 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AUTHENTICATE, SET_DID_TRY_AL, UPDATE_PROFILE, LOGOUT } from '../types';
+import {
+  AUTHENTICATE,
+  SET_DID_TRY_AL,
+  UPDATE_PROFILE,
+  LOGOUT,
+  FORGOT_PASSWORD,
+} from '../types';
 
 let timer;
 const oneMonth = 30 * 24 * 60 * 60 * 1000;
@@ -63,6 +69,34 @@ export const login = (email, password) => {
     dispatch(authenticate(resData.token, resData.user._id, oneMonth));
     const expirationDate = resData.options.expires;
     saveDataToStorage(resData.token, resData.user._id, expirationDate);
+  };
+};
+
+export const forgotPassword = (email) => {
+  return async (dispatch) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const body = JSON.stringify({ email });
+    const response = await axios.post(
+      'http://192.168.0.197:5000/api/auth/forgotpassword',
+      body,
+      config
+    );
+
+    if (!response) {
+      throw new Error('Something went wrong');
+    }
+
+    const veriCode = response.data.data;
+    console.log(veriCode);
+
+    dispatch({
+      type: FORGOT_PASSWORD,
+      code: veriCode,
+    });
   };
 };
 

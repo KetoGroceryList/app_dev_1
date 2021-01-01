@@ -27,8 +27,8 @@ const UserSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
-  resetPasswordToken: String,
-  resetPasswordExpire: Date,
+  verificationCode: String,
+  verificationCodeExpire: Date,
   createdAt: {
     type: Date,
     default: Date.now,
@@ -56,17 +56,26 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-UserSchema.methods.getResetPasswordToken = function () {
-  const resetToken = crypto.randomBytes(20).toString('hex');
+const getRandomInt = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min);
+};
 
-  this.resetPasswordToken = crypto
+UserSchema.methods.getVerificationCode = function () {
+  const veriCodeNumber = getRandomInt(1000, 9999);
+  const veriCode = veriCodeNumber.toString();
+  console.log(veriCode);
+
+  this.verificationCode = crypto
     .createHash('sha256')
-    .update(resetToken)
+    .update(veriCode)
     .digest('hex');
 
-  this.resetPasswordExpire = Date.now() + 30 * 60 * 1000; //30 mins
+  //this.verificationCode = veriCode;
+  this.verificationCodeExpire = Date.now() + 30 * 60 * 1000; //30 mins
 
-  return resetToken;
+  return veriCode;
 };
 
 module.exports = User = mongoose.model('User', UserSchema);
