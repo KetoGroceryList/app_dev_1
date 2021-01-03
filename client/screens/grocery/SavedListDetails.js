@@ -91,7 +91,7 @@ const SavedListDetails = (props) => {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#ccc" />
+        <ActivityIndicator size="large" color={Colors.green} />
       </View>
     );
   }

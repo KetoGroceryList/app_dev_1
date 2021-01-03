@@ -48,10 +48,13 @@ const FoodDetails = (props) => {
   const dispatch = useDispatch();
 
   const favHandler = (id) => {
+    setIsLoading(true);
     if (!favOrNot) {
       dispatch(foodActions.addFav(id));
+      setIsLoading(false);
     } else {
       dispatch(foodActions.deleteFav(id));
+      setIsLoading(false);
     }
   };
 
@@ -68,24 +71,28 @@ const FoodDetails = (props) => {
       key: 1,
       name: 'protein',
       amount: selectedFood.protein,
+      split: selectedFood.macrosSplit.protein,
       svg: { fill: Colors.purple },
     },
     {
       key: 2,
       name: 'fats',
       amount: selectedFood.fats,
+      split: selectedFood.macrosSplit.fats,
       svg: { fill: Colors.pink },
     },
     {
       key: 3,
       name: 'fiber',
       amount: selectedFood.fiber,
+      split: selectedFood.macrosSplit.fiber,
       svg: { fill: Colors.green },
     },
     {
       key: 4,
       name: 'net carbs',
       amount: selectedFood.netCarbs,
+      split: selectedFood.macrosSplit.netCarbs,
       svg: { fill: Colors.orange },
     },
   ];
@@ -103,7 +110,7 @@ const FoodDetails = (props) => {
           alignmentBaseline={'middle'}
           fontSize={19}
         >
-          {data.amount > 0 ? data.amount + `g` : null}
+          {data.split > 0.05 ? data.amount + `g` : null}
         </svg.Text>
       );
     });
@@ -112,7 +119,7 @@ const FoodDetails = (props) => {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#ccc" />
+        <ActivityIndicator size="large" color={Colors.green} />
       </View>
     );
   }
@@ -187,11 +194,10 @@ const FoodDetails = (props) => {
               </View>
             </View>
           </View>
-          <Text style={styles.macroText}>per 100g</Text>
+          <Text style={styles.macroText}>per 100 grams weight</Text>
         </View>
-        <View></View>
         <PieChart
-          style={{ height: 250, marginTop: 12 }}
+          style={{ height: 250, marginVertical: 12 }}
           valueAccessor={({ item }) => item.amount}
           data={data}
           spacing={1}
@@ -199,6 +205,7 @@ const FoodDetails = (props) => {
         >
           <Labels />
         </PieChart>
+        <View></View>
       </View>
     </ScrollView>
   );
@@ -214,6 +221,11 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 300,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   description: {
     fontFamily: 'open-sans',

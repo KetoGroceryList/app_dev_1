@@ -7,7 +7,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Auth from '../screens/user/Auth';
 import ForgotPassword from '../screens/user/ForgotPassword';
 import Profile from '../screens/user/Profile';
-import ResetPassword from '../screens/user/ResetPassword';
 import Verification from '../screens/user/Verification';
 import SavedLists from '../screens/grocery/SavedLists';
 import SavedListDetails, {
@@ -50,7 +49,7 @@ export const AuthNavigator = () => {
       <AuthStackNavigator.Screen
         name="Auth"
         component={Auth}
-        options={{ headerTitle: 'Please Authenticate' }}
+        options={{ headerTitle: 'Login / Register' }}
       />
       <AuthStackNavigator.Screen
         name="ForgotPassword"
@@ -59,11 +58,6 @@ export const AuthNavigator = () => {
       />
       <AuthStackNavigator.Screen name="Profile" component={Profile} />
       <AuthStackNavigator.Screen name="Verification" component={Verification} />
-      <AuthStackNavigator.Screen
-        name="ResetPassword"
-        component={ResetPassword}
-        options={{ headerTitle: 'Reset Password' }}
-      />
     </AuthStackNavigator.Navigator>
   );
 };

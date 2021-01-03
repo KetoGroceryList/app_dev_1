@@ -10,6 +10,18 @@ const FoodGroupItems = (props) => {
     state.foods.foods.filter((group) => group.foodType === foodType)
   );
 
+  const groupFoodsSorted = groupFoods.sort((x, y) => {
+    let xName = x.name;
+    let yName = y.name;
+    if (xName < yName) {
+      return -1;
+    }
+    if (xName > yName) {
+      return 1;
+    }
+    return 0;
+  });
+
   const selectFoodDetailsHandler = (name) => {
     props.navigation.navigate('Food Details', {
       name,
@@ -19,7 +31,7 @@ const FoodGroupItems = (props) => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={groupFoods}
+        data={groupFoodsSorted}
         keyExtractor={(item) => item._id}
         renderItem={(itemData) => (
           <FoodCard
