@@ -48,11 +48,13 @@ const ForgotPassword = (props) => {
 
   if (isLoading) {
     return (
-      <ActivityIndicator
-        size="large"
-        color={Colors.greenText}
-        style={{ flex: 1 }}
-      />
+      <View style={styles.centered}>
+        <ActivityIndicator
+          size="large"
+          color={Colors.green}
+          style={{ flex: 1 }}
+        />
+      </View>
     );
   }
 
@@ -94,6 +96,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   instructionsContainer: {
     width: '80%',

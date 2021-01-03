@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   AUTHENTICATE,
   SET_DID_TRY_AL,
-  UPDATE_PROFILE,
   LOGOUT,
   FORGOT_PASSWORD,
 } from '../types';
@@ -31,20 +30,21 @@ export const register = (name, email, password) => {
     };
     const body = JSON.stringify({ name, email, password });
 
-    const response = await axios.post(
-      'http://192.168.0.197:5000/api/auth/register',
-      body,
-      config
-    );
+    try {
+      const response = await axios.post(
+        'http://192.168.0.197:5000/api/auth/register',
+        body,
+        config
+      );
 
-    if (!response) {
+      const resData = response.data;
+      await dispatch(authenticate(resData.token, resData.user._id, oneMonth));
+      const expirationDate = resData.options.expires;
+      await saveDataToStorage(resData.token, resData.user._id, expirationDate);
+      await initialGroceryList([], 'grocery list');
+    } catch (err) {
       throw new Error('Something went wrong');
     }
-    const resData = response.data;
-    await dispatch(authenticate(resData.token, resData.user._id, oneMonth));
-    const expirationDate = resData.options.expires;
-    await saveDataToStorage(resData.token, resData.user._id, expirationDate);
-    await initialGroceryList([], 'grocery list');
   };
 };
 
@@ -56,19 +56,20 @@ export const login = (email, password) => {
       },
     };
     const body = JSON.stringify({ email, password });
-    const response = await axios.post(
-      'http://192.168.0.197:5000/api/auth/login',
-      body,
-      config
-    );
+    try {
+      const response = await axios.post(
+        'http://192.168.0.197:5000/api/auth/login',
+        body,
+        config
+      );
 
-    if (!response) {
+      const resData = response.data;
+      dispatch(authenticate(resData.token, resData.user._id, oneMonth));
+      const expirationDate = resData.options.expires;
+      saveDataToStorage(resData.token, resData.user._id, expirationDate);
+    } catch (err) {
       throw new Error('Something went wrong');
     }
-    const resData = response.data;
-    dispatch(authenticate(resData.token, resData.user._id, oneMonth));
-    const expirationDate = resData.options.expires;
-    saveDataToStorage(resData.token, resData.user._id, expirationDate);
   };
 };
 
@@ -80,23 +81,21 @@ export const forgotPassword = (email) => {
       },
     };
     const body = JSON.stringify({ email });
-    const response = await axios.post(
-      'http://192.168.0.197:5000/api/auth/forgotpassword',
-      body,
-      config
-    );
+    try {
+      const response = await axios.post(
+        'http://192.168.0.197:5000/api/auth/forgotpassword',
+        body,
+        config
+      );
+      const veriCode = response.data.data;
 
-    if (!response) {
+      dispatch({
+        type: FORGOT_PASSWORD,
+        code: veriCode,
+      });
+    } catch (err) {
       throw new Error('Something went wrong');
     }
-
-    const veriCode = response.data.data;
-    console.log(veriCode);
-
-    dispatch({
-      type: FORGOT_PASSWORD,
-      code: veriCode,
-    });
   };
 };
 
@@ -108,22 +107,21 @@ export const resetPassword = (veriCode, password) => {
       },
     };
     const body = JSON.stringify({ password });
-    const response = await axios.post(
-      `http://192.168.0.197:5000/api/auth/verificationcode/${veriCode}`,
-      body,
-      config
-    );
 
-    console.log(veriCode);
+    try {
+      const response = await axios.post(
+        `http://192.168.0.197:5000/api/auth/verificationcode/${veriCode}`,
+        body,
+        config
+      );
 
-    if (!response) {
+      const resData = response.data;
+      dispatch(authenticate(resData.token, resData.user._id, oneMonth));
+      const expirationDate = resData.options.expires;
+      saveDataToStorage(resData.token, resData.user._id, expirationDate);
+    } catch (err) {
       throw new Error('Something went wrong');
     }
-
-    const resData = response.data;
-    dispatch(authenticate(resData.token, resData.user._id, oneMonth));
-    const expirationDate = resData.options.expires;
-    saveDataToStorage(resData.token, resData.user._id, expirationDate);
   };
 };
 

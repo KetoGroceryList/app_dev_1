@@ -161,20 +161,6 @@ const Profile = (props) => {
               style={styles.textInput}
               initiallyValid={!!user}
             />
-            {/* <Input
-              id="password2"
-              label="confirm password"
-              keyboardType="default"
-              secureTextEntry
-              autoCapitalize="none"
-              minLength={6}
-              errorText="Please confirm your password"
-              onInputChange={inputChangeHandler}
-              initialValue=""
-              required
-              style={styles.textInput}
-              initiallyValid={!!user}
-            /> */}
             <View style={{ marginVertical: 20, width: 200 }}>
               <CustomButton
                 color={Colors.greenText}
@@ -219,7 +205,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   profileDetails: {
     width: '80%',
     marginVertical: 20,

@@ -32,12 +32,14 @@ const Verification = (props) => {
         'Please try again.',
         [{ text: 'Okay' }]
       );
+      return;
     }
 
     if (code !== veriCode) {
       Alert.alert('Your verification code is incorrect.', 'Please try again.', [
         { text: 'Okay' },
       ]);
+      return;
     }
 
     setError(null);

@@ -3,6 +3,10 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./db/db');
 const errorHandler = require('./middleware/error');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
 
 //.env setup
 dotenv.config({ path: '.env' });
@@ -31,6 +35,22 @@ app.get('/', (req, res) => {
 app.get('/error', (req, res) => {
   throw new Error('broken');
 });
+
+//sanitize data
+app.use(mongoSanitize());
+
+//set security headers
+app.use(helmet());
+
+//prevent XSS attacks
+app.use(xss());
+
+//rate limit
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
 
 app.use('/api/auth', auth);
 app.use('/api/users', users);

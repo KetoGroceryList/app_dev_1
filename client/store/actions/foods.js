@@ -9,7 +9,6 @@ import {
   GET_MUTABLE_LISTS,
   RESTORE_MUTABLE_LISTS,
   SET_CURRENT_LIST,
-  CLEAR_CURRENT_LIST,
   DEL_LIST,
   ADD_TO_CURR_MUTABLE_LISTS,
 } from '../types';
@@ -19,10 +18,6 @@ export const getFoods = () => {
     try {
       const response = await axios.get('http://192.168.0.197:5000/api/foods');
 
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
-
       const allFoods = await response.data.data;
 
       dispatch({
@@ -30,7 +25,7 @@ export const getFoods = () => {
         foods: allFoods,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
@@ -42,10 +37,6 @@ export const addFav = (id) => {
         `http://192.168.0.197:5000/api/favFoods/${id}`
       );
 
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
-
       const favFoods = response.data.data.favFoodsArray;
 
       dispatch({
@@ -53,7 +44,7 @@ export const addFav = (id) => {
         foods: favFoods,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
@@ -64,10 +55,6 @@ export const getFavs = () => {
       const response = await axios.get(
         `http://192.168.0.197:5000/api/favFoods/`
       );
-
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
 
       let resData = response.data.data;
       let favFoods;
@@ -84,7 +71,7 @@ export const getFavs = () => {
         foods: favFoods,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
@@ -96,10 +83,6 @@ export const deleteFav = (id) => {
         `http://192.168.0.197:5000/api/favFoods/${id}`
       );
 
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
-
       const favFoods = response.data.data.favFoodsArray;
 
       dispatch({
@@ -107,7 +90,7 @@ export const deleteFav = (id) => {
         foods: favFoods,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
@@ -127,9 +110,7 @@ export const saveNewList = (foods, name) => {
         body,
         config
       );
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
+
       const groceryLists = response.data.data.groceryListArray;
 
       dispatch({
@@ -137,7 +118,7 @@ export const saveNewList = (foods, name) => {
         foods: groceryLists,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
@@ -157,9 +138,7 @@ export const updateExistingList = (foods, name, id) => {
         body,
         config
       );
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
+
       const groceryLists = response.data.data.groceryListArray;
 
       dispatch({
@@ -167,7 +146,7 @@ export const updateExistingList = (foods, name, id) => {
         foods: groceryLists,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
@@ -178,10 +157,6 @@ export const getSavedLists = () => {
       const response = await axios.get(
         'http://192.168.0.197:5000/api/groceryList'
       );
-
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
 
       const data = await response.data.data;
 
@@ -197,7 +172,7 @@ export const getSavedLists = () => {
         foods: mutableGroceryLists,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
@@ -209,10 +184,6 @@ export const restoreMutableList = () => {
         'http://192.168.0.197:5000/api/groceryList'
       );
 
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
-
       const groceryLists = await response.data.data;
 
       dispatch({
@@ -220,7 +191,7 @@ export const restoreMutableList = () => {
         foods: groceryLists,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
@@ -266,10 +237,6 @@ export const deleteListById = (id) => {
         `http://192.168.0.197:5000/api/groceryList/${id}`
       );
 
-      if (!response) {
-        throw new Error('Something went wrong');
-      }
-
       const groceryLists = response.data.data;
 
       dispatch({
@@ -277,7 +244,7 @@ export const deleteListById = (id) => {
         foods: groceryLists,
       });
     } catch (err) {
-      throw err;
+      throw new Error('Something went wrong');
     }
   };
 };
