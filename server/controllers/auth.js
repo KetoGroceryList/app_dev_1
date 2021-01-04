@@ -5,6 +5,7 @@ const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 const asyncHandler = require('../middleware/async');
 const GroceryList = require('../models/GroceryList');
+const sgMail = require('@sendgrid/mail');
 
 //desc    REGISTER user
 //route   POST /api/auth/register
@@ -87,14 +88,18 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const veriCode = user.getVerificationCode();
 
   await user.save({ validateBeforeSave: false });
+  console.log(user);
 
-  const message = `Here is your 4 digit verification code: ${veriCode}`;
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+  const mailText = `Here is your 4 digit verification code: ${veriCode}`;
 
   try {
-    await sendEmail({
-      email: user.email,
+    await sgMail.send({
+      to: user.email,
+      from: 'info@uvstudio.ca',
       subject: 'Password reset verification code',
-      message,
+      text: mailText,
     });
     res.status(200).json({
       success: true,
@@ -119,8 +124,6 @@ exports.verificationCode = asyncHandler(async (req, res, next) => {
     .createHash('sha256')
     .update(req.params.vericode)
     .digest('hex');
-
-  //const verificationCode = req.params.vericode;
 
   const user = await User.findOne({
     verificationCode,
@@ -188,6 +191,7 @@ exports.logOut = asyncHandler(async (req, res, next) => {
 //route   PUT /api/auth/updatedetails
 //access  private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('+password');
   const { name, email, password } = req.body;
 
   //Validate email and password
@@ -198,21 +202,20 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
   }
 
   //Check for user
-  const user = await User.findOne({ email }).select('+password'); //need to see password for login
-
   if (!user) {
     return next(new ErrorResponse('Invalid email', 401));
   }
 
   //Check if password matches
   const isMatch = await user.matchPassword(password);
-
+  //console.log(user);
   if (!isMatch) {
     return next(new ErrorResponse('Invalid password', 401));
   }
 
   user.name = name;
   user.email = email;
+
   await user.save();
 
   res.status(200).json({

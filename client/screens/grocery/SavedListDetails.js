@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
+import Colors from '../../constants/Colors';
 import CustomButton from '../../components/UI/CustomButton';
 import * as foodsAction from '../../store/actions/foods';
 

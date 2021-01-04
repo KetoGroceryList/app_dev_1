@@ -39,9 +39,7 @@ export const updateProfile = (name, email, password) => {
         config
       );
 
-      if (!response) {
-        throw new Error('Update did not occurr due to an error');
-      }
+      console.log(response.data);
 
       dispatch({
         type: UPDATE_PROFILE,
@@ -51,7 +49,7 @@ export const updateProfile = (name, email, password) => {
         },
       });
     } catch (err) {
-      throw err;
+      throw new Error('Update did not occurr due to an error');
     }
   };
 };
