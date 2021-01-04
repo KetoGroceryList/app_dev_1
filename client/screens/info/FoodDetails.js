@@ -197,7 +197,7 @@ const FoodDetails = (props) => {
           <Text style={styles.macroText}>per 100 grams weight</Text>
         </View>
         <PieChart
-          style={{ height: 250, marginVertical: 12 }}
+          style={{ height: 250, marginVertical: 12, marginBottom: 20 }}
           valueAccessor={({ item }) => item.amount}
           data={data}
           spacing={1}
@@ -205,7 +205,6 @@ const FoodDetails = (props) => {
         >
           <Labels />
         </PieChart>
-        <View></View>
       </View>
     </ScrollView>
   );

@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const FavFoods = require('../models/FavFoods');
 const ErrorResponse = require('../utils/errorResponse');
-const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 const asyncHandler = require('../middleware/async');
 const GroceryList = require('../models/GroceryList');
@@ -98,7 +97,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     await sgMail.send({
       to: user.email,
       from: 'info@uvstudio.ca',
-      subject: 'Password reset verification code',
+      subject: 'Nordin password reset verification code',
       text: mailText,
     });
     res.status(200).json({
