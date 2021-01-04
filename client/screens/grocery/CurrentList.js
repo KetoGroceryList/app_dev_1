@@ -76,7 +76,7 @@ const CurrentList = (props) => {
       options = '';
       setFoodSelection(options);
     }
-    if (search.length > 1) {
+    if (search.length > 2) {
       options = foods.filter((food) => food.name.includes(search));
       setFoodSelection(options);
     }
@@ -145,9 +145,16 @@ const CurrentList = (props) => {
 
   const addToListHandler = (food) => {
     if (listFoods.includes(food._id)) {
-      Alert.alert('Notice', 'You already have this on your list', {
-        text: 'Ok',
-      });
+      Alert.alert(
+        'Notice',
+        'You already have this on your list',
+        [
+          {
+            text: 'Ok',
+          },
+        ],
+        { cancelable: true }
+      );
       return;
     }
     listFoods.push(food._id);
@@ -248,15 +255,26 @@ const CurrentList = (props) => {
       <View style={styles.container}>
         <View style={styles.searchInputContainer}>
           <Text style={styles.searchLabel}>Search Food</Text>
-          <TextInput
-            keyboardType="default"
-            autoCapitalize="none"
-            maxLength={25}
-            value={search.toLowerCase()}
-            onChangeText={(value) => setSearch(value)}
-            style={styles.searchTextInput}
-          />
-          <View style={{ marginBottom: 20 }}>
+          <View style={styles.searchLabelContainer}>
+            <TextInput
+              keyboardType="default"
+              autoCapitalize="none"
+              maxLength={25}
+              value={search.toLowerCase()}
+              onChangeText={(value) => setSearch(value)}
+              style={styles.searchTextInput}
+            />
+            {search ? (
+              <Ionicons
+                name="close-circle-outline"
+                style={{ left: -26, color: '#777' }}
+                size={30}
+                onPress={() => setSearch('')}
+              />
+            ) : null}
+          </View>
+
+          <View style={styles.searchOptionsContainer}>
             <ScrollView>
               {foodSelection
                 ? foodSelection.map((food) => (
@@ -278,7 +296,7 @@ const CurrentList = (props) => {
             styles.groceryList,
             {
               maxHeight:
-                windowHeight < 700 ? windowHeight * 0.48 : windowHeight * 0.55,
+                windowHeight < 660 ? windowHeight * 0.48 : windowHeight * 0.56,
             },
           ]}
         >
@@ -417,7 +435,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   listText: {
-    fontSize: 24,
+    fontSize: 22,
     fontFamily: 'open-sans',
     color: '#111',
   },
@@ -440,14 +458,18 @@ const styles = StyleSheet.create({
     opacity: 0.98,
     alignContent: 'center',
   },
+  searchLabelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   searchLabel: {
     fontFamily: 'open-sans-bold',
-    marginVertical: 6,
+    marginVertical: 4,
     paddingTop: 5,
-    fontSize: 20,
+    fontSize: 17,
   },
   searchTextInput: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'open-sans',
     paddingHorizontal: 2,
     paddingVertical: 2,
@@ -456,13 +478,17 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingLeft: 4,
   },
+  searchOptionsContainer: {
+    maxHeight: 170,
+    marginBottom: 12,
+  },
   searchOptions: {
     fontFamily: 'open-sans',
-    marginTop: 8,
+    marginTop: 3,
     marginVertical: 3,
   },
   searchOptionsText: {
-    fontSize: 20,
+    fontSize: 18,
   },
   card: {
     alignItems: 'center',
@@ -471,11 +497,11 @@ const styles = StyleSheet.create({
   groceryList: {
     zIndex: 0,
     position: 'absolute',
-    top: 110,
+    top: 105,
   },
   listHeader: {
     marginBottom: 4,
-    fontSize: 20,
+    fontSize: 19,
     alignSelf: 'center',
     fontFamily: 'open-sans-bold',
   },
@@ -483,25 +509,23 @@ const styles = StyleSheet.create({
     width: 300,
     borderTopColor: '#ccc',
     borderTopWidth: 1,
-    paddingBottom: 12,
+    marginBottom: 8,
   },
   listItemContainerGrey: {
     flexDirection: 'row',
     opacity: 0.15,
     justifyContent: 'space-between',
     width: '100%',
-    paddingTop: 3,
   },
   listItemContainerWhite: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    paddingTop: 3,
   },
   listItemContainerChecks: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
-    top: -6,
+    top: -4,
   },
   bottomSection: {
     height: 50,

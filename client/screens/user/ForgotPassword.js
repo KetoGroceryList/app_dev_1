@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   emailInput: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'open-sans',
     paddingHorizontal: 2,
     paddingVertical: 2,

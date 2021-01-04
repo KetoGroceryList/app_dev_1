@@ -169,6 +169,7 @@ export const BottomTabNavigator = () => {
         activeTintColor: Colors.greenText,
         inactiveTintColor: 'gray',
         labelPosition: 'below-icon',
+        style: { paddingBottom: 5, paddingTop: 4 },
       }}
     >
       <GroceryBottomTabNavigator.Screen
