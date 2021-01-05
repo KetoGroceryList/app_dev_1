@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,9 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  Animated,
+  LayoutAnimation,
+  UIManager,
   ActivityIndicator,
   Modal,
   KeyboardAvoidingView,
@@ -19,14 +22,29 @@ import CustomButton from '../../components/UI/CustomButton';
 import * as foodsActions from '../../store/actions/foods';
 import Colors from '../../constants/Colors';
 
+if (
+  Platform.OS === 'android' &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 const CurrentList = (props) => {
   const foods = useSelector((state) => state.foods.foods);
   const groceryLists = useSelector((state) => state.foods.groceryLists);
   let mutableGroceryLists = useSelector(
     (state) => state.foods.mutableGroceryLists
   );
-  // const currentListId = useSelector((state) => state.foods.currentListId);
-  // console.log(currentListId);
+
+  const setAnimation = () => {
+    LayoutAnimation.configureNext(
+      LayoutAnimation.create(
+        400,
+        LayoutAnimation.Types.easeInEaseOut,
+        LayoutAnimation.Properties.opacity
+      )
+    );
+  };
 
   let listLoaded;
 
@@ -157,6 +175,7 @@ const CurrentList = (props) => {
       );
       return;
     }
+    setAnimation();
     listFoods.push(food._id);
     setSearch('');
   };
@@ -164,6 +183,7 @@ const CurrentList = (props) => {
   const removeFromListHandler = (foodName) => {
     const foodIdToLocate = foods.find((food) => food.name === foodName);
     const index = listFoods.indexOf(foodIdToLocate._id);
+    setAnimation();
     listFoods.splice(index, 1);
     setToReLoad((prevState) => !prevState);
   };
@@ -194,7 +214,7 @@ const CurrentList = (props) => {
 
   const saveNewListHandler = async (foods, name) => {
     //need to empty listLoaded if user is saving a new list,
-    //so the default would go to the latest saved list
+    //so the default would go to the latest modified list
     listLoaded = null;
     const date = Date.now();
     const dateInterm = new Date(date);
@@ -306,38 +326,40 @@ const CurrentList = (props) => {
             data={foodItemsData}
             keyExtractor={(item) => item._id}
             renderItem={(itemData) => (
-              <View
-                style={
-                  fadedItems.includes(itemData.item._id)
-                    ? styles.listItemContainerGrey
-                    : styles.listItemContainerWhite
-                }
-              >
-                <Text
-                  style={styles.listText}
-                  onPress={() => selectFoodDetailsHandler(itemData.item.name)}
+              <Animated.View>
+                <View
+                  style={
+                    fadedItems.includes(itemData.item._id)
+                      ? styles.listItemContainerGrey
+                      : styles.listItemContainerWhite
+                  }
                 >
-                  {itemData.item.name}
-                </Text>
-                <View style={styles.listItemContainerChecks}>
-                  <Ionicons
-                    name="basket-outline"
-                    style={{ marginRight: 7, opacity: 0.7 }}
-                    size={36}
-                    onPress={() => {
-                      fadedItems.includes(itemData.item._id)
-                        ? removeFoodFromFadedHandler(itemData.item.name)
-                        : addFoodToFadedHandler(itemData.item.name);
-                    }}
-                  />
-                  <Ionicons
-                    name="close-circle-outline"
-                    style={{ opacity: 0.7 }}
-                    size={36}
-                    onPress={() => removeFromListHandler(itemData.item.name)}
-                  />
+                  <Text
+                    style={styles.listText}
+                    onPress={() => selectFoodDetailsHandler(itemData.item.name)}
+                  >
+                    {itemData.item.name}
+                  </Text>
+                  <View style={styles.listItemContainerChecks}>
+                    <Ionicons
+                      name="basket-outline"
+                      style={{ marginRight: 7, opacity: 0.7 }}
+                      size={36}
+                      onPress={() => {
+                        fadedItems.includes(itemData.item._id)
+                          ? removeFoodFromFadedHandler(itemData.item.name)
+                          : addFoodToFadedHandler(itemData.item.name);
+                      }}
+                    />
+                    <Ionicons
+                      name="close-circle-outline"
+                      style={{ opacity: 0.7 }}
+                      size={36}
+                      onPress={() => removeFromListHandler(itemData.item.name)}
+                    />
+                  </View>
                 </View>
-              </View>
+              </Animated.View>
             )}
           />
         </View>
