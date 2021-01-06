@@ -58,7 +58,7 @@ exports.createFood = asyncHandler(async (req, res, next) => {
 //access  admin
 //note:   food in GroceryList and FavFoods will also get removed
 exports.deleteFood = asyncHandler(async (req, res, next) => {
-  const foodToRemove = await Food.findOneAndRemove({ name: 'Pork' });
+  const foodToRemove = await Food.findByIdAndDelete(req.params.id);
   const groceryLists = await GroceryList.find();
   const favFoodsLists = await FavFoods.find();
 

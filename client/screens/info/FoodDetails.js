@@ -125,87 +125,83 @@ const FoodDetails = (props) => {
   }
 
   return (
-    <ScrollView>
-      <View style={{ backgroundColor: '#fff' }}>
-        <Image style={styles.image} source={{ uri: selectedFood.imageUrl }} />
-        <View style={styles.action}>
-          <Text style={styles.title}>{foodName}</Text>
+    <ScrollView style={{ backgroundColor: '#fff' }}>
+      <Image style={styles.image} source={{ uri: selectedFood.imageUrl }} />
+      <View style={styles.action}>
+        <Text style={styles.title}>{foodName}</Text>
+        <View style={{ marginTop: 12 }}>
+          <CustomButton onSelect={() => favHandler(selectedFood._id)}>
+            <Text style={styles.buttonText}>
+              {favOrNot ? 'Remove from favourites' : 'Add to favourites'}
+            </Text>
+          </CustomButton>
+        </View>
+        {!onListOrNot ? (
           <View style={{ marginTop: 12 }}>
-            <CustomButton onSelect={() => favHandler(selectedFood._id)}>
-              <Text style={styles.buttonText}>
-                {favOrNot ? 'Remove from favourites' : 'Add to favourites'}
-              </Text>
+            <CustomButton
+              onSelect={() =>
+                addFoodToCurrMutableListHandler(
+                  mutableGroceryLists,
+                  currentList,
+                  selectedFood._id
+                )
+              }
+            >
+              <Text style={styles.buttonText}>Add to today's grocery list</Text>
             </CustomButton>
           </View>
-          {!onListOrNot ? (
-            <View style={{ marginTop: 12 }}>
-              <CustomButton
-                onSelect={() =>
-                  addFoodToCurrMutableListHandler(
-                    mutableGroceryLists,
-                    currentList,
-                    selectedFood._id
-                  )
-                }
-              >
-                <Text style={styles.buttonText}>
-                  Add to today's grocery list
-                </Text>
-              </CustomButton>
+        ) : null}
+      </View>
+      <View style={styles.legendContainer}>
+        <View style={styles.legendInnerContainer}>
+          <View style={styles.legendRow}>
+            <View style={styles.macroContainer}>
+              <MaterialCommunityIcons
+                name="rectangle"
+                size={35}
+                color={Colors.purple}
+              />
+              <Text style={styles.macroText}>Protein</Text>
             </View>
-          ) : null}
-        </View>
-        <View style={styles.legendContainer}>
-          <View style={styles.legendInnerContainer}>
-            <View style={styles.legendRow}>
-              <View style={styles.macroContainer}>
-                <MaterialCommunityIcons
-                  name="rectangle"
-                  size={35}
-                  color={Colors.purple}
-                />
-                <Text style={styles.macroText}>Protein</Text>
-              </View>
-              <View style={styles.macroContainer}>
-                <MaterialCommunityIcons
-                  name="rectangle"
-                  size={35}
-                  color={Colors.pink}
-                />
-                <Text style={styles.macroText}>Fats</Text>
-              </View>
-            </View>
-            <View style={styles.legendRow}>
-              <View style={styles.macroContainer}>
-                <MaterialCommunityIcons
-                  name="rectangle"
-                  size={35}
-                  color={Colors.green}
-                />
-                <Text style={styles.macroText}>Fiber</Text>
-              </View>
-              <View style={styles.macroContainer}>
-                <MaterialCommunityIcons
-                  name="rectangle"
-                  size={35}
-                  color={Colors.orange}
-                />
-                <Text style={styles.macroText}>Net Carbs</Text>
-              </View>
+            <View style={styles.macroContainer}>
+              <MaterialCommunityIcons
+                name="rectangle"
+                size={35}
+                color={Colors.pink}
+              />
+              <Text style={styles.macroText}>Fats</Text>
             </View>
           </View>
-          <Text style={styles.macroText}>per 100 grams weight</Text>
+          <View style={styles.legendRow}>
+            <View style={styles.macroContainer}>
+              <MaterialCommunityIcons
+                name="rectangle"
+                size={35}
+                color={Colors.green}
+              />
+              <Text style={styles.macroText}>Fiber</Text>
+            </View>
+            <View style={styles.macroContainer}>
+              <MaterialCommunityIcons
+                name="rectangle"
+                size={35}
+                color={Colors.orange}
+              />
+              <Text style={styles.macroText}>Net Carbs</Text>
+            </View>
+          </View>
         </View>
-        <PieChart
-          style={{ height: 250, marginVertical: 12, marginBottom: 20 }}
-          valueAccessor={({ item }) => item.amount}
-          data={data}
-          spacing={1}
-          outerRadius={'95%'}
-        >
-          <Labels />
-        </PieChart>
+        <Text style={styles.macroText}>per 100 grams weight</Text>
       </View>
+      <PieChart
+        style={{ height: 250, marginVertical: 12, marginBottom: 20 }}
+        valueAccessor={({ item }) => item.amount}
+        data={data}
+        spacing={1}
+        outerRadius={'95%'}
+      >
+        <Labels />
+      </PieChart>
     </ScrollView>
   );
 };

@@ -151,9 +151,10 @@ const styles = StyleSheet.create({
   },
   listFoodContainer: {
     marginVertical: 5,
+    width: 200,
   },
   listText: {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'open-sans',
     color: '#111',
   },
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 19,
     paddingVertical: 8,
     paddingHorizontal: 15,
     textAlign: 'center',
