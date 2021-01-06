@@ -1,11 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Platform,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import Colors from '../../constants/Colors';
 
 const ContactUs = (props) => {
+  let TouchableCmp = TouchableOpacity;
+
+  Platform.OS === 'android' && Platform.Version >= 21
+    ? (TouchableCmp = TouchableNativeFeedback)
+    : TouchableOpacity;
+
   return (
     <View style={styles.screen}>
       <View style={styles.container}>
@@ -21,9 +35,9 @@ const ContactUs = (props) => {
           size={65}
           color={Colors.facebook}
           style={styles.icon}
-          onPress={() => Linking.openURL('fb://page/106848281418')}
-          //fb://page/PAGE_ID
-          //https://www.facebook.com/leonard.shen.1/
+          onPress={() =>
+            Linking.openURL('https://www.facebook.com/NordinKetoApp')
+          }
         />
         <MaterialCommunityIcons
           name="instagram"
@@ -31,7 +45,7 @@ const ContactUs = (props) => {
           color={Colors.instagram}
           style={styles.icon}
           onPress={() =>
-            Linking.openURL('http://instagram.com/_u/leonard.shen.1')
+            Linking.openURL('http://instagram.com/_u/nordinketoapp/')
           }
         />
         <MaterialCommunityIcons
@@ -39,8 +53,19 @@ const ContactUs = (props) => {
           size={65}
           color={Colors.twitter}
           style={styles.icon}
-          onPress={() => console.log('twitter')}
+          onPress={() => Linking.openURL('https://twitter.com/UV_Studio')}
         />
+      </View>
+      <View style={styles.footerContainer}>
+        <Text>Nordin Keto App is developed by:</Text>
+        <TouchableCmp
+          onPress={() => Linking.openURL('https://www.uvstudio.ca')}
+        >
+          <Image
+            source={require('../../assets/uv-logo.png')}
+            style={styles.image}
+          />
+        </TouchableCmp>
       </View>
     </View>
   );
@@ -64,11 +89,28 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   socialsContainer: {
+    marginTop: 15,
     flexDirection: 'row',
   },
   icon: {
     margin: 10,
   },
+  footerContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  image: {
+    marginTop: 15,
+    width: 230,
+    height: 75,
+  },
 });
 
 export default ContactUs;
+
+//linking notes:
+//fb://page/PAGE_ID
+//https://www.facebook.com/leonard.shen.1/
+//106508011396370
+//https://www.facebook.com/Nordin-Keto-App-106508011396370
+//onPress={() => Linking.openURL('fb://page/106508011396370')}
