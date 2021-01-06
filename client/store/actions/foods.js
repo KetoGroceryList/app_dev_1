@@ -216,7 +216,8 @@ export const setCurrentList = (id) => {
 
 export const addFoodToCurrMutableList = (lists, currentList, foodId) => {
   return (dispatch) => {
-    currentList.groceryListArray = [...currentList.groceryListArray, foodId];
+    //currentList.groceryListArray = [foodId, ...currentList.groceryListArray];
+    currentList.groceryListArray = [foodId, ...currentList.groceryListArray];
     for (let i = 0; i < lists.length; i++) {
       if (lists[i]._id === currentList._id) {
         lists[i].groceryListArray === currentList.groceryListArray;

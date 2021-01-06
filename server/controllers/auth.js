@@ -142,36 +142,6 @@ exports.verificationCode = asyncHandler(async (req, res, next) => {
   sendTokenResponse(user, 200, res);
 });
 
-//desc    POST reset password
-//route   PUT /api/auth/resetpassword/
-//access  public
-// exports.resetPassword = asyncHandler(async (req, res, next) => {
-//   //get hashed token
-//   // const verificationCode = crypto
-//   //   .createHash('sha256')
-//   //   .update(req.params.veriCode)
-//   //   .digest('hex');
-
-//   const verificationCode = req.params.veriCode;
-
-//   const user = await User.findOne({
-//     verificationCode,
-//     verificationCodeExpire: { $gt: Date.now() },
-//   });
-
-//   if (!user) {
-//     return next(new ErrorResponse('Invalid verification code', 400));
-//   }
-
-//   //set new password
-//   user.password = req.body.password;
-//   user.resetPasswordToken = undefined;
-//   user.resetPasswordExpire = undefined;
-//   await user.save();
-
-//   sendTokenResponse(user, 200, res);
-// });
-
 //desc    LOGOUT user / clear cookie
 //route   GET /api/auth/logout
 //access  private

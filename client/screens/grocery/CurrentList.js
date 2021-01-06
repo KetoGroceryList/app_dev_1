@@ -36,14 +36,31 @@ const CurrentList = (props) => {
     (state) => state.foods.mutableGroceryLists
   );
 
-  const setAnimation = () => {
+  const fadeAnimation = (duration) => {
     LayoutAnimation.configureNext(
       LayoutAnimation.create(
-        400,
+        duration,
         LayoutAnimation.Types.easeInEaseOut,
         LayoutAnimation.Properties.opacity
       )
     );
+  };
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = (duration) => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = (duration) => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration,
+      useNativeDriver: true,
+    }).start();
   };
 
   let listLoaded;
@@ -92,10 +109,13 @@ const CurrentList = (props) => {
     let options;
     if (search.length === 0) {
       options = '';
+      fadeAnimation(250);
       setFoodSelection(options);
     }
     if (search.length > 2) {
       options = foods.filter((food) => food.name.includes(search));
+      fadeIn(300);
+      fadeAnimation(250);
       setFoodSelection(options);
     }
   }, [search]);
@@ -175,15 +195,15 @@ const CurrentList = (props) => {
       );
       return;
     }
-    setAnimation();
-    listFoods.push(food._id);
+    fadeAnimation(400);
+    listFoods.unshift(food._id);
     setSearch('');
   };
 
   const removeFromListHandler = (foodName) => {
     const foodIdToLocate = foods.find((food) => food.name === foodName);
     const index = listFoods.indexOf(foodIdToLocate._id);
-    setAnimation();
+    fadeAnimation(300);
     listFoods.splice(index, 1);
     setToReLoad((prevState) => !prevState);
   };
@@ -191,6 +211,7 @@ const CurrentList = (props) => {
   const addFoodToFadedHandler = (foodName) => {
     const foodIdToLocate = foods.find((food) => food.name === foodName);
     setFadedItems((fadedItems) => [...fadedItems, foodIdToLocate._id]);
+    fadedItems.push(foodIdToLocate._id);
   };
 
   const removeFoodFromFadedHandler = (foodName) => {
@@ -295,20 +316,23 @@ const CurrentList = (props) => {
           </View>
 
           <View style={styles.searchOptionsContainer}>
-            <ScrollView>
+            <Animated.ScrollView style={{ opacity: fadeAnim }}>
               {foodSelection
                 ? foodSelection.map((food) => (
-                    <View key={food._id} style={styles.searchOptions}>
+                    <Animated.View
+                      key={food._id}
+                      style={(styles.searchOptions, { opacity: fadeAnim })}
+                    >
                       <Text
                         style={styles.searchOptionsText}
                         onPress={() => addToListHandler(food)}
                       >
                         {food.name}
                       </Text>
-                    </View>
+                    </Animated.View>
                   ))
                 : null}
-            </ScrollView>
+            </Animated.ScrollView>
           </View>
         </View>
         <View
@@ -316,7 +340,11 @@ const CurrentList = (props) => {
             styles.groceryList,
             {
               maxHeight:
-                windowHeight < 660 ? windowHeight * 0.48 : windowHeight * 0.56,
+                windowHeight > 900
+                  ? windowHeight * 0.7
+                  : windowHeight < 660
+                  ? windowHeight * 0.48
+                  : windowHeight * 0.56,
             },
           ]}
         >
@@ -506,11 +534,11 @@ const styles = StyleSheet.create({
   },
   searchOptions: {
     fontFamily: 'open-sans',
-    marginTop: 3,
-    marginVertical: 3,
   },
   searchOptionsText: {
-    fontSize: 18,
+    fontSize: 20,
+    paddingTop: 3,
+    paddingVertical: 2,
   },
   card: {
     alignItems: 'center',
