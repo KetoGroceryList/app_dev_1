@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -157,7 +158,7 @@ const bottomTabOptions = ({ route }) => ({
       iconName = focused ? 'account' : 'account-outline';
     }
 
-    return <MaterialCommunityIcons name={iconName} size={30} color={color} />;
+    return <MaterialCommunityIcons name={iconName} size={32} color={color} />;
   },
 });
 
@@ -169,7 +170,10 @@ export const BottomTabNavigator = () => {
         activeTintColor: Colors.greenText,
         inactiveTintColor: 'gray',
         labelPosition: 'below-icon',
-        style: { paddingBottom: 5, paddingTop: 4 },
+        style:
+          Platform.OS === 'android'
+            ? { paddingBottom: 4, paddingTop: 3 }
+            : { paddingTop: 6 },
       }}
     >
       <GroceryBottomTabNavigator.Screen

@@ -5,16 +5,15 @@ import {
   Alert,
   ScrollView,
   Platform,
-  ActivityIndicator,
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 
+import LoadingScreen from '../../components/UI/LoadingScreen';
 import Card from '../../components/UI/Card';
 import Input from '../../components/UI/Input';
 import CustomButton from '../../components/UI/CustomButton';
-import Colors from '../../constants/Colors';
 import * as authActions from '../../store/actions/auth';
 
 import { FORM_INPUT_UPDATE } from '../../store/types';
@@ -121,7 +120,7 @@ const Auth = (props) => {
       style={styles.screen}
     >
       {isLoading ? (
-        <ActivityIndicator size="small" color={Colors.green} />
+        <LoadingScreen />
       ) : (
         <Card style={styles.authContainer}>
           <ScrollView style={styles.scrollView}>

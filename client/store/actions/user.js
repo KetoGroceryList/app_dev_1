@@ -22,9 +22,6 @@ export const getUser = () => {
 };
 
 export const updateProfile = (name, email, password) => {
-  console.log(name);
-  console.log(email);
-  console.log(password);
   return async (dispatch) => {
     try {
       const body = JSON.stringify({ name, email, password });

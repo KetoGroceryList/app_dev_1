@@ -3,13 +3,12 @@ import {
   View,
   Text,
   FlatList,
-  ScrollView,
   TextInput,
+  Image,
   Alert,
   Animated,
   LayoutAnimation,
   UIManager,
-  ActivityIndicator,
   Modal,
   KeyboardAvoidingView,
   useWindowDimensions,
@@ -19,6 +18,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 
 import CustomButton from '../../components/UI/CustomButton';
+import LoadingScreen from '../../components/UI/LoadingScreen';
 import * as foodsActions from '../../store/actions/foods';
 import Colors from '../../constants/Colors';
 
@@ -55,13 +55,6 @@ const CurrentList = (props) => {
       useNativeDriver: true,
     }).start();
   };
-  const fadeOut = (duration) => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration,
-      useNativeDriver: true,
-    }).start();
-  };
 
   let listLoaded;
 
@@ -79,6 +72,7 @@ const CurrentList = (props) => {
   const [search, setSearch] = useState('');
   const [foodSelection, setFoodSelection] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(undefined);
   const [toReload, setToReLoad] = useState(false);
   const [fadedItems, setFadedItems] = useState([]);
@@ -89,6 +83,7 @@ const CurrentList = (props) => {
 
   const loadData = async () => {
     setError(null);
+    setIsRefreshing(true);
     try {
       await dispatch(foodsActions.getFoods());
       await dispatch(foodsActions.getFavs());
@@ -96,6 +91,7 @@ const CurrentList = (props) => {
     } catch (err) {
       setError(err.message);
     }
+    setIsRefreshing(false);
   };
 
   useEffect(() => {
@@ -265,15 +261,24 @@ const CurrentList = (props) => {
   if (error) {
     return (
       <View style={styles.centered}>
-        <Text>An error occurred.</Text>
-        <View style={{ margin: 5 }}>
-          <CustomButton
-            title="Try again"
-            onSelect={loadData}
-            color={Colors.greenText}
-          >
-            <Text style={styles.buttonText}>Try Again</Text>
-          </CustomButton>
+        <View style={styles.errorContainer}>
+          <Image
+            style={{ width: 200, height: 200, marginBottom: 20 }}
+            source={require('../../assets/nordin-round-tp.png')}
+          />
+          <Text style={styles.errorText}>
+            An error occurred. Unable to connect to server.
+          </Text>
+          <View style={{ marginTop: 36 }}>
+            <CustomButton
+              title="Try again"
+              onSelect={loadData}
+              color={Colors.greenText}
+              style={{ paddingHorizontal: 9, paddingVertical: 5 }}
+            >
+              <Text style={styles.buttonText}>Try Again</Text>
+            </CustomButton>
+          </View>
         </View>
       </View>
     );
@@ -282,7 +287,7 @@ const CurrentList = (props) => {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.green} />
+        <LoadingScreen />
       </View>
     );
   }
@@ -478,6 +483,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   screen: {
     flex: 1,
@@ -635,6 +641,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'open-sans-bold',
     color: 'white',
+  },
+  errorContainer: {
+    width: 250,
+    alignItems: 'center',
+  },
+  errorText: {
+    fontFamily: 'open-sans-bold',
+    fontSize: 18,
   },
 });
 

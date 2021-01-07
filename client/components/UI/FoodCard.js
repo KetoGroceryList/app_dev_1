@@ -30,7 +30,6 @@ const FoodCard = (props) => {
             <View style={styles.details}>
               <Text style={styles.title}>{props.title}</Text>
             </View>
-            {/* <View style={styles.actions}>{props.children}</View> */}
           </View>
         </TouchableCmp>
       </View>

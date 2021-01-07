@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Alert,
-  TextInput,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, Alert, TextInput, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
+import LoadingScreen from '../../components/UI/LoadingScreen';
 import Card from '../../components/UI/Card';
 import CustomButton from '../../components/UI/CustomButton';
-import Colors from '../../constants/Colors';
 import * as authActions from '../../store/actions/auth';
 
 const ForgotPassword = (props) => {
@@ -49,11 +42,7 @@ const ForgotPassword = (props) => {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator
-          size="large"
-          color={Colors.green}
-          style={{ flex: 1 }}
-        />
+        <LoadingScreen />
       </View>
     );
   }
@@ -123,7 +112,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   emailInput: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'open-sans',
     paddingHorizontal: 2,
     paddingVertical: 2,

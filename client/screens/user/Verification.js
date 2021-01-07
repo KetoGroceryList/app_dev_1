@@ -1,15 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Alert,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Alert, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Colors from '../../constants/Colors';
+import LoadingScreen from '../../components/UI/LoadingScreen';
 import Card from '../../components/UI/Card';
 import CustomButton from '../../components/UI/CustomButton';
 import * as authAction from '../../store/actions/auth';
@@ -42,6 +35,12 @@ const Verification = (props) => {
       return;
     }
 
+    useEffect(() => {
+      if (error) {
+        Alert.alert('An error occurred', error, [{ text: 'Okay' }]);
+      }
+    }, [error]);
+
     setError(null);
     setIsLoading(true);
     try {
@@ -53,13 +52,7 @@ const Verification = (props) => {
   };
 
   if (isLoading) {
-    return (
-      <ActivityIndicator
-        size="large"
-        color={Colors.greenText}
-        style={{ flex: 1 }}
-      />
-    );
+    return <LoadingScreen />;
   }
 
   return (
