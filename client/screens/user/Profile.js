@@ -5,11 +5,11 @@ import {
   Alert,
   ScrollView,
   KeyboardAvoidingView,
-  ActivityIndicator,
   StyleSheet,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
+import LoadingScreen from '../../components/UI/LoadingScreen';
 import CustomButton from '../../components/UI/CustomButton';
 import Input from '../../components/UI/Input';
 import * as authActions from '../../store/actions/auth';
@@ -111,7 +111,7 @@ const Profile = (props) => {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#ccc" />
+        <LoadingScreen />
       </View>
     );
   }

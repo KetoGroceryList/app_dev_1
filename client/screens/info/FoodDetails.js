@@ -12,13 +12,16 @@ import { PieChart } from 'react-native-svg-charts';
 import * as svg from 'react-native-svg';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import CustomButton from '../../components/UI/CustomButton';
 import * as foodActions from '../../store/actions/foods';
+import CustomButton from '../../components/UI/CustomButton';
+import LoadingScreen from '../../components/UI/LoadingScreen';
 import Colors from '../../constants/Colors';
 
 const FoodDetails = (props) => {
   const [toReload, setToReLoad] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(undefined);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const foodName = props.route.params.name;
   const selectedFood = useSelector((state) =>
@@ -47,15 +50,22 @@ const FoodDetails = (props) => {
 
   const dispatch = useDispatch();
 
-  const favHandler = (id) => {
+  const favHandler = async (id) => {
+    setError(null);
+    setIsRefreshing(true);
     setIsLoading(true);
-    if (!favOrNot) {
-      dispatch(foodActions.addFav(id));
-      setIsLoading(false);
-    } else {
-      dispatch(foodActions.deleteFav(id));
-      setIsLoading(false);
+    try {
+      if (!favOrNot) {
+        await dispatch(foodActions.addFav(id));
+        setIsLoading(false);
+      } else {
+        await dispatch(foodActions.deleteFav(id));
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError(err.message);
     }
+    setIsRefreshing(false);
   };
 
   const addFoodToCurrMutableListHandler = (lists, currentList, foodId) => {
@@ -116,10 +126,36 @@ const FoodDetails = (props) => {
     });
   };
 
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <View style={styles.errorContainer}>
+          <Image
+            style={{ width: 200, height: 200, marginBottom: 20 }}
+            source={require('../../assets/nordin-round-tp.png')}
+          />
+          <Text style={styles.errorText}>
+            An error occurred. Unable to connect to server.
+          </Text>
+          <View style={{ marginTop: 36 }}>
+            <CustomButton
+              title="Try again"
+              onSelect={loadData}
+              color={Colors.greenText}
+              style={{ paddingHorizontal: 9, paddingVertical: 5 }}
+            >
+              <Text style={styles.buttonText}>Try Again</Text>
+            </CustomButton>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.green} />
+        <LoadingScreen />
       </View>
     );
   }

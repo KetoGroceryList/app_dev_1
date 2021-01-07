@@ -9,7 +9,7 @@ import {
   TouchableNativeFeedback,
   StyleSheet,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Colors from '../../constants/Colors';
 import CustomButton from '../../components/UI/CustomButton';

@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import Colors from '../../constants/Colors';
+import LoadingScreen from '../../components/UI/LoadingScreen';
 import CustomButton from '../../components/UI/CustomButton';
 import * as foodsAction from '../../store/actions/foods';
 
 const SavedListDetails = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(undefined);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const restore = async () => {
-      await dispatch(foodsAction.restoreMutableList());
+      setError(null);
+      setIsRefreshing(true);
+      try {
+        await dispatch(foodsAction.restoreMutableList());
+      } catch (err) {
+        setError(err.message);
+      }
+      setIsRefreshing(false);
     };
-    restore();
+    setIsLoading(true);
+    restore().then(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   const listId = props.route.params.id;
@@ -89,10 +93,36 @@ const SavedListDetails = (props) => {
     });
   };
 
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <View style={styles.errorContainer}>
+          <Image
+            style={{ width: 200, height: 200, marginBottom: 20 }}
+            source={require('../../assets/nordin-round-tp.png')}
+          />
+          <Text style={styles.errorText}>
+            An error occurred. Unable to connect to server.
+          </Text>
+          <View style={{ marginTop: 36 }}>
+            <CustomButton
+              title="Try again"
+              onSelect={loadData}
+              color={Colors.greenText}
+              style={{ paddingHorizontal: 9, paddingVertical: 5 }}
+            >
+              <Text style={styles.buttonText}>Try Again</Text>
+            </CustomButton>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.green} />
+        <LoadingScreen />
       </View>
     );
   }
