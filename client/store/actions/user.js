@@ -36,8 +36,6 @@ export const updateProfile = (name, email, password) => {
         config
       );
 
-      console.log(response.data);
-
       dispatch({
         type: UPDATE_PROFILE,
         user: {

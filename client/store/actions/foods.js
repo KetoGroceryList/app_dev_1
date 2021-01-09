@@ -25,7 +25,7 @@ export const getFoods = () => {
         foods: allFoods,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
@@ -44,7 +44,7 @@ export const addFav = (id) => {
         foods: favFoods,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
@@ -71,7 +71,7 @@ export const getFavs = () => {
         foods: favFoods,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
@@ -90,7 +90,7 @@ export const deleteFav = (id) => {
         foods: favFoods,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
@@ -118,7 +118,7 @@ export const saveNewList = (foods, name) => {
         foods: groceryLists,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
@@ -146,7 +146,7 @@ export const updateExistingList = (foods, name, id) => {
         foods: groceryLists,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
@@ -172,7 +172,7 @@ export const getSavedLists = () => {
         foods: mutableGroceryLists,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
@@ -191,7 +191,7 @@ export const restoreMutableList = () => {
         foods: groceryLists,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
@@ -244,7 +244,7 @@ export const deleteListById = (id) => {
         foods: groceryLists,
       });
     } catch (err) {
-      throw new Error('Something went wrong');
+      throw new Error('Cannot connect with server. Please try again.');
     }
   };
 };
