@@ -15,7 +15,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons, Entypo } from '@expo/vector-icons';
 
 import CustomButton from '../../components/UI/CustomButton';
 import LoadingScreen from '../../components/UI/LoadingScreen';
@@ -155,6 +155,12 @@ const CurrentList = (props) => {
       dispatch(foodsActions.setCurrentList(listFoodsId));
     }
   }, [listFoodsId]);
+
+  useEffect(() => {
+    if (listLoaded) {
+      setFadedItems([]);
+    }
+  }, [listLoaded]);
 
   const foodItemsDataFn = (list, foods) => {
     for (let i = 0; i < list.length; i++) {
@@ -311,10 +317,10 @@ const CurrentList = (props) => {
               style={styles.searchTextInput}
             />
             {search ? (
-              <Ionicons
-                name="close-circle-outline"
-                style={{ left: -26, color: '#777' }}
-                size={30}
+              <Entypo
+                name="erase"
+                style={{ left: -26, color: '#555' }}
+                size={25}
                 onPress={() => setSearch('')}
               />
             ) : null}
@@ -359,7 +365,7 @@ const CurrentList = (props) => {
             data={foodItemsData}
             keyExtractor={(item) => item._id}
             renderItem={(itemData) => (
-              <Animated.View>
+              <Animated.View style={{ flex: 1, flexDirection: 'row' }}>
                 <View
                   style={
                     fadedItems.includes(itemData.item._id)
@@ -367,27 +373,34 @@ const CurrentList = (props) => {
                       : styles.listItemContainerWhite
                   }
                 >
-                  <Text
-                    style={styles.listText}
-                    onPress={() => selectFoodDetailsHandler(itemData.item.name)}
-                  >
-                    {itemData.item.name}
-                  </Text>
-                  <View style={styles.listItemContainerChecks}>
-                    <Ionicons
-                      name="basket-outline"
-                      style={{ marginRight: 7, opacity: 0.7 }}
-                      size={36}
+                  <View style={{ flex: 1 }}>
+                    <MaterialIcons
+                      name="local-grocery-store"
+                      style={{ opacity: 0.8, top: -1 }}
+                      size={28}
                       onPress={() => {
                         fadedItems.includes(itemData.item._id)
                           ? removeFoodFromFadedHandler(itemData.item.name)
                           : addFoodToFadedHandler(itemData.item.name);
                       }}
                     />
+                  </View>
+
+                  <View style={{ flex: 5 }}>
+                    <Text
+                      style={styles.listText}
+                      onPress={() =>
+                        selectFoodDetailsHandler(itemData.item.name)
+                      }
+                    >
+                      {itemData.item.name}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
                     <Ionicons
-                      name="close-circle-outline"
-                      style={{ opacity: 0.7 }}
-                      size={36}
+                      name="trash-outline"
+                      style={{ opacity: 0.7, left: 10 }}
+                      size={28}
                       onPress={() => removeFromListHandler(itemData.item.name)}
                     />
                   </View>
@@ -535,7 +548,7 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
   },
   searchOptionsContainer: {
-    maxHeight: 170,
+    maxHeight: 190,
     marginBottom: 12,
   },
   searchOptions: {
@@ -568,15 +581,19 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   listItemContainerGrey: {
+    flex: 1,
     flexDirection: 'row',
     opacity: 0.15,
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     width: '100%',
+    paddingVertical: 3,
   },
   listItemContainerWhite: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     width: '100%',
+    paddingVertical: 3,
   },
   listItemContainerChecks: {
     flexDirection: 'row',

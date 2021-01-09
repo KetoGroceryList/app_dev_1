@@ -8,7 +8,7 @@ const LoadingScreen = (props) => {
         style={{ width: 200, height: 200, marginBottom: 20 }}
         source={require('../../assets/nordin-round-tp.png')}
       />
-      <ActivityIndicator size="large" />
+      <ActivityIndicator size="large" color="#ccc" />
     </View>
   );
 };

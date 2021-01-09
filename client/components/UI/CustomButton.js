@@ -6,6 +6,7 @@ import {
   TouchableNativeFeedback,
   StyleSheet,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import Colors from '../../constants/Colors';
 
 const CustomButton = (props) => {
@@ -16,18 +17,30 @@ const CustomButton = (props) => {
     : TouchableOpacity;
 
   return (
-    <View style={styles.customButton}>
-      <TouchableCmp style={{ ...props.style }} onPress={props.onSelect}>
-        {props.children}
-      </TouchableCmp>
+    <View style={styles.shadow}>
+      <LinearGradient
+        style={styles.customButton}
+        colors={[Colors.greenMedium, Colors.greenText]}
+        locations={[0, 0.5]}
+      >
+        <TouchableCmp style={{ ...props.style }} onPress={props.onSelect}>
+          {props.children}
+        </TouchableCmp>
+      </LinearGradient>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   customButton: {
-    backgroundColor: Colors.greenText,
-    borderRadius: 10,
+    borderRadius: 12,
+    shadowColor: '#888',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  shadow: {
     shadowColor: '#888',
     shadowOpacity: 0.5,
     shadowOffset: { width: 0, height: 4 },

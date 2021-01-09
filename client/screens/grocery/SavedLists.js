@@ -15,11 +15,6 @@ import Colors from '../../constants/Colors';
 import CustomButton from '../../components/UI/CustomButton';
 
 const SavedLists = (props) => {
-  let TouchableCmp = TouchableOpacity;
-
-  Platform.OS === 'android' && Platform.Version >= 21
-    ? (TouchableCmp = TouchableNativeFeedback)
-    : TouchableOpacity;
   const groceryLists = useSelector((state) => state.foods.groceryLists);
 
   const selectListHandler = (id, name) => {
@@ -38,7 +33,6 @@ const SavedLists = (props) => {
               onSelect={() =>
                 selectListHandler(itemData.item._id, itemData.item.name)
               }
-              useForeground
             >
               <Text style={styles.listText}>{itemData.item.name}</Text>
             </CustomButton>

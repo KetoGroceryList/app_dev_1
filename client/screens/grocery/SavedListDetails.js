@@ -130,8 +130,11 @@ const SavedListDetails = (props) => {
   return (
     <View style={styles.container}>
       <View style={{ marginVertical: 5, marginBottom: 10 }}>
-        <CustomButton onSelect={() => bringListIdToFront(listId, listName)}>
-          <Text style={styles.buttonText}>Use this list</Text>
+        <CustomButton
+          style={{ width: 200 }}
+          onSelect={() => bringListIdToFront(listId, listName)}
+        >
+          <Text style={styles.buttonText}>Load this list</Text>
         </CustomButton>
       </View>
       <FlatList
@@ -150,7 +153,7 @@ const SavedListDetails = (props) => {
       />
       <View style={styles.buttonContainer}>
         <CustomButton
-          style={styles.removeButton}
+          style={{ width: 200 }}
           onSelect={() => deleteListByIdHandler(listId)}
         >
           <Text style={styles.buttonText}>Delete this list</Text>
