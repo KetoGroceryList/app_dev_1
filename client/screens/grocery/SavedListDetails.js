@@ -9,6 +9,7 @@ import * as foodsAction from '../../store/actions/foods';
 const SavedListDetails = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(undefined);
+  const [toReload, setToReLoad] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
@@ -80,7 +81,7 @@ const SavedListDetails = (props) => {
       setIsLoading(true);
       await dispatch(foodsAction.deleteListById(listId));
       setIsLoading(false);
-      props.navigation.navigate('Current List');
+      props.navigation.navigate('Saved Lists');
     } catch (err) {
       setError(err.message);
     }

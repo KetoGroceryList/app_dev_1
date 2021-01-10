@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,6 +18,12 @@ const Verification = (props) => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An error occurred', error, [{ text: 'Okay' }]);
+    }
+  }, [error]);
+
   const resetLoginHandler = async (code, password) => {
     if (password !== passwordConfirm) {
       Alert.alert(
@@ -34,12 +40,6 @@ const Verification = (props) => {
       ]);
       return;
     }
-
-    useEffect(() => {
-      if (error) {
-        Alert.alert('An error occurred', error, [{ text: 'Okay' }]);
-      }
-    }, [error]);
 
     setError(null);
     setIsLoading(true);

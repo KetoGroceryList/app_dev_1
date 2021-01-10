@@ -52,8 +52,8 @@ const ForgotPassword = (props) => {
       <View style={styles.instructionsContainer}>
         <Text style={styles.label}>Instructions</Text>
         <Text style={styles.instructions}>
-          To reset your password, please enter your email here and click
-          'Verification Code'. Nordin will send a 4 digit verification code to
+          To reset your password, please enter your email here and click 'Get
+          Verification Code'. Nordin will send a 4 digit verification code to
           your email. Use that code for the next step.
         </Text>
       </View>

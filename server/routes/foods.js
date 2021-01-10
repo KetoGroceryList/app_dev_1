@@ -8,11 +8,11 @@ const {
 
 const router = express.Router();
 
-const { authorize } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 
 router.get('/', getFoods);
-router.post('/', authorize('admin'), createFood);
-router.delete('/:id', authorize('admin'), deleteFood);
-router.put('/:id', authorize('admin'), updateFood);
+router.post('/', protect, authorize('admin'), createFood);
+router.delete('/:id', protect, authorize('admin'), deleteFood);
+router.put('/:id', protect, authorize('admin'), updateFood);
 
 module.exports = router;
