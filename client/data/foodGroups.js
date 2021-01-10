@@ -30,6 +30,11 @@ export const foodGroupsData = [
       'https://ketogrocerylist.s3.us-east-2.amazonaws.com/foodGroups/fishes.jpg',
   },
   {
+    group: 'dairy',
+    imageUrl:
+      'https://ketogrocerylist.s3.us-east-2.amazonaws.com/foodGroups/dairy.jpg',
+  },
+  {
     group: 'fruits',
     imageUrl:
       'https://ketogrocerylist.s3.us-east-2.amazonaws.com/foodGroups/fruits.jpg',
@@ -45,8 +50,8 @@ export const foodGroupsData = [
       'https://ketogrocerylist.s3.us-east-2.amazonaws.com/foodGroups/oils.jpg',
   },
   {
-    group: 'dairy',
+    group: 'spices',
     imageUrl:
-      'https://ketogrocerylist.s3.us-east-2.amazonaws.com/foodGroups/dairy.jpg',
+      'https://ketogrocerylist.s3.us-east-2.amazonaws.com/foodGroups/colorful-spices.jpg',
   },
 ];

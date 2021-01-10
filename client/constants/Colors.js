@@ -7,6 +7,8 @@ export default {
   beige: '#FBFBD0',
   pink: '#F9A9C1',
   purple: '#C1B0DF',
+  blue: '#477CF5',
+  red: '#F54A49',
   facebook: '#3b5998',
   instagram: '#DD2A7B',
   twitter: '#00acee',

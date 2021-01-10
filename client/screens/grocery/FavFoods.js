@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useSelector } from 'react-redux';
 
 import FoodCard from '../../components/UI/FoodCard';
@@ -33,17 +34,27 @@ const FavFoods = (props) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={favFoodsFullData}
-        keyExtractor={(item) => item._id}
-        renderItem={(itemData) => (
-          <FoodCard
-            image={itemData.item.imageUrl}
-            title={itemData.item.name}
-            onSelect={() => selectFoodDetailsHandler(itemData.item.name)}
-          />
-        )}
-      />
+      {favFoods.length !== 0 ? (
+        <FlatList
+          data={favFoodsFullData}
+          keyExtractor={(item) => item._id}
+          renderItem={(itemData) => (
+            <FoodCard
+              image={itemData.item.imageUrl}
+              title={itemData.item.name}
+              onSelect={() => selectFoodDetailsHandler(itemData.item.name)}
+            />
+          )}
+        />
+      ) : (
+        <View style={styles.noFavContainer}>
+          <Text style={styles.noFav}>
+            Looks like you don't have any favourite foods. You can browse
+            through our foods under 'Food Groups' and find some foods to add to
+            this list.
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -54,6 +65,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  noFavContainer: {
+    width: 300,
+    alignItems: 'center',
+  },
+  noFav: {
+    fontFamily: 'open-sans',
+    fontSize: 18,
+    color: 'black',
   },
 });
 

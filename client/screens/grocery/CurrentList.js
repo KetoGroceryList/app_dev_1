@@ -361,53 +361,68 @@ const CurrentList = (props) => {
         >
           <Text style={styles.listHeader}>{listFoodsName}</Text>
           <View style={styles.line}></View>
-          <FlatList
-            data={foodItemsData}
-            keyExtractor={(item) => item._id}
-            renderItem={(itemData) => (
-              <Animated.View style={{ flex: 1, flexDirection: 'row' }}>
-                <View
-                  style={
-                    fadedItems.includes(itemData.item._id)
-                      ? styles.listItemContainerGrey
-                      : styles.listItemContainerWhite
-                  }
-                >
-                  <View style={{ flex: 1 }}>
-                    <MaterialIcons
-                      name="local-grocery-store"
-                      style={{ opacity: 0.8, top: -1 }}
-                      size={28}
-                      onPress={() => {
-                        fadedItems.includes(itemData.item._id)
-                          ? removeFoodFromFadedHandler(itemData.item.name)
-                          : addFoodToFadedHandler(itemData.item.name);
-                      }}
-                    />
-                  </View>
+          {foodItemsData.length > 0 ? (
+            <FlatList
+              data={foodItemsData}
+              keyExtractor={(item) => item._id}
+              renderItem={(itemData) => (
+                <Animated.View style={{ flex: 1, flexDirection: 'row' }}>
+                  <View
+                    style={
+                      fadedItems.includes(itemData.item._id)
+                        ? styles.listItemContainerGrey
+                        : styles.listItemContainerWhite
+                    }
+                  >
+                    <View style={{ flex: 1 }}>
+                      <MaterialIcons
+                        name="local-grocery-store"
+                        style={{ opacity: 1, top: -1 }}
+                        color={Colors.blue}
+                        size={28}
+                        onPress={() => {
+                          fadedItems.includes(itemData.item._id)
+                            ? removeFoodFromFadedHandler(itemData.item.name)
+                            : addFoodToFadedHandler(itemData.item.name);
+                        }}
+                      />
+                    </View>
 
-                  <View style={{ flex: 5 }}>
-                    <Text
-                      style={styles.listText}
-                      onPress={() =>
-                        selectFoodDetailsHandler(itemData.item.name)
-                      }
-                    >
-                      {itemData.item.name}
-                    </Text>
+                    <View style={{ flex: 5 }}>
+                      <Text
+                        style={styles.listText}
+                        onPress={() =>
+                          selectFoodDetailsHandler(itemData.item.name)
+                        }
+                      >
+                        {itemData.item.name}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Ionicons
+                        name="trash-outline"
+                        style={{ opacity: 1, left: 10 }}
+                        color={Colors.red}
+                        size={28}
+                        onPress={() =>
+                          removeFromListHandler(itemData.item.name)
+                        }
+                      />
+                    </View>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Ionicons
-                      name="trash-outline"
-                      style={{ opacity: 0.7, left: 10 }}
-                      size={28}
-                      onPress={() => removeFromListHandler(itemData.item.name)}
-                    />
-                  </View>
-                </View>
-              </Animated.View>
-            )}
-          />
+                </Animated.View>
+              )}
+            />
+          ) : (
+            <View style={styles.noFoodsContainer}>
+              <Text style={styles.noFoods}>
+                This list has no foods at the moment. You can search for Keto
+                foods from the above 'Search' function, or you can browse
+                through our foods under 'Food Groups' and find some foods to add
+                to this list.
+              </Text>
+            </View>
+          )}
         </View>
       </View>
       <View style={styles.bottomSection}>
@@ -540,7 +555,7 @@ const styles = StyleSheet.create({
   searchTextInput: {
     fontSize: 18,
     fontFamily: 'open-sans',
-    paddingHorizontal: 2,
+    paddingHorizontal: 4,
     paddingVertical: 2,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
@@ -666,6 +681,15 @@ const styles = StyleSheet.create({
   errorText: {
     fontFamily: 'open-sans-bold',
     fontSize: 18,
+  },
+  noFoodsContainer: {
+    width: 300,
+    alignItems: 'center',
+  },
+  noFoods: {
+    fontFamily: 'open-sans',
+    fontSize: 18,
+    color: 'black',
   },
 });
 

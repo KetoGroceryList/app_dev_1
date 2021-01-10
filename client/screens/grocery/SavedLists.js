@@ -1,17 +1,7 @@
-import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  Button,
-  FlatList,
-  Platform,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-  StyleSheet,
-} from 'react-native';
+import React from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import Colors from '../../constants/Colors';
 import CustomButton from '../../components/UI/CustomButton';
 
 const SavedLists = (props) => {
@@ -23,22 +13,23 @@ const SavedLists = (props) => {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.container}></View>
-      <FlatList
-        data={groceryLists}
-        keyExtractor={(item) => item._id}
-        renderItem={(itemData) => (
-          <View style={styles.listLabel}>
-            <CustomButton
-              onSelect={() =>
-                selectListHandler(itemData.item._id, itemData.item.name)
-              }
-            >
-              <Text style={styles.listText}>{itemData.item.name}</Text>
-            </CustomButton>
-          </View>
-        )}
-      />
+      <View style={styles.container}>
+        <FlatList
+          data={groceryLists}
+          keyExtractor={(item) => item._id}
+          renderItem={(itemData) => (
+            <View style={styles.listLabel}>
+              <CustomButton
+                onSelect={() =>
+                  selectListHandler(itemData.item._id, itemData.item.name)
+                }
+              >
+                <Text style={styles.listText}>{itemData.item.name}</Text>
+              </CustomButton>
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 };
@@ -47,17 +38,17 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     marginTop: 20,
+    alignItems: 'center',
   },
   listLabel: {
-    width: 300,
-    backgroundColor: Colors.greenText,
-    marginVertical: 8,
-    borderRadius: 10,
+    width: 280,
+    marginVertical: 9,
+    borderRadius: 12,
   },
   listText: {
     fontSize: 20,
