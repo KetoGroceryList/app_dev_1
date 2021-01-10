@@ -109,7 +109,9 @@ const CurrentList = (props) => {
       setFoodSelection(options);
     }
     if (search.length > 2) {
-      options = foods.filter((food) => food.name.includes(search));
+      options = foods.filter((food) =>
+        food.name.toLowerCase().includes(search.toLowerCase())
+      );
       fadeIn(300);
       fadeAnimation(250);
       setFoodSelection(options);
@@ -181,6 +183,10 @@ const CurrentList = (props) => {
     props.navigation.navigate('Food Details', {
       name,
     });
+  };
+
+  const searchHandler = (food) => {
+    setSearch(food);
   };
 
   const addToListHandler = (food) => {
@@ -312,8 +318,8 @@ const CurrentList = (props) => {
               keyboardType="default"
               autoCapitalize="none"
               maxLength={25}
-              value={search.toLowerCase()}
-              onChangeText={(value) => setSearch(value)}
+              value={search}
+              onChangeText={(value) => searchHandler(value)}
               style={styles.searchTextInput}
             />
             {search ? (
@@ -402,7 +408,7 @@ const CurrentList = (props) => {
                       <Ionicons
                         name="trash-outline"
                         style={{ opacity: 1, left: 10 }}
-                        color={Colors.red}
+                        color={Colors.brown}
                         size={28}
                         onPress={() =>
                           removeFromListHandler(itemData.item.name)
@@ -418,8 +424,8 @@ const CurrentList = (props) => {
               <Text style={styles.noFoods}>
                 This list has no foods at the moment. You can search for Keto
                 foods from the above 'Search' function, or you can browse
-                through our foods under 'Food Groups' and find some foods to add
-                to this list.
+                through our foods under 'Food Groups' and find foods to add to
+                this list.
               </Text>
             </View>
           )}

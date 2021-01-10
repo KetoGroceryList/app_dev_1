@@ -87,26 +87,25 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const veriCode = user.getVerificationCode();
 
   await user.save({ validateBeforeSave: false });
-  console.log(user);
+  //console.log(user);
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-  const mailText = `Here is your 4 digit verification code: ${veriCode}`;
+  const mailText = `Here is your 4 digit verification code: <strong>${veriCode}</strong>`;
   console.log(veriCode);
 
   try {
     await sgMail.send({
       to: user.email,
       from: 'info@uvstudio.ca',
-      subject: 'Nordin password reset verification code',
-      //text: mailText,
-      html: `<strong>Hello ${user.name}, 
+      subject: 'Nordin Keto App notification',
+      html: `<p>Hello ${user.name}, <br><br>
         ${mailText}<br>
         <br>
-        Thanks, <br>
+        Thanks, <br><br>
         Leonard, Nordin Keto App<br>
         UV Studio
-        </strong>`,
+        </p>`,
     });
     res.status(200).json({
       success: true,
