@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useSelector } from 'react-redux';
 
 import FoodCard from '../../components/UI/FoodCard';
@@ -50,8 +49,8 @@ const FavFoods = (props) => {
         <View style={styles.noFavContainer}>
           <Text style={styles.noFav}>
             Looks like you don't have any favourite foods. You can browse
-            through our foods under 'Food Groups' and find some foods to add to
-            this list.
+            through our keto friendly foods under 'Food Groups' and find some
+            foods to add to this list.
           </Text>
         </View>
       )}

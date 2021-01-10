@@ -153,7 +153,7 @@ const bottomTabOptions = ({ route }) => ({
     } else if (route.name === 'Food Groups') {
       iconName = focused ? 'food-drumstick' : 'food-drumstick-outline';
     } else if (route.name === 'Favourites') {
-      iconName = focused ? 'star' : 'star-outline';
+      iconName = focused ? 'heart-multiple' : 'heart-multiple-outline';
     } else if (route.name === 'Profile') {
       iconName = focused ? 'account' : 'account-outline';
     }

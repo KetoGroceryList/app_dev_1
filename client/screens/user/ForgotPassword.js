@@ -21,10 +21,12 @@ const ForgotPassword = (props) => {
     setIsLoading(true);
     try {
       await dispatch(authActions.forgotPassword(email));
+      setIsLoading(false);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {

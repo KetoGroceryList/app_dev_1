@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  ImageBackground,
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
@@ -14,7 +15,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import * as foodActions from '../../store/actions/foods';
 import CustomButton from '../../components/UI/CustomButton';
-import LoadingScreen from '../../components/UI/LoadingScreen';
 import Colors from '../../constants/Colors';
 
 const FoodDetails = (props) => {
@@ -152,25 +152,39 @@ const FoodDetails = (props) => {
     );
   }
 
-  if (isLoading) {
-    return (
-      <View style={styles.centered}>
-        <LoadingScreen />
-      </View>
-    );
-  }
-
   return (
     <ScrollView style={{ backgroundColor: '#fff' }}>
-      <Image style={styles.image} source={{ uri: selectedFood.imageUrl }} />
+      <ImageBackground
+        style={styles.image}
+        source={{ uri: selectedFood.imageUrl }}
+      >
+        {favOrNot ? (
+          <MaterialCommunityIcons
+            name="heart"
+            size={42}
+            color={Colors.red}
+            style={styles.heart}
+          />
+        ) : null}
+      </ImageBackground>
       <View style={styles.action}>
         <Text style={styles.title}>{foodName}</Text>
         <View style={{ marginTop: 12 }}>
-          <CustomButton onSelect={() => favHandler(selectedFood._id)}>
-            <Text style={styles.buttonText}>
-              {favOrNot ? 'Remove from favourites' : 'Add to favourites'}
-            </Text>
-          </CustomButton>
+          {!isLoading ? (
+            <CustomButton onSelect={() => favHandler(selectedFood._id)}>
+              <Text style={styles.buttonText}>
+                {favOrNot ? 'Remove from favourites' : 'Add to favourites'}
+              </Text>
+            </CustomButton>
+          ) : (
+            <View
+              style={{
+                height: 40.5,
+              }}
+            >
+              <ActivityIndicator size="small" color="#555" top={10} />
+            </View>
+          )}
         </View>
         {!onListOrNot ? (
           <View style={{ marginTop: 12 }}>
@@ -306,6 +320,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'open-sans-bold',
     color: 'white',
+  },
+  heart: {
+    top: 10,
+    alignSelf: 'flex-end',
+    left: -10,
+    shadowColor: '#bbb',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 1,
+    elevation: 2,
   },
 });
 

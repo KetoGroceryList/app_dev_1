@@ -2,16 +2,26 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
+  ImageBackground,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
   StyleSheet,
 } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Colors from '../../constants/Colors';
 import Card from './Card';
 
 const FoodCard = (props) => {
+  const favFoods = useSelector((state) => state.foods.favFoods);
+  let favOrNot = false;
+
+  if (favFoods.includes(props.id)) {
+    favOrNot = true;
+  }
+
   let TouchableCmp = TouchableOpacity;
 
   Platform.OS === 'android' && Platform.Version >= 21
@@ -22,10 +32,21 @@ const FoodCard = (props) => {
     <Card style={styles.foodGroup}>
       <View style={styles.touchable}>
         <TouchableCmp onPress={props.onSelect} useForeground>
-          {/* useForeground allows the touch ripple effect to reverberate across the card */}
           <View>
             <View style={styles.imageContainer}>
-              <Image style={styles.image} source={{ uri: props.image }} />
+              <ImageBackground
+                style={styles.image}
+                source={{ uri: props.image }}
+              >
+                {favOrNot ? (
+                  <MaterialCommunityIcons
+                    name="heart"
+                    size={42}
+                    color={Colors.red}
+                    style={styles.heart}
+                  />
+                ) : null}
+              </ImageBackground>
             </View>
             <View style={styles.details}>
               <Text style={styles.title}>{props.title}</Text>
@@ -75,6 +96,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '25%',
     paddingHorizontal: 20,
+  },
+  heart: {
+    top: 10,
+    alignSelf: 'flex-end',
+    left: -10,
+    shadowColor: '#bbb',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 1,
+    elevation: 2,
   },
 });
 
