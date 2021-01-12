@@ -41,6 +41,7 @@ const FavFoods = (props) => {
             <FoodCard
               image={itemData.item.imageUrl}
               title={itemData.item.name}
+              id={itemData.item._id}
               onSelect={() => selectFoodDetailsHandler(itemData.item.name)}
             />
           )}
